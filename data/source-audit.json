@@ -1,0 +1,139 @@
+{
+  "schema_version": "source-audit-0.1",
+  "record_kind": "source_metadata",
+  "checked_on": "2026-10-10",
+  "notice": "只保存页面级调研元信息，不含游戏正文、不宣称获准转载，不与原创故事样本混为真实游戏数据。",
+  "selected_candidate": "以“捕风的异乡人”目录中的“随风而来的骑士”为首个候选任务；尚未取得完整可核验对白。",
+  "pages": [
+    {
+      "id": "audit:bwiki-chapter",
+      "source_id": "bwiki_genshin",
+      "candidate_title": "捕风的异乡人",
+      "url": "https://wiki.biligame.com/ys/%E6%8D%95%E9%A3%8E%E7%9A%84%E5%BC%82%E4%B9%A1%E4%BA%BA",
+      "observation": "public_excerpt_available",
+      "method": "web_search_and_open",
+      "finding": "取得章节介绍与任务目录片段，可定位候选子任务；不能据此确认完整任务对白、稳定段落标识或分支。",
+      "content_roles": [
+        "editorial_summary",
+        "task_index"
+      ],
+      "checked_on": "2026-10-10",
+      "verification_kind": "technical_source_probe",
+      "revision_id": null,
+      "game_release_version": null,
+      "raw_body_saved": false,
+      "admission_status": "pending",
+      "authorization_confirmed_by": null,
+      "allowed_uses": {
+        "collect": "unknown",
+        "store": "unknown",
+        "display": "unknown",
+        "export": "unknown",
+        "ai_retrieval": "unknown",
+        "external_ai": "unknown"
+      }
+    },
+    {
+      "id": "audit:bwiki-task",
+      "source_id": "bwiki_genshin",
+      "candidate_title": "随风而来的骑士",
+      "url": "https://wiki.biligame.com/ys/%E9%9A%8F%E9%A3%8E%E8%80%8C%E6%9D%A5%E7%9A%84%E9%AA%91%E5%A3%AB",
+      "observation": "no_extractable_body",
+      "method": "web_open",
+      "finding": "本次工具没有取得可分析正文；标题作为章节目录中的候选任务名记录，不认定链接内容已核验或任务无对白。",
+      "content_roles": [],
+      "checked_on": "2026-10-10",
+      "verification_kind": "technical_source_probe",
+      "revision_id": null,
+      "game_release_version": null,
+      "raw_body_saved": false,
+      "admission_status": "pending",
+      "authorization_confirmed_by": null,
+      "allowed_uses": {
+        "collect": "unknown",
+        "store": "unknown",
+        "display": "unknown",
+        "export": "unknown",
+        "ai_retrieval": "unknown",
+        "external_ai": "unknown"
+      }
+    },
+    {
+      "id": "audit:bwiki-character",
+      "source_id": "bwiki_genshin",
+      "candidate_title": "安柏",
+      "url": "https://wiki.biligame.com/ys/%E5%AE%89%E6%9F%8F",
+      "observation": "no_extractable_body",
+      "method": "web_open",
+      "finding": "本次工具没有取得可分析正文，角色标识、别名、故事与对白字段尚未核验。",
+      "content_roles": [],
+      "checked_on": "2026-10-10",
+      "verification_kind": "technical_source_probe",
+      "revision_id": null,
+      "game_release_version": null,
+      "raw_body_saved": false,
+      "admission_status": "pending",
+      "authorization_confirmed_by": null,
+      "allowed_uses": {
+        "collect": "unknown",
+        "store": "unknown",
+        "display": "unknown",
+        "export": "unknown",
+        "ai_retrieval": "unknown",
+        "external_ai": "unknown"
+      }
+    },
+    {
+      "id": "audit:obc-guide",
+      "source_id": "miyoushe_obc",
+      "candidate_title": "观测枢使用指南",
+      "url": "https://baike.mihoyo.com/ys/obc/content/116/detail",
+      "observation": "blocked_by_robots",
+      "method": "web_open",
+      "finding": "本次抓取由工具报告 robots 限制，未尝试绕过；这是访问限制，不是对具体内容许可作出禁止结论。",
+      "content_roles": [],
+      "checked_on": "2026-10-10",
+      "verification_kind": "technical_source_probe",
+      "revision_id": null,
+      "game_release_version": null,
+      "raw_body_saved": false,
+      "admission_status": "pending",
+      "authorization_confirmed_by": null,
+      "allowed_uses": {
+        "collect": "unknown",
+        "store": "unknown",
+        "display": "unknown",
+        "export": "unknown",
+        "ai_retrieval": "unknown",
+        "external_ai": "unknown"
+      }
+    },
+    {
+      "id": "audit:tavern-download",
+      "source_id": "kongying_tavern",
+      "candidate_title": "下载客户端",
+      "url": "https://yuanshen.site/docs/download-client",
+      "observation": "search_excerpt_only",
+      "method": "web_search_and_open",
+      "finding": "检索片段提供地图客户端与网页版入口线索；没有验证任务正文、NPC 字段或公开数据接口。",
+      "content_roles": [
+        "project_documentation"
+      ],
+      "checked_on": "2026-10-10",
+      "verification_kind": "technical_source_probe",
+      "revision_id": null,
+      "game_release_version": null,
+      "raw_body_saved": false,
+      "admission_status": "pending",
+      "authorization_confirmed_by": null,
+      "allowed_uses": {
+        "collect": "unknown",
+        "store": "unknown",
+        "display": "unknown",
+        "export": "unknown",
+        "ai_retrieval": "unknown",
+        "external_ai": "unknown"
+      }
+    }
+  ]
+}

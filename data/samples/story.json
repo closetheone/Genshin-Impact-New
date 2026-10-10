@@ -1,0 +1,784 @@
+{
+  "schema_version": "0.1",
+  "dataset_kind": "synthetic",
+  "snapshot_id": "fixture-2026-10-10-v1",
+  "language": "zh-CN",
+  "notice": "全部人物、对白和关系均为本项目原创的合成测试数据，不是原神内容；用途开关也是测试策略，不是外部来源的授权结论。",
+  "scope_ids": [
+    "opening",
+    "east",
+    "west",
+    "later"
+  ],
+  "branch_ids": [
+    "east",
+    "west"
+  ],
+  "withdrawn_ids": [],
+  "sources": [
+    {
+      "id": "source:fixture",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "content_type": "synthetic",
+      "locator": "data/samples/story.json",
+      "rights": {
+        "storage": "allowed",
+        "display": "allowed",
+        "export": "allowed",
+        "external_ai": "allowed"
+      }
+    },
+    {
+      "id": "source:internal",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "content_type": "synthetic",
+      "locator": "data/samples/story.json",
+      "rights": {
+        "storage": "allowed",
+        "display": "allowed",
+        "export": "denied",
+        "external_ai": "denied"
+      }
+    }
+  ],
+  "entries": [
+    {
+      "id": "entry:bridge",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "title": "修桥小队：原创合成样例",
+      "category": "quest",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening"
+      ]
+    }
+  ],
+  "characters": [
+    {
+      "id": "person:carpenter",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "name": "青禾",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening"
+      ]
+    },
+    {
+      "id": "person:student",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "name": "阿砚",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening"
+      ]
+    },
+    {
+      "id": "person:helper",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "name": "阿宁",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening"
+      ]
+    },
+    {
+      "id": "person:merchant",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "name": "青禾",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening"
+      ]
+    }
+  ],
+  "passages": [
+    {
+      "id": "passage:01",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "这是完全原创的结构测试故事，与原神剧情无关。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/0",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:02"
+      ]
+    },
+    {
+      "id": "passage:02",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "我是木匠青禾。",
+      "speaker_id": "person:carpenter",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/1",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:03"
+      ]
+    },
+    {
+      "id": "passage:03",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "阿砚是我的徒弟。",
+      "speaker_id": "person:carpenter",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/2",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:04"
+      ]
+    },
+    {
+      "id": "passage:04",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "我跟随木匠青禾学习木工，已经三年。",
+      "speaker_id": "person:student",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/3",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:05"
+      ]
+    },
+    {
+      "id": "passage:05",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "小队准备修复村外的桥。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/4",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:06"
+      ]
+    },
+    {
+      "id": "passage:06",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "阿砚，我们一起修桥。",
+      "speaker_id": "person:helper",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/5",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:07"
+      ]
+    },
+    {
+      "id": "passage:07",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "好，阿宁，我们共同负责桥面。",
+      "speaker_id": "person:student",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/6",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:08"
+      ]
+    },
+    {
+      "id": "passage:08",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "我有一个孩子，名字写在封存的名册里。",
+      "speaker_id": "person:carpenter",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/7",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:09"
+      ]
+    },
+    {
+      "id": "passage:09",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "我也叫青禾，我是路过的商人，不是那位木匠。",
+      "speaker_id": "person:merchant",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/8",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:10"
+      ]
+    },
+    {
+      "id": "passage:10",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "小队将选择东路或西路，两条路线互斥。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/9",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:11"
+      ]
+    },
+    {
+      "id": "passage:11",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "先核对物资。",
+      "speaker_id": "person:student",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/10",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:12",
+        "passage:13"
+      ]
+    },
+    {
+      "id": "passage:12",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "走东路。",
+      "speaker_id": "person:student",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/11",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:14"
+      ]
+    },
+    {
+      "id": "passage:13",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "走西路。",
+      "speaker_id": "person:student",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/12",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:18"
+      ]
+    },
+    {
+      "id": "passage:14",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "商人青禾扣留了我们的木材，我要阻止他。",
+      "speaker_id": "person:student",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/13",
+      "required_scope_ids": [
+        "opening",
+        "east"
+      ],
+      "branch_id": "east",
+      "next_ids": [
+        "passage:15"
+      ]
+    },
+    {
+      "id": "passage:15",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "今天我不会把木材交给你。",
+      "speaker_id": "person:merchant",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/14",
+      "required_scope_ids": [
+        "opening",
+        "east"
+      ],
+      "branch_id": "east",
+      "next_ids": [
+        "passage:16"
+      ]
+    },
+    {
+      "id": "passage:16",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "东路队伍另行寻找材料。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/15",
+      "required_scope_ids": [
+        "opening",
+        "east"
+      ],
+      "branch_id": "east",
+      "next_ids": [
+        "passage:17"
+      ]
+    },
+    {
+      "id": "passage:17",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "东路记录到此结束。",
+      "speaker_id": "person:student",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/16",
+      "required_scope_ids": [
+        "opening",
+        "east"
+      ],
+      "branch_id": "east",
+      "next_ids": [
+        "passage:22"
+      ]
+    },
+    {
+      "id": "passage:18",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "商人青禾，我们合作运输这些木材。",
+      "speaker_id": "person:student",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/17",
+      "required_scope_ids": [
+        "opening",
+        "west"
+      ],
+      "branch_id": "west",
+      "next_ids": [
+        "passage:19"
+      ]
+    },
+    {
+      "id": "passage:19",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "成交，我负责马车，你负责清点。",
+      "speaker_id": "person:merchant",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/18",
+      "required_scope_ids": [
+        "opening",
+        "west"
+      ],
+      "branch_id": "west",
+      "next_ids": [
+        "passage:20"
+      ]
+    },
+    {
+      "id": "passage:20",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "西路队伍完成运输。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/19",
+      "required_scope_ids": [
+        "opening",
+        "west"
+      ],
+      "branch_id": "west",
+      "next_ids": [
+        "passage:21"
+      ]
+    },
+    {
+      "id": "passage:21",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "先核对物资。",
+      "speaker_id": "person:student",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/20",
+      "required_scope_ids": [
+        "opening",
+        "west"
+      ],
+      "branch_id": "west",
+      "next_ids": [
+        "passage:22"
+      ]
+    },
+    {
+      "id": "passage:22",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "无论选择哪条路，接下来的记录只描述修桥工作。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/21",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:23"
+      ]
+    },
+    {
+      "id": "passage:23",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "桥面已经修好。",
+      "speaker_id": "person:helper",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/22",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:31"
+      ]
+    },
+    {
+      "id": "passage:24",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "当前阶段的公开记录结束。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/23",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:25"
+      ]
+    },
+    {
+      "id": "passage:25",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "名册记载：木匠青禾的孩子是阿宁。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/24",
+      "required_scope_ids": [
+        "opening",
+        "later"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:26"
+      ]
+    },
+    {
+      "id": "passage:26",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "现在可以公布我的家人信息了。",
+      "speaker_id": "person:helper",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/25",
+      "required_scope_ids": [
+        "opening",
+        "later"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:27"
+      ]
+    },
+    {
+      "id": "passage:27",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "接下来的两段材料用于模拟仅限站内展示的用途。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/26",
+      "required_scope_ids": [
+        "opening",
+        "later"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:28"
+      ]
+    },
+    {
+      "id": "passage:28",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "商人青禾是我的徒弟。",
+      "speaker_id": "person:helper",
+      "source_id": "source:internal",
+      "source_locator": "data/samples/story.json#/passages/27",
+      "required_scope_ids": [
+        "opening",
+        "later"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:29"
+      ]
+    },
+    {
+      "id": "passage:29",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "我的师父是阿宁。",
+      "speaker_id": "person:merchant",
+      "source_id": "source:internal",
+      "source_locator": "data/samples/story.json#/passages/28",
+      "required_scope_ids": [
+        "opening",
+        "later"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:30"
+      ]
+    },
+    {
+      "id": "passage:30",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "记录员仅记下木匠青禾与商人青禾同场出现，不能据此推断合作。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/29",
+      "required_scope_ids": [
+        "opening",
+        "later"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:32"
+      ]
+    },
+    {
+      "id": "passage:31",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "我是阿砚的师父。",
+      "speaker_id": "person:carpenter",
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/30",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "next_ids": [
+        "passage:24"
+      ]
+    },
+    {
+      "id": "passage:32",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "entry_id": "entry:bridge",
+      "text": "原创测试样例结束。",
+      "speaker_id": null,
+      "source_id": "source:fixture",
+      "source_locator": "data/samples/story.json#/passages/31",
+      "required_scope_ids": [
+        "opening",
+        "later"
+      ],
+      "branch_id": null,
+      "next_ids": []
+    }
+  ],
+  "relationships": [
+    {
+      "id": "relation:mentor",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "from_id": "person:carpenter",
+      "to_id": "person:student",
+      "predicate": "mentor_of",
+      "direction": "directed",
+      "description": "木匠青禾是阿砚的师父。",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "review_status": "approved",
+      "claim_kind": "explicit",
+      "evidence_groups": [
+        [
+          "passage:03",
+          "passage:04"
+        ],
+        [
+          "passage:31"
+        ]
+      ]
+    },
+    {
+      "id": "relation:bridge-partners",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "from_id": "person:student",
+      "to_id": "person:helper",
+      "predicate": "cooperates_with",
+      "direction": "symmetric",
+      "description": "阿砚与阿宁共同修桥。",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "review_status": "approved",
+      "claim_kind": "explicit",
+      "evidence_groups": [
+        [
+          "passage:06",
+          "passage:07"
+        ]
+      ]
+    },
+    {
+      "id": "relation:parent",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "from_id": "person:carpenter",
+      "to_id": "person:helper",
+      "predicate": "parent_of",
+      "direction": "directed",
+      "description": "木匠青禾是阿宁的家长。",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening"
+      ],
+      "branch_id": null,
+      "review_status": "approved",
+      "claim_kind": "explicit",
+      "evidence_groups": [
+        [
+          "passage:08",
+          "passage:25"
+        ]
+      ]
+    },
+    {
+      "id": "relation:east-opposition",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "from_id": "person:student",
+      "to_id": "person:merchant",
+      "predicate": "opposes",
+      "direction": "directed",
+      "description": "东路分支中，阿砚对抗商人青禾。",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening",
+        "east"
+      ],
+      "branch_id": "east",
+      "review_status": "approved",
+      "claim_kind": "explicit",
+      "evidence_groups": [
+        [
+          "passage:14",
+          "passage:15"
+        ]
+      ]
+    },
+    {
+      "id": "relation:west-partners",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "from_id": "person:student",
+      "to_id": "person:merchant",
+      "predicate": "cooperates_with",
+      "direction": "symmetric",
+      "description": "西路分支中，阿砚与商人青禾合作运输。",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening",
+        "west"
+      ],
+      "branch_id": "west",
+      "review_status": "approved",
+      "claim_kind": "explicit",
+      "evidence_groups": [
+        [
+          "passage:18",
+          "passage:19"
+        ]
+      ]
+    },
+    {
+      "id": "relation:internal-mentor",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "from_id": "person:helper",
+      "to_id": "person:merchant",
+      "predicate": "mentor_of",
+      "direction": "directed",
+      "description": "后续测试资料中，阿宁是商人青禾的师父。",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening",
+        "later"
+      ],
+      "branch_id": null,
+      "review_status": "approved",
+      "claim_kind": "explicit",
+      "evidence_groups": [
+        [
+          "passage:28",
+          "passage:29"
+        ]
+      ]
+    },
+    {
+      "id": "relation:unverified",
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "from_id": "person:carpenter",
+      "to_id": "person:merchant",
+      "predicate": "cooperates_with",
+      "direction": "symmetric",
+      "description": "仅用于验证未审核推断不会公开的错误合作候选。",
+      "source_id": "source:fixture",
+      "required_scope_ids": [
+        "opening",
+        "later"
+      ],
+      "branch_id": null,
+      "review_status": "pending",
+      "claim_kind": "inference",
+      "evidence_groups": [
+        [
+          "passage:30"
+        ]
+      ]
+    }
+  ]
+}
