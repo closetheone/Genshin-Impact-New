@@ -7,7 +7,9 @@ import sqlite3
 from urllib.parse import parse_qs, urlsplit
 
 from archive_store import DEFAULT_DATABASE, SnapshotNotFound, StoreError, import_snapshot, load_snapshot
-from import_sample import read_sample
+from import_sample import read_sample, unique_object, reject_constant
+from material_archive import MaterialCapacity, material_view, selection_request
+from feedback_store import FeedbackConflict, FeedbackRateLimit, submit_feedback
 from graph_archive import GraphUnavailable, character_view, graph_options, graph_view, relation_view
 from search_archive import StaleCursor, search_options, search_view
 from validate_sample import SampleError, project
@@ -20,6 +22,7 @@ ASSETS = {
     "/index.html": ("index.html", "text/html; charset=utf-8"),
     "/app.js": ("app.js", "text/javascript; charset=utf-8"),
     "/model.mjs": ("model.mjs", "text/javascript; charset=utf-8"),
+    "/materials.mjs": ("materials.mjs", "text/javascript; charset=utf-8"),
     "/styles.css": ("styles.css", "text/css; charset=utf-8"),
     "/favicon.svg": ("favicon.svg", "image/svg+xml"),
 }
@@ -64,7 +67,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             except OSError:
                 self.respond(503, {"error": "原型资源暂不可用。"})
             return
-        if parsed.path not in ("/api/view", "/api/search", "/api/graph", "/api/relationship", "/api/characters"):
+        if parsed.path not in ("/api/view", "/api/search", "/api/graph", "/api/relationship", "/api/characters", "/api/status"):
             self.respond(404, {"error": "原型中没有这个入口。"})
             return
         try:
@@ -93,6 +96,8 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             graph_query = graph_options(arguments) if parsed.path == "/api/graph" else None
             data = load_snapshot(self.server.database, snapshots[0] if snapshots else None)
             view = project(data, scopes, purposes[0])
+            if parsed.path == "/api/status":
+                view = {key: view[key] for key in ("dataset_kind", "notice", "snapshot_id", "scope_ids", "purpose")}
             if options is not None:
                 view = search_view(view, options, self.server.cursor_secret)
             elif graph_query is not None:
@@ -123,7 +128,45 @@ class PrototypeHandler(BaseHTTPRequestHandler):
         self.do_GET()
 
     def do_POST(self):
-        self.respond(405, {"error": "此原型只支持只读请求。"})
+        if not self.trusted_request():
+            self.respond(403, {"error": "仅允许同源本地原型请求。"})
+            return
+        if self.path not in ("/api/materials", "/api/feedback"):
+            self.respond(405, {"error": "此入口不支持提交。"})
+            return
+        try:
+            if self.headers.get("Transfer-Encoding") or self.headers.get("Content-Type", "").split(";")[0] != "application/json":
+                raise SampleError("JSON body required")
+            lengths = self.headers.get_all("Content-Length", [])
+            if len(lengths) != 1 or not lengths[0].isascii() or not lengths[0].isdigit():
+                raise SampleError("body length required")
+            length = int(lengths[0])
+            if not 0 < length <= 65536:
+                self.respond(413, {"error": "提交内容超过 64 KiB 限额。"})
+                return
+            self.connection.settimeout(5)
+            body = self.rfile.read(length)
+            if len(body) != length:
+                raise SampleError("incomplete body")
+            payload = json.loads(body, object_pairs_hook=unique_object, parse_constant=reject_constant)
+            if self.path == "/api/materials":
+                request = selection_request(payload)
+                result = material_view(load_snapshot(self.server.database, request["snapshot"]), request)
+            else:
+                result = submit_feedback(payload, self.server.database.parent / "feedback.sqlite3")
+            self.respond(200, result)
+        except MaterialCapacity as error:
+            self.respond(409, {"error": str(error), "code": "capacity"})
+        except FeedbackRateLimit as error:
+            self.respond(429, {"error": str(error)})
+        except FeedbackConflict as error:
+            self.respond(409, {"error": str(error)})
+        except SnapshotNotFound:
+            self.respond(404, {"error": "清单快照不可用；已保留选中 ID，可移除或清空后重建。"})
+        except (SampleError, ValueError, TypeError, KeyError, RecursionError):
+            self.respond(400, {"error": "提交格式不符合契约，请检查字段和长度。"})
+        except (StoreError, OSError, sqlite3.Error):
+            self.respond(503, {"error": "本地存储暂不可用，未确认提交成功。请保留内容后重试。"})
 
     def log_message(self, message, *arguments):
         print(f"Prototype HTTP {self.command} completed", flush=True)

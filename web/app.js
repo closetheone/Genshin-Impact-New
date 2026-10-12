@@ -1,9 +1,10 @@
+import { createMaterialUI, postJson } from "/materials.mjs";
 import { SCOPES, PREDICATES, orderPassages, characterLabels, safeLayout, scopeLabel, relationScope } from "/model.mjs";
 
 const main = document.querySelector("#main");
 const scopeSelect = document.querySelector("#scope-select");
 const purposeSelect = document.querySelector("#purpose-select");
-const pageNames = { search: "文本检索", read: "原文阅读", graph: "人物关系图" };
+const pageNames = { search: "文本检索", read: "原文阅读", graph: "人物关系图", materials: "素材清单", about: "收录与纠错" };
 const state = { view: null, query: "", searchQuery: "", searchMode: "literal", category: "all", speaker: "all", pageSize: 8, center: "person:student", hops: 1, predicate: "all", condition: "all", graphPage: 1, graphMode: "graph", relation: null };
 let requestController;
 let requestVersion = 0;
@@ -12,6 +13,19 @@ let toastTimer;
 let evidenceVersion = 0;
 let graphLayout = null;
 let captureLayout = () => null;
+let feedbackAttempt = null;
+let feedbackDraft = { request_id: crypto.randomUUID(), kind: "text", snapshot: "", reference: "", description: "", contact: "" };
+const materialUI = createMaterialUI({
+  context: () => ({ snapshot: state.view?.snapshot_id, scopes: SCOPES[scopeSelect.value], purpose: purposeSelect.value, version: requestVersion, signal: requestController?.signal }),
+  replacePage, notify,
+  status: () => fetchArchive("/api/status", purposeSelect.value, requestController.signal, route().params.get("snapshot")),
+  setSnapshot: (snapshot) => {
+    state.view = { snapshot_id: snapshot };
+    history.replaceState(null, "", snapshotLink(location.hash));
+    document.querySelectorAll(".primary-nav a, .brand").forEach((anchor) => { anchor.href = snapshotLink(anchor.getAttribute("href")); });
+    document.querySelector("#archive-snapshot").textContent = `素材核验快照 · ${snapshot}`;
+  },
+});
 
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/gu, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
 const readLink = (identifier) => snapshotLink(`#/read?passage=${encodeURIComponent(identifier)}`);
@@ -43,6 +57,7 @@ function replacePage(markup) {
   pageCleanup();
   pageCleanup = () => {};
   main.innerHTML = markup;
+  main.querySelectorAll("[data-add-passage], [data-add-relation]").forEach((button) => button.addEventListener("click", () => materialUI.add(button.dataset.addPassage ? "passage" : "relationship", button.dataset.addPassage || button.dataset.addRelation, button)));
   main.querySelectorAll('a[href^="#/"]').forEach((anchor) => { anchor.href = snapshotLink(anchor.getAttribute("href")); });
 }
 
@@ -81,6 +96,9 @@ async function loadView(cursor = null) {
   document.querySelector("#toast").hidden = true;
   replacePage('<div class="loading-state" role="status">正在按当前范围与用途打开档案…</div>');
   try {
+    updateNavigation();
+    if (route().page === "materials") { await materialUI.render(); return; }
+    if (route().page === "about") { await renderAbout(); return; }
     const isSearch = route().page === "search";
     const parameters = { q: state.searchQuery, mode: state.searchMode, category: state.category, speaker: state.speaker, limit: String(state.pageSize) };
     if (cursor) parameters.cursor = cursor;
@@ -115,7 +133,7 @@ async function loadView(cursor = null) {
   }
 }
 
-function render() {
+function updateNavigation() {
   const current = route();
   document.querySelector("#page-name").textContent = pageNames[current.page] || "未找到页面";
   document.title = `${pageNames[current.page] || "未找到页面"} · 原神文本档案 · 原创样本`;
@@ -123,6 +141,11 @@ function render() {
     if (anchor.dataset.page === current.page) anchor.setAttribute("aria-current", "page");
     else anchor.removeAttribute("aria-current");
   });
+}
+
+function render() {
+  const current = route();
+  updateNavigation();
   if (!state.view) return;
   try {
     if (current.page === "search") renderSearch();
@@ -186,7 +209,7 @@ function renderSearch() {
         <article class="result"><span class="result-number">${String(pagination.offset + index + 1).padStart(2, "0")}</span><div class="result-body">
           <div class="result-meta">${tag(scopeLabel(passage))}<span class="result-title">${escapeHtml(view.entries.find((entry) => entry.id === passage.entry_id)?.title)}</span></div>
           <a class="result-text" href="${readLink(passage.id)}">${highlighted(passage.text, query, view.query.mode)}</a>
-          <div class="result-bottom"><span>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · <code>${escapeHtml(passage.id)}</code></span><a class="text-button" href="${readLink(passage.id)}">回到原文 ↗</a></div>
+          <div class="result-bottom"><span>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · <code>${escapeHtml(passage.id)}</code></span><a class="text-button" href="${readLink(passage.id)}">回到原文 ↗</a><button class="text-button" data-add-passage="${escapeHtml(passage.id)}">加入素材 ＋</button></div>
         </div></article>`).join("") : '<div class="empty-state"><div class="empty-symbol">⌕</div><h2>没有找到匹配的文本</h2><p>试试更短的关键词、清空筛选，或手动调整内容范围。不会自动打开后续内容。</p></div>'}</div>
       <nav class="search-pagination" aria-label="搜索结果分页"><button id="previous-page" class="button" ${pagination.previous_cursor ? "" : "disabled"}>← 上一页</button><span>第 ${pagination.page} / ${pagination.pages} 页</span><button id="next-page" class="button" ${pagination.next_cursor ? "" : "disabled"}>下一页 →</button></nav>
     </section><aside class="search-aside">${view.entries.length ? `<div class="aside-card"><div class="eyebrow">CURRENT PAGE ARCHIVE</div><div class="archive-stamp" aria-hidden="true">卷</div><h3>${escapeHtml(view.entries[0].title)}</h3><p>本页结果中的可用条目。沿着正文与完整证据，验证阅读与取材的每一步。</p>${tag("非原神剧情", "tag-warm")}<a class="button button-soft" href="${readLink(results[0].id)}">打开样本卷宗 ↗</a></div>` : ""}
@@ -242,7 +265,7 @@ function renderReader(targetId) {
         previousSection = section;
         return `${header}<section class="passage ${passage.speaker_id ? "" : "narration"} ${passage.id === targetId ? "selected" : ""}" id="${escapeHtml(passage.id)}" tabindex="-1">
           <span class="passage-number">${escapeHtml(passage.id.split(":").at(-1))}</span><div class="passage-speaker">${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")}${passage.id === targetId ? tag("定位段落", "tag-warm") : ""}</div>
-          <p>${escapeHtml(passage.text)}</p><div class="passage-actions"><code>${escapeHtml(passage.id)}</code><button class="text-button" data-copy="${escapeHtml(passage.id)}">复制引用 ↗</button></div>
+          <p>${escapeHtml(passage.text)}</p><div class="passage-actions"><code>${escapeHtml(passage.id)}</code><button class="text-button" data-copy="${escapeHtml(passage.id)}">复制引用 ↗</button><button class="text-button" data-add-passage="${escapeHtml(passage.id)}">加入素材 ＋</button><a class="text-button" href="${snapshotLink(`#/about?reference=${encodeURIComponent(passage.id)}`)}">纠错</a></div>
           <details class="passage-source"><summary>出处与对话连接</summary><code>${escapeHtml(passage.source_id)}<br>${escapeHtml(passage.source_locator)}</code><div>当前可见后续：${passage.next_ids.map((identifier) => `<a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)}</a>`).join(" · ") || "无（不表示完整剧情结束）"}</div></details>
         </section>`;
       }).join("")}
@@ -259,31 +282,8 @@ function focusPassage(identifier) {
   element.focus({ preventScroll: true });
 }
 
-async function checkedExportView() {
-  const original = state.view;
-  const version = requestVersion;
-  const view = await fetchView("export", requestController.signal, original.snapshot_id);
-  if (version !== requestVersion || original !== state.view || view.snapshot_id !== original.snapshot_id) {
-    throw new Error("范围或快照已经变化，请刷新后重新操作。");
-  }
-  return view;
-}
-
-async function copyCitation(button) {
-  button.disabled = true;
-  try {
-    const view = await checkedExportView();
-    const passage = view.passages.find((candidate) => candidate.id === button.dataset.copy);
-    if (!passage) throw new Error("此段落当前不可导出，未复制正文。");
-    const speaker = characterLabels(view.characters).get(passage.speaker_id) || "叙述";
-    const permalink = new URL(readLink(passage.id), location.href).href;
-    await navigator.clipboard.writeText(`[原创合成样本，非原神剧情]\n${speaker}：${passage.text}\n${passage.id} · ${view.snapshot_id}\n${passage.source_id} · ${passage.source_locator}\n范围：${view.scope_ids.join(", ")}\n本机定位链接（不自动扩大范围）：${permalink}`);
-    notify("引用已复制，包含原创样本标识、快照和出处。");
-  } catch (error) {
-    if (error.name !== "AbortError") notify(error.name === "NotAllowedError" ? "浏览器未允许剪贴板操作，未复制内容。" : error.message);
-  } finally {
-    button.disabled = false;
-  }
+function copyCitation(button) {
+  return materialUI.citation(button.dataset.copy, button);
 }
 
 function restoreGraphQuery() {
@@ -400,7 +400,9 @@ function renderEvidence(relation, view = state.view) {
       const passage = view.passages.find((candidate) => candidate.id === identifier);
       return `<blockquote class="evidence-quote"><p>${escapeHtml(passage.text)}</p><footer>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · ${escapeHtml(scopeLabel(passage))}<a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)} · 回到原文 ↗</a></footer></blockquote>`;
     }).join("")}`).join("")}
+    <button class="button button-soft" id="add-relation-material">关系与证据加入素材 ＋</button><a class="text-button" href="${snapshotLink(`#/about?reference=${encodeURIComponent(relation.id)}&kind=relationship`)}">纠正这条关系</a>
     <div class="evidence-note">组内段落须共同成立；不同完整证据组可独立支持同一断言。样本断言不等于原神设定。</div><div class="evidence-footer"><code>${escapeHtml(relation.id)}<br>${escapeHtml(view.snapshot_id)}</code></div>`;
+  document.querySelector("#add-relation-material").addEventListener("click", (event) => materialUI.add("relationship", relation.id, event.currentTarget));
 }
 
 async function searchCharacters(event) {
@@ -625,6 +627,61 @@ function mountGraph(graph, labels) {
   graphLayout = captureLayout();
 }
 
+async function renderAbout() {
+  const version = requestVersion;
+  const params = route().params;
+  if (params.has("reference") && !feedbackDraft.description) {
+    feedbackDraft.reference = params.get("reference").slice(0, 160);
+    feedbackDraft.snapshot = params.get("snapshot") || "";
+    feedbackDraft.kind = params.get("kind") === "relationship" ? "relationship" : "text";
+  }
+  let status = null;
+  try { status = await fetchArchive("/api/status", purposeSelect.value, requestController.signal, params.get("snapshot")); }
+  catch (error) { if (error.name === "AbortError") return; }
+  if (version !== requestVersion) return;
+  if (status) {
+    state.view = status;
+    document.querySelector("#archive-snapshot").textContent = `当前收录快照 · ${status.snapshot_id}`;
+    if (!feedbackDraft.snapshot) feedbackDraft.snapshot = status.snapshot_id;
+  } else document.querySelector("#archive-snapshot").textContent = "收录快照暂不可用；仍可提交本地问题反馈。";
+  const kinds = { text: "文本错误", attribution: "归属错误", branch: "分支问题", relationship: "人物关系错误", missing: "内容缺漏", usage: "内容使用问题" };
+  replacePage(`<section class="about-page"><div class="eyebrow">SOURCES & CORRECTIONS</div><h1>知道收录了什么，也能指出问题。</h1>
+    <div class="callout">当前全部内容为原创合成样本，不是原神剧情。真实来源准入与剧情准确性尚未验收。</div>
+    <h2>收录与已知缺口</h2><p>当前读取：<code>${escapeHtml(status?.snapshot_id || params.get("snapshot") || "暂不可用")}</code>。页面只展示顶部范围与用途允许的内容。</p>
+    <p>当前收录的是用于验证对白、分支和关系证据的原创结构样本；只展示当前允许且已审核的内容。BWIKI、观测枢和空荧酒馆目前仅有候选来源记录，尚未接入真实正文。</p>
+    <p>没有公开部署、语义检索、实时撤下通知或外部 AI 连接。下载文件不会自动更新；使用前请重新核验。反馈提交仅进入本机维护收件箱，不对外公开。</p>
+    <h2>更新摘要 · 2026-10-12</h2><p>已完成固定快照存储、服务端搜索与局部关系图。本轮新增本地素材清单、完整证据组、Markdown / JSON 素材包与私有反馈收件箱。</p>
+    <h2>提交纠错</h2><p>问题写入本机维护者可读取的收件箱；成功后返回编号。尚未承诺处理时限。请填写必要说明，可不提供联系信息。</p>
+    <form id="feedback-form" class="feedback-form">
+      <label>问题类型<select name="kind">${Object.entries(kinds).map(([key, label]) => `<option value="${key}" ${feedbackDraft.kind === key ? 'selected' : ''}>${label}</option>`).join('')}</select></label>
+      <label>相关快照<input name="snapshot" maxlength="160" value="${escapeHtml(feedbackDraft.snapshot)}"></label>
+      <label>段落 / 关系 ID（可选）<input name="reference" maxlength="160" value="${escapeHtml(feedbackDraft.reference)}"></label>
+      <label>问题说明<textarea name="description" rows="5" maxlength="4000" required>${escapeHtml(feedbackDraft.description)}</textarea></label>
+      <label>联系信息（可选，仅本机维护者可见）<input name="contact" maxlength="200" autocomplete="off" value="${escapeHtml(feedbackDraft.contact)}"></label>
+      <button class="button button-primary" type="submit">提交至本地收件箱</button><p id="feedback-status" role="status"></p>
+    </form></section>`);
+  const form = document.querySelector("#feedback-form");
+  form.addEventListener("input", () => { Object.assign(feedbackDraft, Object.fromEntries(new FormData(form))); });
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const button = form.querySelector('button[type="submit"]'); button.disabled = true;
+    const message = form.querySelector('#feedback-status'); message.textContent = "正在保存反馈…";
+    if (feedbackAttempt && feedbackAttempt !== JSON.stringify(feedbackDraft)) feedbackDraft.request_id = crypto.randomUUID();
+    const payload = { ...feedbackDraft };
+    feedbackAttempt = JSON.stringify(payload);
+    try {
+      const response = await postJson('/api/feedback', payload);
+      if (JSON.stringify(payload) === JSON.stringify(feedbackDraft)) {
+        feedbackDraft = { ...feedbackDraft, request_id: crypto.randomUUID(), description: '', contact: '' };
+        if (form.isConnected) { form.elements.description.value = ''; form.elements.contact.value = ''; }
+      } else feedbackDraft.request_id = crypto.randomUUID();
+      if (form.isConnected) message.textContent = `已保存至本地维护收件箱。编号：${response.id}；尚未人工处理。`;
+      else notify(`反馈已保存，编号：${response.id}`);
+    } catch (error) { if (form.isConnected) message.textContent = error.message + " 说明和联系信息仍保留，可重试。"; }
+    finally { button.disabled = false; }
+  });
+}
+
 function changeBoundary() {
   state.searchQuery = state.query;
   if (route().page === "graph") {
@@ -642,6 +699,12 @@ window.addEventListener("hashchange", () => {
 document.querySelector("#open-active").addEventListener("click", () => {
   history.replaceState(null, "", "#/search");
   loadView();
+});
+window.addEventListener("storage", (event) => {
+  if (event.key === "story-archive-materials-v1" || event.key === null) {
+    if (route().page === "materials") loadView();
+    else notify("素材清单已在另一个页面更新，下次操作将重新核验。");
+  }
 });
 document.querySelector(".skip-link").addEventListener("click", (event) => { event.preventDefault(); main.focus(); });
 loadView();

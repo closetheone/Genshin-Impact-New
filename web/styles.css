@@ -280,3 +280,27 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .pagination { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 18px 0; font-size: 12px; }
 .list-nodes { margin-bottom: 16px; }
 @media (max-width: 720px) { .character-search input { flex: 1; width: 130px; } .character-search label { flex-basis: 100%; } .graph-actions { justify-content: flex-start; } .graph-toolbar select { max-width: 150px; } .graph-topline { flex-wrap: wrap; gap: 5px; } }
+
+.materials-page, .about-page { max-width: 960px; margin: 0 auto; }
+.materials-page h1, .about-page h1 { font-family: var(--serif); font-size: 30px; font-weight: 500; }
+.materials-page h2, .about-page h2 { font-size: 18px; margin-top: 26px; }
+.topic-label { display: block; margin: 22px 0 8px; }
+textarea { font: inherit; color: inherit; resize: vertical; }
+#material-topic, .feedback-form input, .feedback-form textarea, .feedback-form select { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 5px; background: var(--panel); }
+.material-summary, .material-actions { display: flex; flex-wrap: wrap; gap: 16px; margin: 24px 0; }
+.material-list { list-style: none; padding: 0; }
+.material-list li { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; padding: 20px; background: var(--panel); border: 1px solid var(--line); margin: 12px 0; border-radius: 6px; }
+.material-list li > div { min-width: 0; overflow-wrap: anywhere; }
+.material-list li > button { flex-shrink: 0; }
+.clear-materials { margin-top: 32px; padding: 15px; border: 1px solid var(--line); }
+.feedback-form { display: grid; gap: 17px; max-width: 670px; margin: 22px 0; }
+.feedback-form label { display: grid; gap: 7px; }
+.feedback-form [role="status"] { overflow-wrap: anywhere; }
+.result-bottom, .passage-actions { flex-wrap: wrap; }
+@media (max-width: 720px) {
+  .primary-nav { gap: 0; } .primary-nav a { padding: 5px 3px; font-size: 9px; min-width: 0; }
+  .materials-page h1, .about-page h1 { font-size: 25px; }
+  .material-list li { padding: 14px; flex-wrap: wrap; }
+  .material-actions { gap: 8px; }
+  .feedback-form input, .feedback-form textarea, #material-topic { font-size: 16px; }
+}
