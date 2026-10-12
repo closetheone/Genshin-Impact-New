@@ -1,10 +1,10 @@
-import { SCOPES, PREDICATES, normalizeText, searchPassages, orderPassages, characterLabels, neighborhood, scopeLabel, relationScope } from "/model.mjs";
+import { SCOPES, PREDICATES, orderPassages, characterLabels, neighborhood, scopeLabel, relationScope } from "/model.mjs";
 
 const main = document.querySelector("#main");
 const scopeSelect = document.querySelector("#scope-select");
 const purposeSelect = document.querySelector("#purpose-select");
 const pageNames = { search: "文本检索", read: "原文阅读", graph: "人物关系图" };
-const state = { view: null, query: "", center: "person:student", hops: 1, predicate: "all", graphMode: "graph", relation: null };
+const state = { view: null, query: "", searchQuery: "", searchMode: "literal", category: "all", speaker: "all", pageSize: 8, center: "person:student", hops: 1, predicate: "all", graphMode: "graph", relation: null };
 let requestController;
 let requestVersion = 0;
 let pageCleanup = () => {};
@@ -43,19 +43,25 @@ function replacePage(markup) {
   main.querySelectorAll('a[href^="#/"]').forEach((anchor) => { anchor.href = snapshotLink(anchor.getAttribute("href")); });
 }
 
-async function fetchView(purpose, signal, snapshot = route().params.get("snapshot")) {
-  const query = new URLSearchParams({ purpose });
+async function fetchArchive(path, purpose, signal, snapshot, extra = {}) {
+  const query = new URLSearchParams({ purpose, ...extra });
   if (snapshot !== null) query.set("snapshot", snapshot);
   SCOPES[scopeSelect.value].forEach((scope) => query.append("scope", scope));
-  const response = await fetch(`/api/view?${query}`, { signal, cache: "no-store" });
+  const response = await fetch(`${path}?${query}`, { signal, cache: "no-store" });
   if (response.status === 404) throw new Error("指定快照不可用，未替换成其他版本。可手动读取当前发布快照。");
+  if (response.status === 409) throw new Error("可用内容已变化，旧分页已失效。请从第一页重新检索，未展示过期结果。");
+  if (response.status === 400 && extra.cursor) throw new Error("分页与当前查询不匹配，或服务已重启。请从第一页重新检索。");
   if (!response.ok) throw new Error("读取失败，请确认本地服务、数据库与导入状态后重试。");
   const view = await response.json();
   if (view.dataset_kind !== "synthetic") throw new Error("此原型只接受明确标注的原创合成样本。");
   return view;
 }
 
-async function loadView() {
+function fetchView(purpose, signal, snapshot = route().params.get("snapshot")) {
+  return fetchArchive("/api/view", purpose, signal, snapshot);
+}
+
+async function loadView(cursor = null) {
   requestController?.abort();
   requestController = new AbortController();
   const version = ++requestVersion;
@@ -64,7 +70,12 @@ async function loadView() {
   document.querySelector("#toast").hidden = true;
   replacePage('<div class="loading-state" role="status">正在按当前范围与用途打开档案…</div>');
   try {
-    const view = await fetchView(purposeSelect.value, requestController.signal);
+    const isSearch = route().page === "search";
+    const parameters = { q: state.searchQuery, mode: state.searchMode, category: state.category, speaker: state.speaker, limit: String(state.pageSize) };
+    if (cursor) parameters.cursor = cursor;
+    const view = isSearch
+      ? await fetchArchive("/api/search", purposeSelect.value, requestController.signal, route().params.get("snapshot"), parameters)
+      : await fetchView(purposeSelect.value, requestController.signal);
     if (version !== requestVersion) return;
     state.view = view;
     history.replaceState(null, "", snapshotLink(location.hash || "#/search"));
@@ -74,8 +85,9 @@ async function loadView() {
   } catch (error) {
     if (error.name === "AbortError" || version !== requestVersion) return;
     document.querySelector("#archive-snapshot").textContent = "档案未加载；没有回退到其他数据源。";
-    replacePage(`<div class="empty-state" role="alert"><h2>档案暂未打开</h2><p>${escapeHtml(error.message)}</p><button id="retry" class="button">重新读取</button></div>`);
-    document.querySelector("#retry").addEventListener("click", loadView);
+    replacePage(`<div class="empty-state" role="alert"><h2>档案暂未打开</h2><p>${escapeHtml(error.message)}</p><button id="retry" class="button">重新读取</button>${route().page === "search" ? '<button id="restart-search" class="button button-soft">从第一页重新检索</button>' : ""}</div>`);
+    document.querySelector("#retry").addEventListener("click", () => loadView(cursor));
+    document.querySelector("#restart-search")?.addEventListener("click", () => loadView());
   }
 }
 
@@ -98,53 +110,95 @@ function render() {
   }
 }
 
-function highlighted(text, query) {
-  if (!query || !text.includes(query)) return escapeHtml(text);
-  return text.split(query).map(escapeHtml).join(`<mark>${escapeHtml(query)}</mark>`);
+function highlighted(text, query, mode) {
+  const terms = (mode === "keywords" ? query.split(" ") : [query]).filter(Boolean);
+  let markup = "";
+  let position = 0;
+  while (position < text.length) {
+    const matches = terms.map((term) => ({ term, start: text.indexOf(term, position) })).filter((match) => match.start >= 0);
+    matches.sort((left, right) => left.start - right.start || right.term.length - left.term.length);
+    const match = matches[0];
+    if (!match) return markup + escapeHtml(text.slice(position));
+    markup += `${escapeHtml(text.slice(position, match.start))}<mark>${escapeHtml(match.term)}</mark>`;
+    position = match.start + match.term.length;
+  }
+  return markup;
 }
 
 function renderSearch() {
   const view = state.view;
   const labels = characterLabels(view.characters);
-  const results = searchPassages(orderPassages(view.passages), state.query);
-  const query = normalizeText(state.query);
+  const results = view.results;
+  const query = view.query.q;
+  const pagination = view.pagination;
+  const categoryNames = { quest: "任务文本" };
+  const speakerLabel = (identifier) => identifier === "narration" ? "叙述" : labels.get(identifier);
   replacePage(`
     <section class="hero"><div class="eyebrow">READ THE WORDS. TRACE THE STORY.</div>
-      <h1>从一句话，找到故事的来处。</h1><p>检索文本，回到上下文，再沿着证据探索人物之间的关系。</p>
+      <h1>从一句话，找到故事的来处。</h1><p>检索文本，回到上下文，沿证据探索人物关系。</p>
       <div class="hero-art" aria-hidden="true"><span>✦</span></div>
     </section>
     <form class="search-form" role="search"><span class="search-symbol" aria-hidden="true">⌕</span>
       <input id="search-input" aria-label="搜索原创样本文本" maxlength="200" placeholder="输入关键词或一句对白…" value="${escapeHtml(state.query)}">
       <button class="button button-primary" type="submit">检索文本 <span aria-hidden="true">→</span></button>
     </form>
-    <div class="suggestions"><span>试着搜索</span>${["师父", "修桥", "先核对物资"].map((queryText) => `<button data-query="${queryText}">${queryText}</button>`).join("")}<span>仅搜索当前范围内的原创样本</span></div>
+    <div class="suggestions"><span>试着搜索</span>${["师父", "修桥", "先核对物资"].map((queryText) => `<button data-query="${queryText}">${queryText}</button>`).join("")}<span>服务端检索 · 仅返回当前页</span></div>
+    <div class="search-filters" aria-label="搜索筛选">
+      <label>匹配方式<select id="search-mode"><option value="literal" ${state.searchMode === "literal" ? "selected" : ""}>原句包含</option><option value="keywords" ${state.searchMode === "keywords" ? "selected" : ""}>关键词同时包含</option></select></label>
+      <label>分类<select id="search-category"><option value="all">全部可用分类</option>${view.facets.categories.map((category) => `<option value="${escapeHtml(category.value)}" ${state.category === category.value ? "selected" : ""}>${escapeHtml(categoryNames[category.value] || category.value)} · ${category.count}</option>`).join("")}${state.category !== "all" && !view.facets.categories.some((category) => category.value === state.category) ? `<option value="${escapeHtml(state.category)}" selected>所选分类当前不可用</option>` : ""}</select></label>
+      <label>说话人<select id="search-speaker"><option value="all">全部可用说话人</option>${view.facets.speakers.map((speaker) => `<option value="${escapeHtml(speaker.value)}" ${state.speaker === speaker.value ? "selected" : ""}>${escapeHtml(speakerLabel(speaker.value))} · ${speaker.count}</option>`).join("")}${state.speaker !== "all" && !view.facets.speakers.some((speaker) => speaker.value === state.speaker) ? `<option value="${escapeHtml(state.speaker)}" selected>所选说话人当前不可用</option>` : ""}</select></label>
+      <label>每页<select id="search-limit">${[8, 16, 32].map((size) => `<option value="${size}" ${state.pageSize === size ? "selected" : ""}>${size} 条</option>`).join("")}</select></label>
+      <button id="reset-search" class="text-button">清空查询与筛选</button>
+    </div>
+    <p class="search-help">关键词用空格分隔，须在同一段落同时出现；原句按连续文本包含匹配。分类与说话人数来自当前范围 / 用途，不随查询缩减。当前仅有原创任务样本。</p>
     <div class="stats-row" aria-label="当前范围统计">
-      <div class="stat"><strong>${view.passages.length}</strong><span>文本段落</span></div>
-      <div class="stat"><strong>${view.characters.length}</strong><span>样本人物</span></div>
-      <div class="stat"><strong>${view.relationships.length}</strong><span>有据关系</span></div>
+      <div class="stat"><strong>${view.stats.passages}</strong><span>文本段落</span></div>
+      <div class="stat"><strong>${view.stats.characters}</strong><span>样本人物</span></div>
+      <div class="stat"><strong>${view.stats.relationships}</strong><span>有据关系</span></div>
       <div class="stat-label"><span class="status-dot"></span>当前范围 · 当前用途</div>
     </div>
-    <div class="content-grid"><section aria-label="检索结果"><div class="section-heading"><h2>${query ? "检索结果" : "浏览文本"}</h2><span class="muted" role="status">${results.length} 个独立出现位置</span></div>
+    <div class="content-grid"><section id="search-results" tabindex="-1" aria-label="检索结果"><div class="section-heading"><h2>${query ? "检索结果" : "浏览文本"}</h2><span class="muted" role="status">${pagination.total} 个独立出现位置 · 本页 ${results.length} 条</span></div>
       <div class="result-list">${results.length ? results.map((passage, index) => `
-        <article class="result"><span class="result-number">${String(index + 1).padStart(2, "0")}</span><div class="result-body">
+        <article class="result"><span class="result-number">${String(pagination.offset + index + 1).padStart(2, "0")}</span><div class="result-body">
           <div class="result-meta">${tag(scopeLabel(passage))}<span class="result-title">${escapeHtml(view.entries.find((entry) => entry.id === passage.entry_id)?.title)}</span></div>
-          <a class="result-text" href="${readLink(passage.id)}">${highlighted(passage.text, query)}</a>
+          <a class="result-text" href="${readLink(passage.id)}">${highlighted(passage.text, query, view.query.mode)}</a>
           <div class="result-bottom"><span>${escapeHtml(labels.get(passage.speaker_id) || "叙述")} · <code>${escapeHtml(passage.id)}</code></span><a class="text-button" href="${readLink(passage.id)}">回到原文 ↗</a></div>
-        </div></article>`).join("") : '<div class="empty-state"><div class="empty-symbol">⌕</div><h2>没有找到这句话</h2><p>试试更短的关键词，或手动调整内容范围。不会自动打开后续内容。</p></div>'}</div>
-    </section><aside class="search-aside"><div class="aside-card"><div class="eyebrow">FEATURED SAMPLE</div><div class="archive-stamp" aria-hidden="true">卷</div><h3>修桥小队</h3><p>一段原创小故事，串起人物、分支对白与完整证据。用它验证阅读与取材的每一步。</p>${tag("非原神剧情", "tag-warm")}<a class="button button-soft" href="#/read">打开样本卷宗 ↗</a></div>
-      <div class="aside-info"><h3>文字之外，也有线索</h3><p>师徒、亲属、合作与对立。每条展示的关系，都能找到支持它的原文。</p><a class="text-button" href="#/graph">探索人物关系图 →</a><div class="inline-divider"></div><p>当前为字面匹配原型，不支持语义检索。相同对白的不同出处分别保留。</p><code>${escapeHtml(view.snapshot_id)}</code></div>
+        </div></article>`).join("") : '<div class="empty-state"><div class="empty-symbol">⌕</div><h2>没有找到匹配的文本</h2><p>试试更短的关键词、清空筛选，或手动调整内容范围。不会自动打开后续内容。</p></div>'}</div>
+      <nav class="search-pagination" aria-label="搜索结果分页"><button id="previous-page" class="button" ${pagination.previous_cursor ? "" : "disabled"}>← 上一页</button><span>第 ${pagination.page} / ${pagination.pages} 页</span><button id="next-page" class="button" ${pagination.next_cursor ? "" : "disabled"}>下一页 →</button></nav>
+    </section><aside class="search-aside">${view.entries.length ? `<div class="aside-card"><div class="eyebrow">CURRENT PAGE ARCHIVE</div><div class="archive-stamp" aria-hidden="true">卷</div><h3>${escapeHtml(view.entries[0].title)}</h3><p>本页结果中的可用条目。沿着正文与完整证据，验证阅读与取材的每一步。</p>${tag("非原神剧情", "tag-warm")}<a class="button button-soft" href="${readLink(results[0].id)}">打开样本卷宗 ↗</a></div>` : ""}
+      <div class="aside-info"><h3>文字之外，也有线索</h3><p>师徒、亲属、合作与对立。每条展示的关系，都能找到支持它的原文。</p><a class="text-button" href="#/graph">探索人物关系图 →</a><div class="inline-divider"></div><p>服务端先按范围与用途裁剪，再查询、计数和分页。翻页固定快照；可用内容变化会要求重新检索，不支持语义搜索。</p><code>${escapeHtml(view.snapshot_id)}</code></div>
     </aside></div>`);
   document.querySelector(".search-form").addEventListener("submit", (event) => {
     event.preventDefault();
     state.query = document.querySelector("#search-input").value;
-    renderSearch();
-    document.querySelector("#search-input").focus();
+    state.searchQuery = state.query;
+    loadView();
   });
   document.querySelector("#search-input").addEventListener("input", (event) => { state.query = event.target.value; });
   document.querySelectorAll("[data-query]").forEach((button) => button.addEventListener("click", () => {
     state.query = button.dataset.query;
-    renderSearch();
+    state.searchQuery = state.query;
+    loadView();
   }));
+  for (const [selector, key] of [["#search-mode", "searchMode"], ["#search-category", "category"], ["#search-speaker", "speaker"], ["#search-limit", "pageSize"]]) {
+    document.querySelector(selector).addEventListener("change", (event) => {
+      state[key] = key === "pageSize" ? Number(event.target.value) : event.target.value;
+      state.searchQuery = state.query;
+      loadView();
+    });
+  }
+  document.querySelector("#reset-search").addEventListener("click", () => {
+    Object.assign(state, { query: "", searchQuery: "", searchMode: "literal", category: "all", speaker: "all" });
+    loadView();
+  });
+  for (const [selector, cursor] of [["#previous-page", pagination.previous_cursor], ["#next-page", pagination.next_cursor]]) {
+    document.querySelector(selector).addEventListener("click", async () => {
+      await loadView(cursor);
+      const section = document.querySelector("#search-results");
+      section?.focus({ preventScroll: true });
+      section?.scrollIntoView({ block: "start" });
+    });
+  }
 }
 
 function renderReader(targetId) {
@@ -416,11 +470,10 @@ function mountGraph(graph, labels) {
   reset();
 }
 
-scopeSelect.addEventListener("change", loadView);
-purposeSelect.addEventListener("change", loadView);
+scopeSelect.addEventListener("change", () => { state.searchQuery = state.query; loadView(); });
+purposeSelect.addEventListener("change", () => { state.searchQuery = state.query; loadView(); });
 window.addEventListener("hashchange", () => {
-  if (!state.view || route().params.get("snapshot") !== state.view.snapshot_id) loadView();
-  else render();
+  loadView();
   window.scrollTo(0, 0);
 });
 document.querySelector("#open-active").addEventListener("click", () => {

@@ -2,11 +2,13 @@ import argparse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
+import secrets
 import sqlite3
 from urllib.parse import parse_qs, urlsplit
 
 from archive_store import DEFAULT_DATABASE, SnapshotNotFound, StoreError, import_snapshot, load_snapshot
 from import_sample import read_sample
+from search_archive import StaleCursor, search_options, search_view
 from validate_sample import SampleError, project
 
 
@@ -50,7 +52,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
         if not self.trusted_request():
             self.respond(403, {"error": "仅允许同源本地原型请求。"})
             return
-        if len(self.path) > 2048:
+        if len(self.path) > 4096:
             self.respond(414, {"error": "请求过长。"})
             return
         parsed = urlsplit(self.path)
@@ -61,12 +63,15 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             except OSError:
                 self.respond(503, {"error": "原型资源暂不可用。"})
             return
-        if parsed.path != "/api/view":
+        if parsed.path not in ("/api/view", "/api/search"):
             self.respond(404, {"error": "原型中没有这个入口。"})
             return
         try:
-            arguments = parse_qs(parsed.query, keep_blank_values=True, max_num_fields=9)
-            if set(arguments) - {"scope", "purpose", "snapshot"}:
+            arguments = parse_qs(parsed.query, keep_blank_values=True, max_num_fields=16)
+            allowed = {"scope", "purpose", "snapshot"}
+            if parsed.path == "/api/search":
+                allowed |= {"q", "mode", "category", "speaker", "limit", "cursor"}
+            if set(arguments) - allowed:
                 raise SampleError("unknown query parameter")
             scopes = arguments.get("scope", [])
             purposes = arguments.get("purpose", ["display"])
@@ -77,10 +82,15 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             snapshots = arguments.get("snapshot", [])
             if len(snapshots) > 1 or (snapshots and not snapshots[0]):
                 raise SampleError("expected one nonempty snapshot")
+            options = search_options(arguments) if parsed.path == "/api/search" else None
             data = load_snapshot(self.server.database, snapshots[0] if snapshots else None)
             view = project(data, scopes, purposes[0])
+            if options is not None:
+                view = search_view(view, options, self.server.cursor_secret)
             view["storage"] = "sqlite"
             self.respond(200, view)
+        except StaleCursor:
+            self.respond(409, {"error": "当前可用内容已变化，旧分页已失效，请重新检索。", "code": "stale_cursor"})
         except SnapshotNotFound:
             self.respond(404, {"error": "指定快照不可用，未替换成其他版本。"})
         except StoreError:
@@ -115,6 +125,7 @@ def main():
         load_snapshot(database)
         server = ThreadingHTTPServer(("127.0.0.1", args.port), PrototypeHandler)
         server.database = database
+        server.cursor_secret = secrets.token_bytes(32)
     except (StoreError, OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
         parser.exit(1, f"Cannot start prototype: {error}\n")
     print(f"Archive prototype: http://127.0.0.1:{server.server_port}", flush=True)

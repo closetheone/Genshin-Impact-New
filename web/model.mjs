@@ -12,13 +12,6 @@ export const PREDICATES = {
   cooperates_with: { label: "合作", color: "#67998e" },
 };
 
-export const normalizeText = (value) => value.normalize("NFKC").replace(/\s+/gu, " ").trim();
-
-export function searchPassages(passages, query) {
-  const normalized = normalizeText(query);
-  return passages.filter((passage) => normalizeText(passage.text).includes(normalized));
-}
-
 export function orderPassages(passages) {
   const byId = new Map(passages.map((passage) => [passage.id, passage]));
   const ranks = new Map(passages.map((passage, index) => [passage.id, index]));
