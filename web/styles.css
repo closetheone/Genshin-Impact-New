@@ -60,6 +60,9 @@ select { border: 1px solid #dde2d6; background: #fffefa; border-radius: 5px; pad
 .prototype-notice { min-height: 34px; display: flex; gap: 10px; align-items: center; padding: 7px 42px; font-size: 10px; background: #f2eddf; color: #8b7b56; }
 .prototype-notice strong { font-weight: 500; white-space: nowrap; }
 .prototype-notice > span:first-child { font-size: 14px; }
+.archive-status { padding: 10px 42px 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 10px; color: var(--muted); }
+.archive-status > span { overflow-wrap: anywhere; min-width: 0; }
+.archive-status button { flex-shrink: 0; font-size: 10px; }
 main { max-width: 1510px; margin: auto; padding: 34px 42px 42px; min-height: calc(100vh - 164px); }
 main:focus { outline: none; }
 .page-footer { padding: 18px 42px; font-size: 10px; color: #93998f; display: flex; justify-content: space-between; border-top: 1px solid var(--line); gap: 16px; }
@@ -238,6 +241,7 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
   .workspace { margin-left: 0; padding-bottom: 62px; } .topbar { padding: 13px 18px; height: auto; min-height: 67px; gap: 9px; flex-wrap: wrap; }
   .breadcrumbs { font-size: 10px; gap: 8px; } .global-controls { gap: 6px; } select { font-size: 10px; padding: 6px 18px 6px 7px; }
   .prototype-notice { padding: 8px 18px; font-size: 9px; gap: 7px; align-items: flex-start; } .prototype-notice strong { padding-top: 1px; }
+  .archive-status { padding: 10px 19px 0; align-items: flex-start; flex-wrap: wrap; font-size: 9px; }
   main { padding: 24px 19px 28px; min-height: calc(100vh - 215px); } .page-footer { padding: 16px 19px; font-size: 8px; }
   .page-footer span:last-child { display: none; }
   .hero { padding: 3px 0 24px; } .hero h1 { font-size: 27px; letter-spacing: .5px; line-height: 1.7; } .hero p { font-size: 11px; max-width: 275px; line-height: 1.9; }

@@ -11,8 +11,8 @@ let pageCleanup = () => {};
 let toastTimer;
 
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/gu, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
-const readLink = (identifier) => `#/read?passage=${encodeURIComponent(identifier)}`;
-const graphLink = (identifier) => `#/graph?center=${encodeURIComponent(identifier)}`;
+const readLink = (identifier) => snapshotLink(`#/read?passage=${encodeURIComponent(identifier)}`);
+const graphLink = (identifier) => snapshotLink(`#/graph?center=${encodeURIComponent(identifier)}`);
 const tag = (label, extra = "") => `<span class="tag ${extra}">${escapeHtml(label)}</span>`;
 
 function notify(message) {
@@ -28,17 +28,28 @@ function route() {
   return { page: path?.replace(/^\//u, "") || "search", params: new URLSearchParams(query) };
 }
 
+function snapshotLink(address) {
+  if (!state.view) return address;
+  const [path, query = ""] = address.split("?");
+  const parameters = new URLSearchParams(query);
+  parameters.set("snapshot", state.view.snapshot_id);
+  return `${path}?${parameters}`;
+}
+
 function replacePage(markup) {
   pageCleanup();
   pageCleanup = () => {};
   main.innerHTML = markup;
+  main.querySelectorAll('a[href^="#/"]').forEach((anchor) => { anchor.href = snapshotLink(anchor.getAttribute("href")); });
 }
 
-async function fetchView(purpose, signal) {
+async function fetchView(purpose, signal, snapshot = route().params.get("snapshot")) {
   const query = new URLSearchParams({ purpose });
+  if (snapshot !== null) query.set("snapshot", snapshot);
   SCOPES[scopeSelect.value].forEach((scope) => query.append("scope", scope));
   const response = await fetch(`/api/view?${query}`, { signal, cache: "no-store" });
-  if (!response.ok) throw new Error("读取失败，请确认本地服务和样本文件可用后重试。");
+  if (response.status === 404) throw new Error("指定快照不可用，未替换成其他版本。可手动读取当前发布快照。");
+  if (!response.ok) throw new Error("读取失败，请确认本地服务、数据库与导入状态后重试。");
   const view = await response.json();
   if (view.dataset_kind !== "synthetic") throw new Error("此原型只接受明确标注的原创合成样本。");
   return view;
@@ -49,15 +60,20 @@ async function loadView() {
   requestController = new AbortController();
   const version = ++requestVersion;
   state.view = null;
+  document.querySelector("#archive-snapshot").textContent = "正在读取本地 SQLite 档案…";
   document.querySelector("#toast").hidden = true;
   replacePage('<div class="loading-state" role="status">正在按当前范围与用途打开档案…</div>');
   try {
     const view = await fetchView(purposeSelect.value, requestController.signal);
     if (version !== requestVersion) return;
     state.view = view;
+    history.replaceState(null, "", snapshotLink(location.hash || "#/search"));
+    document.querySelector("#archive-snapshot").textContent = `SQLite 本地存储 · 已固定快照 ${view.snapshot_id}`;
+    document.querySelectorAll(".primary-nav a, .brand").forEach((anchor) => { anchor.href = snapshotLink(anchor.getAttribute("href")); });
     render();
   } catch (error) {
     if (error.name === "AbortError" || version !== requestVersion) return;
+    document.querySelector("#archive-snapshot").textContent = "档案未加载；没有回退到其他数据源。";
     replacePage(`<div class="empty-state" role="alert"><h2>档案暂未打开</h2><p>${escapeHtml(error.message)}</p><button id="retry" class="button">重新读取</button></div>`);
     document.querySelector("#retry").addEventListener("click", loadView);
   }
@@ -168,7 +184,7 @@ function focusPassage(identifier) {
 async function checkedExportView() {
   const original = state.view;
   const version = requestVersion;
-  const view = await fetchView("export", requestController.signal);
+  const view = await fetchView("export", requestController.signal, original.snapshot_id);
   if (version !== requestVersion || original !== state.view || view.snapshot_id !== original.snapshot_id) {
     throw new Error("范围或快照已经变化，请刷新后重新操作。");
   }
@@ -182,7 +198,8 @@ async function copyCitation(button) {
     const passage = view.passages.find((candidate) => candidate.id === button.dataset.copy);
     if (!passage) throw new Error("此段落当前不可导出，未复制正文。");
     const speaker = characterLabels(view.characters).get(passage.speaker_id) || "叙述";
-    await navigator.clipboard.writeText(`[原创合成样本，非原神剧情]\n${speaker}：${passage.text}\n${passage.id} · ${view.snapshot_id}\n${passage.source_id} · ${passage.source_locator}\n范围：${view.scope_ids.join(", ")}`);
+    const permalink = new URL(readLink(passage.id), location.href).href;
+    await navigator.clipboard.writeText(`[原创合成样本，非原神剧情]\n${speaker}：${passage.text}\n${passage.id} · ${view.snapshot_id}\n${passage.source_id} · ${passage.source_locator}\n范围：${view.scope_ids.join(", ")}\n本机定位链接（不自动扩大范围）：${permalink}`);
     notify("引用已复制，包含原创样本标识、快照和出处。");
   } catch (error) {
     if (error.name !== "AbortError") notify(error.name === "NotAllowedError" ? "浏览器未允许剪贴板操作，未复制内容。" : error.message);
@@ -401,6 +418,14 @@ function mountGraph(graph, labels) {
 
 scopeSelect.addEventListener("change", loadView);
 purposeSelect.addEventListener("change", loadView);
-window.addEventListener("hashchange", () => { render(); window.scrollTo(0, 0); });
+window.addEventListener("hashchange", () => {
+  if (!state.view || route().params.get("snapshot") !== state.view.snapshot_id) loadView();
+  else render();
+  window.scrollTo(0, 0);
+});
+document.querySelector("#open-active").addEventListener("click", () => {
+  history.replaceState(null, "", "#/search");
+  loadView();
+});
 document.querySelector(".skip-link").addEventListener("click", (event) => { event.preventDefault(); main.focus(); });
 loadView();
