@@ -1,0 +1,91 @@
+{
+  "dataset_kind": "synthetic",
+  "kind": "actual CLI backup/restore/activation + restarted HTTP drill",
+  "steps": [
+    {
+      "operation": "backup",
+      "exit_code": 0,
+      "seconds": 0.0625,
+      "result": {
+        "ok": true,
+        "status": "backed_up",
+        "kind": "archive",
+        "snapshots": [
+          "fixture-2026-10-10-v1"
+        ],
+        "active_snapshot_id": "fixture-2026-10-10-v1",
+        "record_count": 46,
+        "withdrawal_count": 0,
+        "restriction_hash": "3068f2c778e5907b63bfe38df41a71ac5d816bb317429d6f001a07938e4f8175",
+        "sha256": "784bb85ca5ab4580a0418e33efb44d10636574f52d75ce5078e9c1aad48dc359",
+        "bytes": 73728
+      }
+    },
+    {
+      "operation": "activate",
+      "exit_code": 0,
+      "seconds": 0.0511,
+      "result": {
+        "ok": true,
+        "status": "activated",
+        "event_id": "4c7bf607-8fcb-4902-9ac3-f322fd4a05f7",
+        "kind": "archive",
+        "snapshots": [
+          "fixture-2026-10-10-v1",
+          "recovery-drill-v2"
+        ],
+        "active_snapshot_id": "fixture-2026-10-10-v1",
+        "record_count": 92,
+        "withdrawal_count": 2,
+        "restriction_hash": "a046e83e91cdb60730e92607ecbd949c412c2f43d411dd1940fc049950aad2fa"
+      }
+    },
+    {
+      "operation": "restore",
+      "exit_code": 0,
+      "seconds": 0.0521,
+      "result": {
+        "ok": true,
+        "status": "restored",
+        "kind": "archive",
+        "snapshots": [
+          "fixture-2026-10-10-v1"
+        ],
+        "active_snapshot_id": "fixture-2026-10-10-v1",
+        "record_count": 46,
+        "withdrawal_count": 2,
+        "restriction_hash": "a046e83e91cdb60730e92607ecbd949c412c2f43d411dd1940fc049950aad2fa",
+        "sha256": "c5f5d315ef3660d578c6bb68b762d217f46c715fc74402e960acd5a87b627fc2",
+        "bytes": 81920,
+        "event_id": "3d5e77ee-e549-4b5d-8f7a-a74048dd9dae",
+        "backup_sha256": "784bb85ca5ab4580a0418e33efb44d10636574f52d75ce5078e9c1aad48dc359",
+        "restriction_state_as_of": "supplied current database read transaction"
+      }
+    },
+    {
+      "operation": "verify",
+      "exit_code": 0,
+      "seconds": 0.0501,
+      "result": {
+        "ok": true,
+        "kind": "archive",
+        "snapshots": [
+          "fixture-2026-10-10-v1"
+        ],
+        "active_snapshot_id": "fixture-2026-10-10-v1",
+        "record_count": 46,
+        "withdrawal_count": 2,
+        "restriction_hash": "a046e83e91cdb60730e92607ecbd949c412c2f43d411dd1940fc049950aad2fa"
+      }
+    },
+    {
+      "operation": "restart HTTP using restored database",
+      "seconds": 0.073,
+      "snapshot_id": "fixture-2026-10-10-v1",
+      "withdrawals_hidden": true,
+      "missing_evidence_relation_hidden": true,
+      "unaffected_reference_available": true
+    }
+  ],
+  "limits": "Small synthetic rehearsal only; excludes operator investigation, disaster detection, off-machine storage and real recovery SLA."
+}
