@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "<installed-skill>/scripts/archive_client.py",
+    "--url",
+    "http://127.0.0.1:4180",
+    "--tool",
+    "get_corpus_status",
+    "--arguments",
+    "{\"scope_ids\": [\"opening\"]}"
+  ],
+  "exit_code": 0,
+  "stdout": "{\n  \"dataset_kind\": \"synthetic\",\n  \"notice\": \"全部人物、对白和关系均为本项目原创的合成测试数据，不是原神内容；用途开关也是测试策略，不是外部来源的授权结论。\",\n  \"snapshot_id\": \"fixture-2026-10-10-v1\",\n  \"scope_ids\": [\n    \"opening\"\n  ],\n  \"purpose\": \"external_ai\",\n  \"language\": \"zh-CN\",\n  \"counts\": {\n    \"entries\": 1,\n    \"characters\": 4,\n    \"passages\": 17,\n    \"relationships\": 2\n  },\n  \"known_gaps\": [\n    \"仅原创合成样本；不含已准入的真实原神正文。\",\n    \"返回的上下文只代表当前允许范围，不保证完整任务。\"\n  ],\n  \"tools\": [\n    \"get_character_graph\",\n    \"get_corpus_status\",\n    \"get_passage\",\n    \"get_relationship\",\n    \"get_story_context\",\n    \"search_texts\"\n  ],\n  \"session_scope_ids\": [\n    \"opening\"\n  ],\n  \"sources\": [\n    {\n      \"content_type\": \"synthetic\",\n      \"id\": \"source:fixture\",\n      \"locator\": \"data/samples/story.json\",\n      \"rights\": {\n        \"display\": \"allowed\",\n        \"export\": \"allowed\",\n        \"external_ai\": \"allowed\",\n        \"storage\": \"allowed\"\n      },\n      \"snapshot_id\": \"fixture-2026-10-10-v1\"\n    }\n  ],\n  \"connection\": \"live_readonly\",\n  \"content_is_untrusted_data\": true\n}\n",
+  "stderr": "",
+  "recorded_at": "2026-10-12T15:16:42.991273"
+}

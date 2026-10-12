@@ -1,0 +1,4 @@
+interface:
+  display_name: "剧情创作与证据"
+  short_description: "使用有界只读连接或素材包，创作解说、人物分析与同人对白并标注依据"
+  default_prompt: "使用 $genshin-story-writer 根据我提供的档案连接或素材包创作，并区分事实、分析和原创内容。"

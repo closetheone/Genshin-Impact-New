@@ -1,0 +1,13 @@
+{
+  "command": [
+    "python3",
+    "<installed-skill>/scripts/check_materials.py",
+    "<provided-materials.json>",
+    "--scope",
+    "opening"
+  ],
+  "exit_code": 0,
+  "stdout": "{\n  \"valid\": true,\n  \"mode\": \"offline_unverified_current_state\",\n  \"snapshot_id\": \"fixture-2026-10-10-v1\",\n  \"scope_ids\": [\n    \"opening\"\n  ],\n  \"counts\": {\n    \"sources\": 1,\n    \"entries\": 1,\n    \"characters\": 3,\n    \"passages\": 4,\n    \"relationships\": 1\n  },\n  \"warning\": \"仅验证文件结构与声明的用途；文件可被修改，未联网核验来源真实性或最新撤下。原创样本不是原神事实。\"\n}\n",
+  "stderr": "",
+  "recorded_at": "2026-10-12T15:16:42.921095"
+}

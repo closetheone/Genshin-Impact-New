@@ -1,0 +1,26 @@
+{
+  "online_01_60s_explainer.md": {
+    "body_characters_no_whitespace": 259,
+    "body_chinese_characters": 233
+  },
+  "online_02_character_analysis.md": {
+    "body_characters_no_whitespace": 261,
+    "body_chinese_characters": 238
+  },
+  "online_03_fan_dialogue.md": {
+    "body_characters_no_whitespace": 220,
+    "body_chinese_characters": 178
+  },
+  "offline_01_60s_explainer.md": {
+    "body_characters_no_whitespace": 276,
+    "body_chinese_characters": 249
+  },
+  "offline_02_character_analysis.md": {
+    "body_characters_no_whitespace": 264,
+    "body_chinese_characters": 239
+  },
+  "offline_03_fan_dialogue.md": {
+    "body_characters_no_whitespace": 208,
+    "body_chinese_characters": 170
+  }
+}

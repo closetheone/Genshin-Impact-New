@@ -649,8 +649,11 @@ async function renderAbout() {
     <div class="callout">当前全部内容为原创合成样本，不是原神剧情。真实来源准入与剧情准确性尚未验收。</div>
     <h2>收录与已知缺口</h2><p>当前读取：<code>${escapeHtml(status?.snapshot_id || params.get("snapshot") || "暂不可用")}</code>。页面只展示顶部范围与用途允许的内容。</p>
     <p>当前收录的是用于验证对白、分支和关系证据的原创结构样本；只展示当前允许且已审核的内容。BWIKI、观测枢和空荧酒馆目前仅有候选来源记录，尚未接入真实正文。</p>
-    <p>没有公开部署、语义检索、实时撤下通知或外部 AI 连接。下载文件不会自动更新；使用前请重新核验。反馈提交仅进入本机维护收件箱，不对外公开。</p>
-    <h2>更新摘要 · 2026-10-12</h2><p>已完成固定快照存储、服务端搜索与局部关系图。本轮新增本地素材清单、完整证据组、Markdown / JSON 素材包与私有反馈收件箱。</p>
+    <p>没有公开部署、语义检索或实时撤下通知。AI 只读连接需维护者显式启用，网站不会自动调用外部模型。下载文件不会自动更新；使用前请重新核验。反馈提交仅进入本机维护收件箱，不对外公开。</p>
+    <h2>更新摘要 · 2026-10-12</h2><p>已完成固定快照存储、搜索、局部关系图及素材清单。本轮新增可下载的剧情创作 Skill，支持本地只读取材和离线素材校验，已完成合成资料创作试用。</p>
+    <h2>剧情创作 Skill</h2><p>下载可移植工作流，使用本地只读连接或经用途检查的 JSON 素材包。当前只验证原创合成资料，安装技能包不会自动开启连接或调用模型。</p>
+    <a class="button" href="/downloads/genshin-story-writer.zip" download="genshin-story-writer.zip">下载剧情创作 Skill ZIP</a>
+    <p class="small">包内含创作说明、工具约定和 Python 客户端。解压后由支持技能文件的助手读取 SKILL.md；在“AI 取材”用途下导出的素材包可用于离线流程。</p>
     <h2>提交纠错</h2><p>问题写入本机维护者可读取的收件箱；成功后返回编号。尚未承诺处理时限。请填写必要说明，可不提供联系信息。</p>
     <form id="feedback-form" class="feedback-form">
       <label>问题类型<select name="kind">${Object.entries(kinds).map(([key, label]) => `<option value="${key}" ${feedbackDraft.kind === key ? 'selected' : ''}>${label}</option>`).join('')}</select></label>

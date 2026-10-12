@@ -1,0 +1,16 @@
+{
+  "valid": true,
+  "mode": "offline_unverified_current_state",
+  "snapshot_id": "fixture-2026-10-10-v1",
+  "scope_ids": [
+    "opening"
+  ],
+  "counts": {
+    "sources": 1,
+    "entries": 1,
+    "characters": 3,
+    "passages": 4,
+    "relationships": 1
+  },
+  "warning": "仅验证文件结构与声明的用途；文件可被修改，未联网核验来源真实性或最新撤下。原创样本不是原神事实。"
+}

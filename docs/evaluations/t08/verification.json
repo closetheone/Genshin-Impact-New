@@ -1,0 +1,45 @@
+{
+  "works": [
+    {
+      "file": "offline_01_60s_explainer.md",
+      "sha256": "549fb5c67ce375fed7e99c08255d3055c31e7273f1a8260502531dafcfba92de"
+    },
+    {
+      "file": "offline_02_character_analysis.md",
+      "sha256": "96879aaf51bcdb67a52038510bcd8da1ed3a229630c1697788c66d3e6307fd1c"
+    },
+    {
+      "file": "offline_03_fan_dialogue.md",
+      "sha256": "ce50fdb567bc6b5646c6f0316afce6e869d8f19e1d7f89b04ef6feea3e3edd72"
+    },
+    {
+      "file": "online_01_60s_explainer.md",
+      "sha256": "0430b6e8b9b4120a768410f14770edb201f2bc2a7cf5cfb77fd45d3322c996f6"
+    },
+    {
+      "file": "online_02_character_analysis.md",
+      "sha256": "50da9c2668c3b12f0e240906a4e6c49975ae491ad11cfcb9fac5ebd266edb1ed"
+    },
+    {
+      "file": "online_03_fan_dialogue.md",
+      "sha256": "e1e884ef51bf5464233db1ee3ee24a3b0cd8ba96e86d7a69a306e75ada86e3bd"
+    }
+  ],
+  "verified_call_records": [
+    "01-offline-check.json",
+    "02-online-status.json",
+    "03-online-search-师父.json",
+    "04-online-search-一起.json",
+    "05-online-graph.json",
+    "06-online-context.json",
+    "07-online-mentor-detail.json",
+    "08-online-cooperation-detail.json",
+    "09-online-mentor-passages.json",
+    "10-online-cooperation-passages.json"
+  ],
+  "online_calls": 9,
+  "offline_checks": 1,
+  "known_procedural_deviation": "materials.json was read before check_materials; documented, no widened access",
+  "length_counts_file": "counts.json",
+  "voice_duration_verified": false
+}

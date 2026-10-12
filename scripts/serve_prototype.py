@@ -10,6 +10,8 @@ from archive_store import DEFAULT_DATABASE, SnapshotNotFound, StoreError, import
 from import_sample import read_sample, unique_object, reject_constant
 from material_archive import MaterialCapacity, material_view, selection_request
 from feedback_store import FeedbackConflict, FeedbackRateLimit, submit_feedback
+from ai_archive import AIArchive
+from skill_package import skill_zip
 from graph_archive import GraphUnavailable, character_view, graph_options, graph_view, relation_view
 from search_archive import StaleCursor, search_options, search_view
 from validate_sample import SampleError, project
@@ -60,6 +62,12 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             self.respond(414, {"error": "请求过长。"})
             return
         parsed = urlsplit(self.path)
+        if parsed.path == "/downloads/genshin-story-writer.zip":
+            try:
+                self.respond(200, skill_zip(), "application/zip")
+            except (OSError, ValueError):
+                self.respond(503, {"error": "Skill 包暂不可用，请检查项目文件。"})
+            return
         if parsed.path in ASSETS:
             filename, content_type = ASSETS[parsed.path]
             try:
@@ -131,7 +139,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
         if not self.trusted_request():
             self.respond(403, {"error": "仅允许同源本地原型请求。"})
             return
-        if self.path not in ("/api/materials", "/api/feedback"):
+        if self.path not in ("/api/materials", "/api/feedback", "/api/ai-tools"):
             self.respond(405, {"error": "此入口不支持提交。"})
             return
         try:
@@ -149,7 +157,14 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             if len(body) != length:
                 raise SampleError("incomplete body")
             payload = json.loads(body, object_pairs_hook=unique_object, parse_constant=reject_constant)
-            if self.path == "/api/materials":
+            if self.path == "/api/ai-tools":
+                if not isinstance(payload, dict) or set(payload) != {"name", "arguments"}:
+                    raise SampleError("expected name and arguments")
+                if not getattr(self.server, "ai_archive", None):
+                    self.respond(503, {"error": "AI 只读连接未启用，请由维护者指定范围后启动服务。"})
+                    return
+                result = self.server.ai_archive.call(payload["name"], payload["arguments"])
+            elif self.path == "/api/materials":
                 request = selection_request(payload)
                 result = material_view(load_snapshot(self.server.database, request["snapshot"]), request)
             else:
@@ -157,6 +172,10 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             self.respond(200, result)
         except MaterialCapacity as error:
             self.respond(409, {"error": str(error), "code": "capacity"})
+        except StaleCursor:
+            self.respond(409, {"error": "当前可用资料已变化，旧游标失效，请从第一页重新查询。"})
+        except GraphUnavailable as error:
+            self.respond(404, {"error": str(error)})
         except FeedbackRateLimit as error:
             self.respond(429, {"error": str(error)})
         except FeedbackConflict as error:
@@ -176,9 +195,13 @@ def main():
     parser = argparse.ArgumentParser(description="Local-only synthetic archive prototype. Not a production server.")
     parser.add_argument("--port", type=int, default=4173)
     parser.add_argument("--database", type=Path, help="Use an existing imported SQLite database; default bootstraps the synthetic fixture once")
+    parser.add_argument("--ai-scope", action="append", choices=("opening", "east", "west", "later"), help="Enable read-only AI tools with this maximum scope; repeat for more scopes")
+    parser.add_argument("--ai-snapshot", help="Pin AI tools to this snapshot; defaults to the active snapshot at startup")
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         parser.error("port must be between 1 and 65535")
+    if args.ai_snapshot and not args.ai_scope:
+        parser.error("--ai-snapshot requires --ai-scope")
     database = (args.database or DEFAULT_DATABASE).expanduser().resolve()
     try:
         if args.database is None and not database.exists():
@@ -187,6 +210,7 @@ def main():
         server = ThreadingHTTPServer(("127.0.0.1", args.port), PrototypeHandler)
         server.database = database
         server.cursor_secret = secrets.token_bytes(32)
+        server.ai_archive = AIArchive(database, args.ai_snapshot, args.ai_scope, server.cursor_secret) if args.ai_scope else None
     except (StoreError, OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
         parser.exit(1, f"Cannot start prototype: {error}\n")
     print(f"Archive prototype: http://127.0.0.1:{server.server_port}", flush=True)
