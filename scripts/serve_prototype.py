@@ -8,6 +8,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from archive_store import DEFAULT_DATABASE, SnapshotNotFound, StoreError, import_snapshot, load_snapshot
 from import_sample import read_sample
+from graph_archive import GraphUnavailable, character_view, graph_options, graph_view, relation_view
 from search_archive import StaleCursor, search_options, search_view
 from validate_sample import SampleError, project
 
@@ -63,7 +64,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             except OSError:
                 self.respond(503, {"error": "原型资源暂不可用。"})
             return
-        if parsed.path not in ("/api/view", "/api/search"):
+        if parsed.path not in ("/api/view", "/api/search", "/api/graph", "/api/relationship", "/api/characters"):
             self.respond(404, {"error": "原型中没有这个入口。"})
             return
         try:
@@ -71,6 +72,12 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             allowed = {"scope", "purpose", "snapshot"}
             if parsed.path == "/api/search":
                 allowed |= {"q", "mode", "category", "speaker", "limit", "cursor"}
+            elif parsed.path == "/api/graph":
+                allowed |= {"center", "hops", "predicate", "condition", "page", "cursor"}
+            elif parsed.path == "/api/relationship":
+                allowed |= {"id"}
+            elif parsed.path == "/api/characters":
+                allowed |= {"q"}
             if set(arguments) - allowed:
                 raise SampleError("unknown query parameter")
             scopes = arguments.get("scope", [])
@@ -83,14 +90,25 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             if len(snapshots) > 1 or (snapshots and not snapshots[0]):
                 raise SampleError("expected one nonempty snapshot")
             options = search_options(arguments) if parsed.path == "/api/search" else None
+            graph_query = graph_options(arguments) if parsed.path == "/api/graph" else None
             data = load_snapshot(self.server.database, snapshots[0] if snapshots else None)
             view = project(data, scopes, purposes[0])
             if options is not None:
                 view = search_view(view, options, self.server.cursor_secret)
+            elif graph_query is not None:
+                view = graph_view(view, graph_query, self.server.cursor_secret)
+            elif parsed.path in ("/api/relationship", "/api/characters"):
+                field = "id" if parsed.path == "/api/relationship" else "q"
+                values = arguments.get(field, [""])
+                if len(values) != 1 or len(values[0]) > 160 or (field == "id" and not values[0]):
+                    raise SampleError("invalid lookup parameter")
+                view = relation_view(view, values[0]) if field == "id" else character_view(view, values[0])
             view["storage"] = "sqlite"
             self.respond(200, view)
         except StaleCursor:
-            self.respond(409, {"error": "当前可用内容已变化，旧分页已失效，请重新检索。", "code": "stale_cursor"})
+            self.respond(409, {"error": "当前可用内容已变化，旧分页已失效，请从第一页重新读取。", "code": "stale_cursor"})
+        except GraphUnavailable as error:
+            self.respond(404, {"error": str(error), "code": "graph_unavailable"})
         except SnapshotNotFound:
             self.respond(404, {"error": "指定快照不可用，未替换成其他版本。"})
         except StoreError:

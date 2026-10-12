@@ -269,3 +269,14 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 }
 @media (max-width: 390px) { .topbar { display: block; } .breadcrumbs { margin-bottom: 8px; } .global-controls { justify-content: space-between; } .hero h1 { font-size: 25px; } .graph-watermark { display: none; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; } }
+
+.graph-actions, .character-search, .list-nodes { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.graph-actions { justify-content: flex-end; }
+.character-search { margin: 0 0 16px; font-size: 12px; }
+.character-search input { min-width: 0; width: 220px; max-width: 100%; padding: 9px; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; }
+.character-search [role="status"] { color: #74806c; font-size: 11px; }
+.graph-toolbar { flex-wrap: wrap; }
+.graph-toolbar select { max-width: 260px; }
+.pagination { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 18px 0; font-size: 12px; }
+.list-nodes { margin-bottom: 16px; }
+@media (max-width: 720px) { .character-search input { flex: 1; width: 130px; } .character-search label { flex-basis: 100%; } .graph-actions { justify-content: flex-start; } .graph-toolbar select { max-width: 150px; } .graph-topline { flex-wrap: wrap; gap: 5px; } }

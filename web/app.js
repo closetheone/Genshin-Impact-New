@@ -1,18 +1,21 @@
-import { SCOPES, PREDICATES, orderPassages, characterLabels, neighborhood, scopeLabel, relationScope } from "/model.mjs";
+import { SCOPES, PREDICATES, orderPassages, characterLabels, safeLayout, scopeLabel, relationScope } from "/model.mjs";
 
 const main = document.querySelector("#main");
 const scopeSelect = document.querySelector("#scope-select");
 const purposeSelect = document.querySelector("#purpose-select");
 const pageNames = { search: "文本检索", read: "原文阅读", graph: "人物关系图" };
-const state = { view: null, query: "", searchQuery: "", searchMode: "literal", category: "all", speaker: "all", pageSize: 8, center: "person:student", hops: 1, predicate: "all", graphMode: "graph", relation: null };
+const state = { view: null, query: "", searchQuery: "", searchMode: "literal", category: "all", speaker: "all", pageSize: 8, center: "person:student", hops: 1, predicate: "all", condition: "all", graphPage: 1, graphMode: "graph", relation: null };
 let requestController;
 let requestVersion = 0;
 let pageCleanup = () => {};
 let toastTimer;
+let evidenceVersion = 0;
+let graphLayout = null;
+let captureLayout = () => null;
 
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/gu, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
 const readLink = (identifier) => snapshotLink(`#/read?passage=${encodeURIComponent(identifier)}`);
-const graphLink = (identifier) => snapshotLink(`#/graph?center=${encodeURIComponent(identifier)}`);
+const graphLink = (identifier) => snapshotLink(`#/graph?center=${encodeURIComponent(identifier)}&hops=${state.hops}&predicate=${encodeURIComponent(state.predicate)}&condition=${encodeURIComponent(state.condition)}`);
 const tag = (label, extra = "") => `<span class="tag ${extra}">${escapeHtml(label)}</span>`;
 
 function notify(message) {
@@ -48,8 +51,10 @@ async function fetchArchive(path, purpose, signal, snapshot, extra = {}) {
   if (snapshot !== null) query.set("snapshot", snapshot);
   SCOPES[scopeSelect.value].forEach((scope) => query.append("scope", scope));
   const response = await fetch(`${path}?${query}`, { signal, cache: "no-store" });
-  if (response.status === 404) throw new Error("指定快照不可用，未替换成其他版本。可手动读取当前发布快照。");
-  if (response.status === 409) throw new Error("可用内容已变化，旧分页已失效。请从第一页重新检索，未展示过期结果。");
+  if (response.status === 404 || response.status === 409) {
+    const failure = await response.json();
+    throw new Error(failure.error);
+  }
   if (response.status === 400 && extra.cursor) throw new Error("分页与当前查询不匹配，或服务已重启。请从第一页重新检索。");
   if (!response.ok) throw new Error("读取失败，请确认本地服务、数据库与导入状态后重试。");
   const view = await response.json();
@@ -61,8 +66,14 @@ function fetchView(purpose, signal, snapshot = route().params.get("snapshot")) {
   return fetchArchive("/api/view", purpose, signal, snapshot);
 }
 
+function fetchGraph(purpose, signal, snapshot = route().params.get("snapshot"), cursor = null) {
+  return fetchArchive("/api/graph", purpose, signal, snapshot, { center: state.center, hops: String(state.hops), predicate: state.predicate, condition: state.condition, page: String(state.graphPage), ...(cursor ? { cursor } : {}) });
+}
+
 async function loadView(cursor = null) {
   requestController?.abort();
+  evidenceVersion += 1;
+  if (route().page === "graph") restoreGraphQuery();
   requestController = new AbortController();
   const version = ++requestVersion;
   state.view = null;
@@ -73,11 +84,15 @@ async function loadView(cursor = null) {
     const isSearch = route().page === "search";
     const parameters = { q: state.searchQuery, mode: state.searchMode, category: state.category, speaker: state.speaker, limit: String(state.pageSize) };
     if (cursor) parameters.cursor = cursor;
+    const isGraph = route().page === "graph";
     const view = isSearch
       ? await fetchArchive("/api/search", purposeSelect.value, requestController.signal, route().params.get("snapshot"), parameters)
+      : isGraph
+        ? await fetchGraph(purposeSelect.value, requestController.signal, route().params.get("snapshot"), cursor)
       : await fetchView(purposeSelect.value, requestController.signal);
     if (version !== requestVersion) return;
     state.view = view;
+    if (isGraph) state.graphPage = view.query.page;
     history.replaceState(null, "", snapshotLink(location.hash || "#/search"));
     document.querySelector("#archive-snapshot").textContent = `SQLite 本地存储 · 已固定快照 ${view.snapshot_id}`;
     document.querySelectorAll(".primary-nav a, .brand").forEach((anchor) => { anchor.href = snapshotLink(anchor.getAttribute("href")); });
@@ -87,6 +102,15 @@ async function loadView(cursor = null) {
     document.querySelector("#archive-snapshot").textContent = "档案未加载；没有回退到其他数据源。";
     replacePage(`<div class="empty-state" role="alert"><h2>档案暂未打开</h2><p>${escapeHtml(error.message)}</p><button id="retry" class="button">重新读取</button>${route().page === "search" ? '<button id="restart-search" class="button button-soft">从第一页重新检索</button>' : ""}</div>`);
     document.querySelector("#retry").addEventListener("click", () => loadView(cursor));
+    if (route().page === "graph") {
+      const link = document.createElement("a");
+      link.className = "button";
+      link.textContent = "返回默认中心与第一页";
+      const parameters = new URLSearchParams(route().params);
+      for (const field of ["center", "hops", "page", "layout", "predicate", "condition"]) parameters.delete(field);
+      link.href = `#/graph?${parameters}`;
+      main.append(link);
+    }
     document.querySelector("#restart-search")?.addEventListener("click", () => loadView());
   }
 }
@@ -162,7 +186,7 @@ function renderSearch() {
         <article class="result"><span class="result-number">${String(pagination.offset + index + 1).padStart(2, "0")}</span><div class="result-body">
           <div class="result-meta">${tag(scopeLabel(passage))}<span class="result-title">${escapeHtml(view.entries.find((entry) => entry.id === passage.entry_id)?.title)}</span></div>
           <a class="result-text" href="${readLink(passage.id)}">${highlighted(passage.text, query, view.query.mode)}</a>
-          <div class="result-bottom"><span>${escapeHtml(labels.get(passage.speaker_id) || "叙述")} · <code>${escapeHtml(passage.id)}</code></span><a class="text-button" href="${readLink(passage.id)}">回到原文 ↗</a></div>
+          <div class="result-bottom"><span>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · <code>${escapeHtml(passage.id)}</code></span><a class="text-button" href="${readLink(passage.id)}">回到原文 ↗</a></div>
         </div></article>`).join("") : '<div class="empty-state"><div class="empty-symbol">⌕</div><h2>没有找到匹配的文本</h2><p>试试更短的关键词、清空筛选，或手动调整内容范围。不会自动打开后续内容。</p></div>'}</div>
       <nav class="search-pagination" aria-label="搜索结果分页"><button id="previous-page" class="button" ${pagination.previous_cursor ? "" : "disabled"}>← 上一页</button><span>第 ${pagination.page} / ${pagination.pages} 页</span><button id="next-page" class="button" ${pagination.next_cursor ? "" : "disabled"}>下一页 →</button></nav>
     </section><aside class="search-aside">${view.entries.length ? `<div class="aside-card"><div class="eyebrow">CURRENT PAGE ARCHIVE</div><div class="archive-stamp" aria-hidden="true">卷</div><h3>${escapeHtml(view.entries[0].title)}</h3><p>本页结果中的可用条目。沿着正文与完整证据，验证阅读与取材的每一步。</p>${tag("非原神剧情", "tag-warm")}<a class="button button-soft" href="${readLink(results[0].id)}">打开样本卷宗 ↗</a></div>` : ""}
@@ -217,7 +241,7 @@ function renderReader(targetId) {
         const header = section !== previousSection ? `<h3 class="branch-heading">${escapeHtml(section)}</h3>` : "";
         previousSection = section;
         return `${header}<section class="passage ${passage.speaker_id ? "" : "narration"} ${passage.id === targetId ? "selected" : ""}" id="${escapeHtml(passage.id)}" tabindex="-1">
-          <span class="passage-number">${escapeHtml(passage.id.split(":").at(-1))}</span><div class="passage-speaker">${escapeHtml(labels.get(passage.speaker_id) || "叙述")}${passage.id === targetId ? tag("定位段落", "tag-warm") : ""}</div>
+          <span class="passage-number">${escapeHtml(passage.id.split(":").at(-1))}</span><div class="passage-speaker">${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")}${passage.id === targetId ? tag("定位段落", "tag-warm") : ""}</div>
           <p>${escapeHtml(passage.text)}</p><div class="passage-actions"><code>${escapeHtml(passage.id)}</code><button class="text-button" data-copy="${escapeHtml(passage.id)}">复制引用 ↗</button></div>
           <details class="passage-source"><summary>出处与对话连接</summary><code>${escapeHtml(passage.source_id)}<br>${escapeHtml(passage.source_locator)}</code><div>当前可见后续：${passage.next_ids.map((identifier) => `<a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)}</a>`).join(" · ") || "无（不表示完整剧情结束）"}</div></details>
         </section>`;
@@ -262,95 +286,215 @@ async function copyCitation(button) {
   }
 }
 
+function restoreGraphQuery() {
+  const params = route().params;
+  state.center = params.get("center") || "person:student";
+  state.hops = params.get("hops") || "1";
+  state.predicate = params.get("predicate") || "all";
+  state.condition = params.get("condition") || "all";
+  state.graphPage = params.get("page") || "1";
+  state.graphMode = params.get("mode") === "list" ? "list" : "graph";
+  graphLayout = null;
+  try {
+    const encoded = params.get("layout") || "null";
+    if (encoded.length <= 12000) graphLayout = JSON.parse(encoded);
+  } catch { /* Invalid saved positions are discarded, never interpreted as markup. */ }
+}
+
+function graphAddress({ shared = false, layout = null } = {}) {
+  const params = new URLSearchParams({ center: state.center, hops: String(state.hops), predicate: state.predicate, condition: state.condition, page: String(state.graphPage), mode: state.graphMode });
+  if (shared) params.set("shared", "1");
+  if (layout) params.set("layout", JSON.stringify(layout));
+  return snapshotLink(`#/graph?${params}`);
+}
+
+function changeGraph(field, value) {
+  const layout = field === "hops" ? captureLayout() || graphLayout : null;
+  state[field] = value;
+  state.graphPage = 1;
+  location.hash = graphAddress({ layout });
+}
+
 function renderGraph(requestedCenter) {
   const view = state.view;
+  graphLayout = safeLayout(graphLayout, view.characters);
+  state.hops = view.query.hops;
+  state.graphPage = view.query.page;
   if (requestedCenter) state.center = requestedCenter;
   const labels = characterLabels(view.characters);
   const unavailable = !labels.has(state.center);
-  const graph = neighborhood(view, state.center, state.hops, state.predicate);
+  const graph = { nodes: view.characters, edges: view.relationships, truncated: view.truncated };
   if (!graph.edges.some((relation) => relation.id === state.relation)) state.relation = graph.edges[0]?.id || null;
   replacePage(`
-    <div class="page-title-row"><div><div class="eyebrow">PEOPLE, CONNECTED BY WORDS</div><h1>关系有据，故事有迹。</h1></div><button class="button" id="export-graph" ${graph.nodes.length ? "" : "disabled"}>导出关系 JSON ↗</button></div>
+    <div class="page-title-row"><div><div class="eyebrow">PEOPLE, CONNECTED BY WORDS</div><h1>关系有据，故事有迹。</h1></div><div class="graph-actions"><button class="button" id="share-graph">复制分享链接</button><button class="button" id="export-png" ${state.graphMode === "list" ? "disabled" : ""}>导出 PNG</button><button class="button" id="export-graph">导出 JSON</button></div></div>
+    ${route().params.has("shared") ? '<div class="callout">已恢复分享的快照和图谱条件；继续使用你当前选择的范围与用途。范围不足时仅展示允许内容，可在顶部手动调整。</div>' : ""}
+    <form id="character-search" class="character-search"><label for="character-query">查找中心人物</label><input id="character-query" maxlength="160" placeholder="输入姓名或人物 ID"><button class="button" type="submit">查找</button><span id="character-status" role="status"></span></form>
     <div class="graph-toolbar"><label><span>中心人物</span><select id="graph-center" aria-label="中心人物">${unavailable ? '<option value="" selected>当前人物不可用</option>' : ""}${view.characters.map((character) => `<option value="${escapeHtml(character.id)}" ${character.id === state.center ? "selected" : ""}>${escapeHtml(labels.get(character.id))}</option>`).join("")}</select></label>
       <label><span>展开层级</span><select id="graph-hops" aria-label="展开层级"><option value="1" ${state.hops === 1 ? "selected" : ""}>一跳关系</option><option value="2" ${state.hops === 2 ? "selected" : ""}>二跳关系</option></select></label>
       <label><span>关系类型</span><select id="graph-predicate" aria-label="关系类型"><option value="all">全部类型</option>${Object.entries(PREDICATES).map(([key, value]) => `<option value="${key}" ${state.predicate === key ? "selected" : ""}>${value.label}</option>`).join("")}</select></label>
+      <label><span>情节条件</span><select id="graph-condition" aria-label="情节条件"><option value="all">全部条件</option><option value="opening" ${state.condition === "opening" ? "selected" : ""}>开篇公共</option><option value="east" ${state.condition === "east" ? "selected" : ""}>东路分支</option><option value="west" ${state.condition === "west" ? "selected" : ""}>西路分支</option><option value="later" ${state.condition === "later" ? "selected" : ""}>后续阶段</option></select></label>
       <span class="toolbar-spacer"></span><div class="segmented" aria-label="图谱展示方式"><button data-mode="graph" aria-pressed="${state.graphMode === "graph"}">图谱</button><button data-mode="list" aria-pressed="${state.graphMode === "list"}">列表</button></div>
     </div>
     ${unavailable ? '<div class="callout" role="alert">当前人物在此范围、用途或快照中不可用。请选择一个可见人物，不会自动扩大范围。</div>' : ""}
-    ${graph.truncated ? '<div class="callout">局部图已截断至 50 个人物 / 100 条关系。原型尚不支持续取，请缩小范围。</div>' : ""}
+    ${graph.truncated ? '<div class="callout">当前视图未完整展示：每页最多 50 个人物 / 100 条关系。使用下方分页继续查看，或缩小筛选范围。</div>' : ""}
     <div class="graph-layout"><section class="graph-stage" aria-label="人物关系"><div class="graph-topline"><strong>${graph.nodes.length} 个人物 · ${graph.edges.length} 条关系</strong><span>已审核 · 明确断言 · 完整证据</span></div>
-      ${state.graphMode === "graph" ? '<div class="graph-canvas"><svg id="relationship-svg" role="group" aria-label="局部人物关系图，Tab 可选择人物或关系"></svg><span class="graph-watermark">SYNTHETIC STORY / NOT GAME LORE</span><div class="graph-controls"><button data-zoom="out" aria-label="缩小图谱">−</button><span id="zoom-level">100%</span><button data-zoom="in" aria-label="放大图谱">+</button><button data-zoom="reset" aria-label="重置布局">↺</button></div></div>' : `<div class="relationship-list">${graph.edges.length ? graph.edges.map((relation) => `<button class="relationship-row" data-relation="${escapeHtml(relation.id)}" aria-pressed="${relation.id === state.relation}"><strong>${escapeHtml(labels.get(relation.from_id))} ${relation.direction === "directed" ? "→" : "—"} ${escapeHtml(labels.get(relation.to_id))}</strong><span>${PREDICATES[relation.predicate].label} · ${escapeHtml(relationScope(relation, view.passages))}</span></button>`).join("") : '<div class="empty-state">当前条件下没有可用关系。可切换中心人物或筛选条件。</div>'}</div>`}
+      ${state.graphMode === "graph" ? '<div class="graph-canvas"><svg id="relationship-svg" role="group" aria-label="局部人物关系图，Tab 可选择人物或关系"></svg><span class="graph-watermark">SYNTHETIC STORY / NOT GAME LORE</span><div class="graph-controls"><button data-zoom="out" aria-label="缩小图谱">−</button><span id="zoom-level">100%</span><button data-zoom="in" aria-label="放大图谱">+</button><button data-zoom="reset" aria-label="重置布局">↺</button></div></div>' : `<div class="relationship-list"><div class="list-nodes" aria-label="当前页人物">${graph.nodes.map((node) => `<a class="button button-soft" href="${graphLink(node.id)}">${escapeHtml(labels.get(node.id))}${node.id === state.center ? " · 中心" : ""}</a>`).join("")}</div>${graph.edges.length ? graph.edges.map((relation) => `<button class="relationship-row" data-relation="${escapeHtml(relation.id)}" aria-pressed="${relation.id === state.relation}"><strong>${escapeHtml(labels.get(relation.from_id))} ${relation.direction === "directed" ? "→" : "—"} ${escapeHtml(labels.get(relation.to_id))}</strong><span>${PREDICATES[relation.predicate].label} · ${escapeHtml(relationScope(relation, view.passages))}</span></button>`).join("") : '<div class="empty-state">当前条件下没有可用关系。可切换中心人物或筛选条件。</div>'}</div>`}
       <div class="graph-legend">${Object.values(PREDICATES).map((predicate) => `<span><i class="legend-line" style="--relation-color:${predicate.color}"></i>${predicate.label}</span>`).join("")}<span>→ 有向关系　— 对称关系</span></div>
     </section><aside class="evidence-panel" id="evidence-panel" aria-label="关系证据" aria-live="polite"></aside></div>
+    <div class="pagination"><button id="graph-previous" class="button" ${view.pagination.previous_cursor ? "" : "disabled"}>上一页</button><span>局部图第 ${view.pagination.page} / ${view.pagination.pages} 页</span><button id="graph-next" class="button" ${view.pagination.next_cursor ? "" : "disabled"}>下一页</button><button id="graph-restart" class="button">重新读取第一页</button></div>
     <div class="graph-footnote"><p>点击连线查看原文证据；拖动人物调整位置，拖动画布平移，使用 + / − 缩放。键盘可选择连线；人物按 Enter 设为中心。</p><p>分支与后续证据分别标注，不把共现当作关系，也不把不同分支当作同一时刻。这里只演示原创样本。</p></div>`);
-  document.querySelector("#graph-center").addEventListener("change", (event) => { location.hash = graphLink(event.target.value); });
-  document.querySelector("#graph-hops").addEventListener("change", (event) => { state.hops = Number(event.target.value); renderGraph(); });
-  document.querySelector("#graph-predicate").addEventListener("change", (event) => { state.predicate = event.target.value; renderGraph(); });
-  document.querySelectorAll("[data-mode]").forEach((button) => button.addEventListener("click", () => { state.graphMode = button.dataset.mode; renderGraph(); }));
+  document.querySelector("#graph-center").addEventListener("change", (event) => { changeGraph("center", event.target.value); });
+  document.querySelector("#graph-hops").addEventListener("change", (event) => { changeGraph("hops", Number(event.target.value)); });
+  document.querySelector("#graph-predicate").addEventListener("change", (event) => { changeGraph("predicate", event.target.value); });
+  document.querySelector("#graph-condition").addEventListener("change", (event) => { changeGraph("condition", event.target.value); });
+  document.querySelectorAll("[data-mode]").forEach((button) => button.addEventListener("click", () => { graphLayout = captureLayout() || graphLayout; state.graphMode = button.dataset.mode; history.replaceState(null, "", graphAddress({ layout: graphLayout })); renderGraph(); }));
   document.querySelectorAll("[data-relation]").forEach((button) => button.addEventListener("click", () => selectRelation(button.dataset.relation)));
-  document.querySelector("#export-graph").addEventListener("click", (event) => exportGraph(event.currentTarget, graph));
-  renderEvidence(graph.edges.find((relation) => relation.id === state.relation));
+  document.querySelector("#export-graph").addEventListener("click", (event) => exportGraph(event.currentTarget));
+  document.querySelector("#export-png").addEventListener("click", (event) => exportGraph(event.currentTarget, "png"));
+  document.querySelector("#share-graph").addEventListener("click", shareGraph);
+  document.querySelector("#character-search").addEventListener("submit", searchCharacters);
+  for (const direction of ["previous", "next"]) document.querySelector(`#graph-${direction}`).addEventListener("click", () => {
+    state.graphPage += direction === "next" ? 1 : -1;
+    history.replaceState(null, "", graphAddress());
+    loadView(view.pagination[`${direction}_cursor`]);
+  });
+  document.querySelector("#graph-restart").addEventListener("click", () => {
+    state.graphPage = 1; history.replaceState(null, "", graphAddress()); loadView();
+  });
+  if (state.relation) selectRelation(state.relation);
+  else renderEvidence(null);
   if (state.graphMode === "graph") mountGraph(graph, labels);
 }
 
-function selectRelation(identifier) {
+async function selectRelation(identifier) {
   state.relation = identifier;
-  document.querySelectorAll(".graph-edge").forEach((element) => {
+  const version = ++evidenceVersion;
+  const original = state.view;
+  document.querySelectorAll(".graph-edge, .relationship-row").forEach((element) => {
     element.classList.toggle("selected", element.dataset.relation === identifier);
     element.setAttribute("aria-pressed", String(element.dataset.relation === identifier));
   });
-  document.querySelectorAll(".relationship-row").forEach((element) => element.setAttribute("aria-pressed", String(element.dataset.relation === identifier)));
-  renderEvidence(state.view.relationships.find((relation) => relation.id === identifier));
+  const panel = document.querySelector("#evidence-panel");
+  panel.textContent = "正在重新核验完整证据…";
+  try {
+    const details = await fetchArchive("/api/relationship", purposeSelect.value, requestController.signal, original.snapshot_id, { id: identifier });
+    if (version !== evidenceVersion || original !== state.view || !panel.isConnected) return;
+    if (JSON.stringify(details.relationships[0]) !== JSON.stringify(original.relationships.find((item) => item.id === identifier))) throw new Error("关系证据已变化，请重新读取图谱。");
+    renderEvidence(details.relationships[0], details);
+  } catch (error) {
+    if (error.name !== "AbortError" && version === evidenceVersion && panel.isConnected) panel.textContent = error.message;
+  }
 }
 
-function renderEvidence(relation) {
+function renderEvidence(relation, view = state.view) {
   const panel = document.querySelector("#evidence-panel");
   if (!relation) {
     panel.innerHTML = '<div class="eyebrow">FOLLOW THE EVIDENCE</div><h2>等待一条有据的连线</h2><p class="small muted">当前局部图没有可用关系。不会用人物共现或 AI 猜测补齐。</p>';
     return;
   }
-  const view = state.view;
   const labels = characterLabels(view.characters);
   const person = (identifier) => `<span>${escapeHtml(view.characters.find((character) => character.id === identifier)?.name)}<small>${escapeHtml(identifier)}</small></span>`;
   panel.innerHTML = `<div class="eyebrow">FOLLOW THE EVIDENCE</div><h2>关系与原文证据</h2><div class="relation-people">${person(relation.from_id)}<span class="relation-arrow">${relation.direction === "directed" ? "→" : "—"}</span>${person(relation.to_id)}</div>
     ${tag(PREDICATES[relation.predicate].label)} ${tag("已审核 · 明确断言", "tag-blue")}<p class="relation-description">${escapeHtml(relation.description)}</p><p class="small muted">${escapeHtml(relationScope(relation, view.passages))}</p>
     ${relation.evidence_groups.map((group, index) => `<div class="evidence-group-label">证据组 ${index + 1} · ${group.length > 1 ? `${group.length} 段须联合阅读` : "单段支持"}</div>${group.map((identifier) => {
       const passage = view.passages.find((candidate) => candidate.id === identifier);
-      return `<blockquote class="evidence-quote"><p>${escapeHtml(passage.text)}</p><footer>${escapeHtml(labels.get(passage.speaker_id) || "叙述")} · ${escapeHtml(scopeLabel(passage))}<a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)} · 回到原文 ↗</a></footer></blockquote>`;
+      return `<blockquote class="evidence-quote"><p>${escapeHtml(passage.text)}</p><footer>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · ${escapeHtml(scopeLabel(passage))}<a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)} · 回到原文 ↗</a></footer></blockquote>`;
     }).join("")}`).join("")}
     <div class="evidence-note">组内段落须共同成立；不同完整证据组可独立支持同一断言。样本断言不等于原神设定。</div><div class="evidence-footer"><code>${escapeHtml(relation.id)}<br>${escapeHtml(view.snapshot_id)}</code></div>`;
 }
 
-async function exportGraph(button, graph) {
-  const selection = { center_id: state.center, hops: state.hops, predicate: state.predicate };
+async function searchCharacters(event) {
+  event.preventDefault();
+  const original = state.view;
+  const input = document.querySelector("#character-query");
+  const query = input.value.trim();
+  const status = document.querySelector("#character-status");
+  status.textContent = "查找中…";
+  try {
+    const found = await fetchArchive("/api/characters", purposeSelect.value, requestController.signal, original.snapshot_id, { q: query });
+    if (original !== state.view || !input.isConnected || input.value.trim() !== query) return;
+    const labels = characterLabels(found.characters);
+    const select = document.querySelector("#graph-center");
+    select.innerHTML = '<option value="" disabled selected>选择查找到的人物</option>' + found.characters.map((character) => `<option value="${escapeHtml(character.id)}">${escapeHtml(labels.get(character.id))}</option>`).join("");
+    status.textContent = found.truncated ? "只显示前 20 个匹配，请细化姓名或 ID。" : `找到 ${found.characters.length} 个人物`;
+  } catch (error) { if (error.name !== "AbortError" && status.isConnected) status.textContent = error.message; }
+}
+
+async function checkedGraph(purpose) {
+  const original = state.view;
+  const version = requestVersion;
+  const view = await fetchArchive("/api/graph", purpose, requestController.signal, original.snapshot_id, original.query);
+  if (original !== state.view || version !== requestVersion) throw new Error("范围或图谱选择已变化，请重新操作。");
+  if (view.content_revision !== original.content_revision) throw new Error("图谱或完整证据已变化，或含不可导出内容。请切换「素材导出」用途并重新读取后重试。");
+  return view;
+}
+
+async function shareGraph(event) {
+  const button = event.currentTarget;
   button.disabled = true;
   try {
-    const view = await checkedExportView();
+    await checkedGraph(purposeSelect.value);
+    if (!button.isConnected) return;
+    const address = new URL(graphAddress({ shared: true, layout: safeLayout(captureLayout() || graphLayout, state.view.characters) }), location.href);
+    await navigator.clipboard.writeText(address.href);
+    notify("已复制本机分享链接；恢复图谱参数与布局，不会自动扩大接收者范围。");
+  } catch (error) { if (error.name !== "AbortError") notify(error.message); }
+  finally { button.disabled = false; }
+}
+
+function downloadGraph(blob, extension) {
+  const address = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = address; anchor.download = `synthetic-character-graph.${extension}`; anchor.click();
+  setTimeout(() => URL.revokeObjectURL(address), 1000);
+}
+
+async function exportGraph(button, format = "json") {
+  button.disabled = true;
+  try {
+    if (purposeSelect.value !== "export") await checkedGraph(purposeSelect.value);
+    const view = await checkedGraph("export");
     if (!button.isConnected) throw new Error("图谱选择已经变化，请重新导出。");
-    const permitted = new Map(view.relationships.map((relation) => [relation.id, relation]));
-    if (graph.nodes.some((node) => !view.characters.some((character) => character.id === node.id)) || graph.edges.some((edge) => !permitted.has(edge.id))) {
-      throw new Error("当前图含不可导出内容，请切换到「素材导出」用途后重试。");
+    if (format === "png") {
+      const blob = await graphPng(view);
+      await checkedGraph("export");
+      if (!button.isConnected) throw new Error("图谱选择已经变化，请重新导出。");
+      downloadGraph(blob, "png");
+    } else {
+      const { pagination, ...output } = view;
+      output.pagination = { page: pagination.page, pages: pagination.pages };
+      output.layout = safeLayout(captureLayout() || graphLayout, view.characters);
+      downloadGraph(new Blob([JSON.stringify(output, null, 2)], { type: "application/json" }), "json");
     }
-    const relationships = graph.edges.map((edge) => permitted.get(edge.id));
-    const evidenceIds = new Set(relationships.flatMap((relation) => relation.evidence_groups.flat()));
-    const output = {
-      dataset_kind: view.dataset_kind, notice: view.notice, snapshot_id: view.snapshot_id,
-      scope_ids: view.scope_ids, purpose: "export", ...selection, truncated: graph.truncated,
-      characters: view.characters.filter((character) => graph.nodes.some((node) => node.id === character.id)),
-      relationships, evidence: view.passages.filter((passage) => evidenceIds.has(passage.id)),
-    };
-    const address = URL.createObjectURL(new Blob([JSON.stringify(output, null, 2)], { type: "application/json" }));
-    const anchor = document.createElement("a");
-    anchor.href = address;
-    anchor.download = "synthetic-character-graph.json";
-    anchor.click();
-    setTimeout(() => URL.revokeObjectURL(address), 1000);
-    notify("已导出当前局部关系和完整证据，保留原创样本标识。");
-  } catch (error) {
-    if (error.name !== "AbortError") notify(error.message);
-  } finally {
-    button.disabled = false;
-  }
+    notify(`已导出当前局部图 ${format.toUpperCase()}，保留快照、范围和原创样本标识。`);
+  } catch (error) { if (error.name !== "AbortError") notify(error.message || "图像生成失败，请重试。"); }
+  finally { button.disabled = false; }
+}
+
+async function graphPng(view) {
+  const svg = document.querySelector("#relationship-svg");
+  if (!svg) throw new Error("请切换到图谱视图后导出 PNG。");
+  const clone = svg.cloneNode(true);
+  const originals = [svg, ...svg.querySelectorAll("*")];
+  const copies = [clone, ...clone.querySelectorAll("*")];
+  const properties = ["fill", "stroke", "stroke-width", "stroke-dasharray", "opacity", "font-size", "font-family", "font-weight", "text-anchor", "dominant-baseline", "paint-order"];
+  originals.forEach((element, index) => {
+    const style = getComputedStyle(element);
+    properties.forEach((property) => copies[index].style.setProperty(property, style.getPropertyValue(property)));
+  });
+  clone.setAttribute("x", "0"); clone.setAttribute("y", "90"); clone.setAttribute("width", "1200"); clone.setAttribute("height", "630");
+  const scopeNames = { opening: "开篇", east: "东路", west: "西路", later: "后续" };
+  const caption = `范围：${view.scope_ids.map((scope) => scopeNames[scope] || scope).join(" / ")} · ${view.characters.length} 人物 / ${view.relationships.length} 关系 · 第 ${view.pagination.page}/${view.pagination.pages} 页 · ${view.truncated ? "当前视图未完整展示" : "当前局部图完整"}`;
+  const legend = Object.values(PREDICATES).map((predicate, index) => `<text x="${35 + index * 155}" y="762" fill="${predicate.color}">${predicate.label}</text>`).join("");
+  const xml = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><rect width="1200" height="800" fill="#f7f5ec"/><g font-family="sans-serif" fill="#263e30"><text x="30" y="30" font-size="20">人物局部图 · 原创合成样本，非原神剧情</text><text x="30" y="55" font-size="14">快照：${escapeHtml(view.snapshot_id)}</text><text x="30" y="78" font-size="14">${escapeHtml(caption)}</text></g>${new XMLSerializer().serializeToString(clone)}<g font-family="sans-serif" font-size="17">${legend}<text x="660" y="762" fill="#263e30">→ 有向关系　— 对称关系</text><text x="35" y="790" font-size="12" fill="#52624e">图中位置不代表亲密程度；关系适用条件和完整证据见同视图 JSON。</text></g></svg>`;
+  const address = URL.createObjectURL(new Blob([xml], { type: "image/svg+xml;charset=utf-8" }));
+  try {
+    const image = new Image();
+    await new Promise((resolve, reject) => { image.onload = resolve; image.onerror = () => reject(new Error("无法生成 PNG 图像。")); image.src = address; });
+    const canvas = document.createElement("canvas"); canvas.width = 1200; canvas.height = 800;
+    canvas.getContext("2d").drawImage(image, 0, 0);
+    return await new Promise((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("PNG 编码失败。")), "image/png"));
+  } finally { URL.revokeObjectURL(address); }
 }
 
 function mountGraph(graph, labels) {
@@ -364,7 +508,7 @@ function mountGraph(graph, labels) {
   let gesture;
   let moved = false;
 
-  function reset() {
+  function reset(saved = null) {
     width = container.clientWidth;
     height = container.clientHeight;
     scale = 1;
@@ -382,8 +526,18 @@ function mountGraph(graph, labels) {
         y: height / 2 + Math.sin(angle) * (height / 2 - 83),
       });
     });
+    if (saved && typeof saved === "object" && saved.positions && typeof saved.positions === "object") {
+      for (const node of graph.nodes) {
+        const point = saved.positions[node.id];
+        if (Array.isArray(point) && point.length === 2 && point.every((value) => Number.isFinite(value) && value >= 0 && value <= 1)) positions.set(node.id, { x: point[0] * width, y: point[1] * height });
+      }
+      if (Number.isFinite(saved.scale) && saved.scale >= .6 && saved.scale <= 1.8) scale = saved.scale;
+      if (Array.isArray(saved.pan) && saved.pan.length === 2 && saved.pan.every((value) => Number.isFinite(value) && Math.abs(value) <= 3)) pan = { x: saved.pan[0] * width, y: saved.pan[1] * height };
+    }
     draw();
   }
+
+  captureLayout = () => ({ positions: Object.fromEntries(graph.nodes.map((node) => { const point = positions.get(node.id); return [node.id, [Math.round(point.x / width * 10000) / 10000, Math.round(point.y / height * 10000) / 10000]]; })), scale, pan: [Math.max(-3, Math.min(3, pan.x / width)), Math.max(-3, Math.min(3, pan.y / height))] });
 
   function draw() {
     svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
@@ -464,14 +618,23 @@ function mountGraph(graph, labels) {
     scale = nextScale;
     draw();
   }));
-  const observer = new ResizeObserver(reset);
+  const observer = new ResizeObserver(() => reset(captureLayout()));
   observer.observe(container);
-  pageCleanup = () => observer.disconnect();
-  reset();
+  pageCleanup = () => { observer.disconnect(); captureLayout = () => null; };
+  reset(graphLayout);
+  graphLayout = captureLayout();
 }
 
-scopeSelect.addEventListener("change", () => { state.searchQuery = state.query; loadView(); });
-purposeSelect.addEventListener("change", () => { state.searchQuery = state.query; loadView(); });
+function changeBoundary() {
+  state.searchQuery = state.query;
+  if (route().page === "graph") {
+    state.graphPage = 1;
+    history.replaceState(null, "", graphAddress());
+  }
+  loadView();
+}
+scopeSelect.addEventListener("change", changeBoundary);
+purposeSelect.addEventListener("change", changeBoundary);
 window.addEventListener("hashchange", () => {
   loadView();
   window.scrollTo(0, 0);

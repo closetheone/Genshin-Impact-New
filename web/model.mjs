@@ -44,22 +44,18 @@ export function characterLabels(characters) {
   }));
 }
 
-export function neighborhood(view, centerId, hops = 1, predicate = "all") {
-  const candidates = view.relationships.filter((relation) => predicate === "all" || relation.predicate === predicate);
-  const visible = new Set(view.characters.some((character) => character.id === centerId) ? [centerId] : []);
-  for (let depth = 0; depth < Math.min(2, Math.max(1, hops)); depth += 1) {
-    const frontier = new Set(visible);
-    for (const relation of candidates) {
-      if (frontier.has(relation.from_id)) visible.add(relation.to_id);
-      if (frontier.has(relation.to_id)) visible.add(relation.from_id);
-    }
+export function safeLayout(saved, characters) {
+  if (!saved || typeof saved !== "object" || !saved.positions || typeof saved.positions !== "object") return null;
+  const positions = Object.create(null);
+  for (const character of characters) {
+    const point = saved.positions[character.id];
+    if (Array.isArray(point) && point.length === 2 && point.every((value) => Number.isFinite(value) && value >= 0 && value <= 1)) positions[character.id] = point;
   }
-  const reached = view.characters.filter((character) => visible.has(character.id));
-  reached.sort((left, right) => Number(right.id === centerId) - Number(left.id === centerId));
-  const nodes = reached.slice(0, 50);
-  const nodeIds = new Set(nodes.map((character) => character.id));
-  const edges = candidates.filter((relation) => nodeIds.has(relation.from_id) && nodeIds.has(relation.to_id));
-  return { nodes, edges: edges.slice(0, 100), truncated: reached.length > 50 || edges.length > 100 };
+  return {
+    positions,
+    scale: Number.isFinite(saved.scale) && saved.scale >= .6 && saved.scale <= 1.8 ? saved.scale : 1,
+    pan: Array.isArray(saved.pan) && saved.pan.length === 2 && saved.pan.every((value) => Number.isFinite(value) && Math.abs(value) <= 3) ? saved.pan : [0, 0],
+  };
 }
 
 export function scopeLabel(record) {
