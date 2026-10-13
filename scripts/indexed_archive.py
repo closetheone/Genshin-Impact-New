@@ -1,6 +1,8 @@
 """Bounded reads from validated SQLite indexes; live restrictions in one transaction."""
 import json
 import sqlite3
+import threading
+from collections import OrderedDict
 from contextlib import contextmanager
 
 from archive_store import StoreError, SnapshotNotFound, connect, ensure_schema
@@ -8,6 +10,66 @@ from graph_archive import GraphUnavailable, graph_view, relation_view
 from query_index import VERSION
 from search_archive import fingerprint, encode_cursor, decode_cursor, ordered_passages
 from validate_sample import require
+
+
+_TOPOLOGY_CACHE = OrderedDict()
+_TOPOLOGY_CACHE_LOCK = threading.RLock()
+_TOPOLOGY_CACHE_LIMIT = 8
+_SEARCH_CACHE = OrderedDict()
+_SEARCH_CACHE_LIMIT = 6
+_PAGE_CACHE = OrderedDict()
+_PAGE_CACHE_LIMIT = 12
+
+
+def _cache_get(key):
+    with _TOPOLOGY_CACHE_LOCK:
+        value = _TOPOLOGY_CACHE.get(key)
+        if value is not None:
+            _TOPOLOGY_CACHE.move_to_end(key)
+        return value
+
+
+def _cache_put(key, value):
+    with _TOPOLOGY_CACHE_LOCK:
+        _TOPOLOGY_CACHE[key] = value
+        _TOPOLOGY_CACHE.move_to_end(key)
+        while len(_TOPOLOGY_CACHE) > _TOPOLOGY_CACHE_LIMIT:
+            _TOPOLOGY_CACHE.popitem(last=False)
+        return value
+
+
+def _search_get(key):
+    with _TOPOLOGY_CACHE_LOCK:
+        value = _SEARCH_CACHE.get(key)
+        if value is not None:
+            _SEARCH_CACHE.move_to_end(key)
+        return value
+
+
+def _search_put(key, value):
+    with _TOPOLOGY_CACHE_LOCK:
+        _SEARCH_CACHE[key] = value
+        _SEARCH_CACHE.move_to_end(key)
+        while len(_SEARCH_CACHE) > _SEARCH_CACHE_LIMIT:
+            _SEARCH_CACHE.popitem(last=False)
+        return value
+
+
+def _page_get(key):
+    with _TOPOLOGY_CACHE_LOCK:
+        value = _PAGE_CACHE.get(key)
+        if value is not None:
+            _PAGE_CACHE.move_to_end(key)
+        return value
+
+
+def _page_put(key, value):
+    with _TOPOLOGY_CACHE_LOCK:
+        _PAGE_CACHE[key] = value
+        _PAGE_CACHE.move_to_end(key)
+        while len(_PAGE_CACHE) > _PAGE_CACHE_LIMIT:
+            _PAGE_CACHE.popitem(last=False)
+        return value
 
 
 @contextmanager
@@ -47,7 +109,12 @@ class IndexedArchive:
         self.snapshot = snapshot
         self.has_backlinks = bool(index['has_backlinks'])
         self._ordered = None
+        self._ordered_index = None
         self._order_adjustments = None
+        self._visible_rows = None
+        self._visible_ids = None
+        self._visible_links = None
+        self._dense_order = False
         self.scopes = sorted(set(scopes)); self.purpose = purpose
         self.mask = sum(1 << self.metadata['scope_ids'].index(scope) for scope in self.scopes)
         self.meta = {key: self.metadata[key] for key in ('dataset_kind', 'notice', 'snapshot_id')}
@@ -55,6 +122,8 @@ class IndexedArchive:
         # Conservative invalidation: any restriction update invalidates continuations,
         # including old snapshots. No raw policy counts or revision are exposed.
         self.revision = fingerprint({'snapshot': row['content_hash'], 'policy': state['policy_revision']})
+        database_path = connection.execute('PRAGMA database_list').fetchone()[2]
+        self.topology_cache_key = (database_path, snapshot, tuple(self.scopes), purpose, self.revision)
         self.params = {'snapshot': snapshot, 'mask': self.mask, 'purpose': purpose}
         self.cte = '''WITH allowed_sources AS MATERIALIZED (
           SELECT s.id FROM source_policies s
@@ -101,9 +170,9 @@ class IndexedArchive:
             parameters = {**(parameters or {}), 'take': limit[0], 'skip': limit[1]}
         result = [json.loads(row[0]) for row in self.rows(sql, parameters)]
         if collection == 'passages':
+            links = self.visible_links()
             for passage in result:
-                visible = {row[0] for row in self.rows('SELECT p.id FROM query_links l CROSS JOIN passages p ON l.to_id=p.id WHERE l.snapshot_id=:snapshot AND l.from_id=:id', {'id': passage['id']})}
-                passage['next_ids'] = [identifier for identifier in passage['next_ids'] if identifier in visible]
+                passage['next_ids'] = [identifier for identifier in passage['next_ids'] if identifier in links.get(passage['id'], ())]
         elif collection == 'relationships':
             for relation in result:
                 allowed = {row[0] for row in self.rows('SELECT group_number FROM groups WHERE relation_id=:id', {'id': relation['id']})}
@@ -120,12 +189,17 @@ class IndexedArchive:
         if not self.has_backlinks:
             return {}
         if self._order_adjustments is None:
+            cached = _cache_get(('linked', self.topology_cache_key))
+            if cached is not None:
+                self._order_adjustments = cached
+                return cached
+            links = self.visible_links()
             nodes = {}
-            for row in self.rows('''SELECT l.from_id,l.to_id,a.position AS a_pos,b.position AS b_pos
-                FROM query_links l CROSS JOIN passages a ON a.id=l.from_id
-                CROSS JOIN passages b ON b.id=l.to_id WHERE l.snapshot_id=:snapshot'''):
-                nodes.setdefault(row['from_id'], {'id': row['from_id'], 'position': row['a_pos'], 'next_ids': []})['next_ids'].append(row['to_id'])
-                nodes.setdefault(row['to_id'], {'id': row['to_id'], 'position': row['b_pos'], 'next_ids': []})
+            positions = {row['id']: row['position'] for row in self.visible_passage_rows()}
+            for from_id, following_ids in links.items():
+                nodes.setdefault(from_id, {'id': from_id, 'position': positions[from_id], 'next_ids': []})['next_ids'].extend(following_ids)
+                for following in following_ids:
+                    nodes.setdefault(following, {'id': following, 'position': positions[following], 'next_ids': []})
             ordered = ordered_passages(sorted(nodes.values(), key=lambda p: p['position']))
             released = -1
             adjustments = {}
@@ -133,10 +207,32 @@ class IndexedArchive:
                 released = max(released, node['position'])
                 adjustments[node['id']] = (released, sequence)
             self._order_adjustments = adjustments
+            _cache_put(('linked', self.topology_cache_key), self._order_adjustments)
         return self._order_adjustments
 
     def ordered_page(self, where, parameters, limit):
+        if not self.has_backlinks and where == '1':
+            sql = 'SELECT v.id FROM passages v ORDER BY v.position'
+            params = dict(parameters or {})
+            if limit is not None:
+                sql += ' LIMIT :take OFFSET :skip'
+                params.update(take=limit[0], skip=limit[1])
+            return [row['id'] for row in self.rows(sql, params)]
+        if self.has_backlinks and len(self.visible_links()) > 5000:
+            ordered = self.ordered_ids()
+            if where == '1':
+                return ordered[limit[1]:limit[1] + limit[0]] if limit is not None else ordered
+            rows = self.rows(f'SELECT v.id FROM passages v WHERE {where}', parameters)
+            matching = {row['id'] for row in rows}
+            identifiers = [identifier for identifier in ordered if identifier in matching]
+            return identifiers[limit[1]:limit[1] + limit[0]] if limit is not None else identifiers
         linked = self.linked_order()
+        if self._dense_order:
+            rows = self.rows(f'SELECT v.id FROM passages v WHERE {where}', parameters)
+            identifiers = sorted((row['id'] for row in rows), key=self._ordered_index.__getitem__)
+            if limit is not None:
+                return identifiers[limit[1]:limit[1] + limit[0]]
+            return identifiers
         params = {**(parameters or {}), 'linked': json.dumps(list(linked))}
         matches = self.rows(f'''SELECT v.id,v.position FROM json_each(:linked) wanted
             CROSS JOIN passages v ON v.id=wanted.value WHERE {where}''', params) if linked else []
@@ -162,12 +258,40 @@ class IndexedArchive:
         # Rare out-of-order source occurrences need topology of the visible graph,
         # not a filtered global ranking. Fetch only IDs/links, never all text bodies.
         if self._ordered is None:
-            nodes = {row[0]: {'id': row[0], 'next_ids': []} for row in self.rows('SELECT id FROM passages ORDER BY position')}
-            for row in self.connection.execute('SELECT from_id,to_id FROM query_links WHERE snapshot_id=?', (self.snapshot,)):
-                if row[0] in nodes and row[1] in nodes:
-                    nodes[row[0]]['next_ids'].append(row[1])
-            self._ordered = [p['id'] for p in ordered_passages(list(nodes.values()))]
+            cached = _cache_get(('ordered', self.topology_cache_key))
+            if cached is not None:
+                self._ordered, self._ordered_index = cached
+                return self._ordered
+            links = self.visible_links()
+            nodes = [{'id': row['id'], 'next_ids': list(links.get(row['id'], ())) }
+                     for row in self.visible_passage_rows()]
+            self._ordered = [p['id'] for p in ordered_passages(nodes)]
+            self._ordered_index = {identifier: rank for rank, identifier in enumerate(self._ordered)}
+            _cache_put(('ordered', self.topology_cache_key), (self._ordered, self._ordered_index))
         return self._ordered
+
+    def visible_passage_rows(self):
+        if self._visible_rows is None:
+            cached = _cache_get(('rows', self.topology_cache_key))
+            self._visible_rows = cached if cached is not None else _cache_put(
+                ('rows', self.topology_cache_key), self.rows('SELECT id,position FROM passages ORDER BY position'))
+            self._visible_ids = {row['id'] for row in self._visible_rows}
+        return self._visible_rows
+
+    def visible_links(self):
+        if self._visible_links is None:
+            cached = _cache_get(('links', self.topology_cache_key))
+            if cached is not None:
+                self._visible_links = cached
+                return cached
+            visible = self._visible_ids if self._visible_ids is not None else {row['id'] for row in self.visible_passage_rows()}
+            links = {}
+            for row in self.connection.execute('SELECT from_id,to_id FROM query_links WHERE snapshot_id=?', (self.snapshot,)):
+                if row['from_id'] in visible and row['to_id'] in visible:
+                    links.setdefault(row['from_id'], []).append(row['to_id'])
+            self._visible_links = links
+            _cache_put(('links', self.topology_cache_key), links)
+        return self._visible_links
 
     def selected(self, collection, identifiers):
         if not identifiers:
@@ -190,12 +314,23 @@ class IndexedArchive:
             where.append(f'instr(v.text_norm,:term{number})>0'); params[f'term{number}'] = term
         # The current contract only accepts the quest category, so all/quest have identical matches.
         condition = ' AND '.join(where)
-        speakers = self.rows(f'''SELECT coalesce(v.speaker_id,"narration") AS speaker,count(*) AS n,
-            sum(CASE WHEN {condition} THEN 1 ELSE 0 END) AS matches
-            FROM passages v GROUP BY speaker ORDER BY speaker''', params)
-        total = sum(row['matches'] for row in speakers)
+        cache_key = (self.topology_cache_key, tuple(sorted(query.items())))
+        cached = _search_get(cache_key)
+        if cached is None:
+            speakers = self.rows(f'''SELECT coalesce(v.speaker_id,"narration") AS speaker,count(*) AS n,
+                sum(CASE WHEN {condition} THEN 1 ELSE 0 END) AS matches
+                FROM passages v GROUP BY speaker ORDER BY speaker''', params)
+            total = sum(row['matches'] for row in speakers)
+            if total:
+                matching_ids = self.ordered_page(condition, params, None)
+            else:
+                matching_ids = []
+            cached = _search_put(cache_key, (matching_ids, speakers, total))
+        matching_ids, speakers, total = cached
         require(offset % query['limit'] == 0 and (offset == 0 or offset < total), 'cursor outside results')
-        results = self.records('passages', condition, params, order='v.sort_rank', limit=(query['limit'], offset)) if total else []
+        page_ids = matching_ids[offset:offset + query['limit']]
+        payloads = {passage['id']: passage for passage in self.selected('passages', set(page_ids))}
+        results = [payloads[identifier] for identifier in page_ids]
         count = sum(row['n'] for row in speakers)
         characters = self.selected('characters', {row['speaker'] for row in speakers if row['speaker'] != 'narration'})
         counts = self.counts(passage_count=count)
@@ -264,10 +399,24 @@ class IndexedArchive:
             rows = self.rows('SELECT sort_rank FROM passages WHERE id=:id', {'id': target})
             if not rows:
                 raise GraphUnavailable('这个位置在当前范围、用途或快照中不可用，未自动扩大范围。')
-            preceding = self.ordered_ids().index(target) if self.has_backlinks else self.rows('SELECT count(*) FROM passages WHERE sort_rank<:rank', {'rank': rows[0][0]})[0][0]
+            if self.has_backlinks:
+                self.ordered_ids()
+                preceding = self._ordered_index[target]
+                self._dense_order = True
+                self._order_adjustments = {}
+            else:
+                preceding = self.rows('SELECT count(*) FROM passages WHERE sort_rank<:rank', {'rank': rows[0][0]})[0][0]
             offset = preceding // limit * limit
         require(offset % limit == 0 and (offset == 0 or offset < total), 'reader cursor outside results')
-        passages = self.records('passages', order='v.sort_rank', limit=(limit, offset))
+        page_key = (self.topology_cache_key, offset, limit)
+        with _TOPOLOGY_CACHE_LOCK:
+            passages = _PAGE_CACHE.get(page_key)
+            if passages is None:
+                passages = self.records('passages', order='v.sort_rank', limit=(limit, offset))
+                _PAGE_CACHE[page_key] = passages
+                _PAGE_CACHE.move_to_end(page_key)
+                while len(_PAGE_CACHE) > _PAGE_CACHE_LIMIT:
+                    _PAGE_CACHE.popitem(last=False)
         result = self.context(passages)
         result['passages'] = passages  # Visible off-page next links remain navigable.
         result['target_id'] = target if target in {p['id'] for p in passages} else None
