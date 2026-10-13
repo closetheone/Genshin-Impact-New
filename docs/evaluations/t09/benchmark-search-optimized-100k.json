@@ -1,0 +1,586 @@
+{
+  "dataset_kind": "synthetic",
+  "generated_at_utc": "2026-10-13T02:14:54Z",
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "python": "3.13.3",
+    "sqlite": "3.49.2",
+    "logical_cpus": 8,
+    "cpu": "Apple M1",
+    "memory_bytes": "8589934592"
+  },
+  "network": "HTTP over loopback; server and client in same Python process",
+  "storage": "SQLite query indexes; shared dependency checks, fused text/count/facet scan, sparse topology page merge; no FTS or result cache",
+  "scope_ids": [
+    "opening"
+  ],
+  "passages": 100000,
+  "concurrency": 10,
+  "requests_per_warm_scenario": 30,
+  "cold_definition": "First application request; OS disk cache is NOT flushed",
+  "latency_definition": "Client start to full body read and JSON parse; errors are recorded separately",
+  "limitations": [
+    "Short synthetic passages and small star graph; not representative real text or browser layout",
+    "Small local baseline, not a production load or availability certification"
+  ],
+  "import_seconds": 5.6545,
+  "database_bytes": 110264320,
+  "first_search": {
+    "ok": true,
+    "seconds": 0.0902,
+    "bytes": 4839,
+    "query": "物资核对"
+  },
+  "search": {
+    "requests": 30,
+    "errors": 0,
+    "p50_seconds": 0.3783,
+    "p95_seconds": 0.5097,
+    "max_seconds": 0.5197,
+    "response_bytes_max": 4839,
+    "samples": [
+      {
+        "ok": true,
+        "seconds": 0.4166,
+        "bytes": 4839,
+        "query": "物资核对"
+      },
+      {
+        "ok": true,
+        "seconds": 0.4196,
+        "bytes": 4839,
+        "query": "组号07"
+      },
+      {
+        "ok": true,
+        "seconds": 0.4314,
+        "bytes": 1529,
+        "query": "不存在的负载词"
+      },
+      {
+        "ok": true,
+        "seconds": 0.5197,
+        "bytes": 4839,
+        "query": "物资核对"
+      },
+      {
+        "ok": true,
+        "seconds": 0.5053,
+        "bytes": 4839,
+        "query": "组号07"
+      },
+      {
+        "ok": true,
+        "seconds": 0.4532,
+        "bytes": 1529,
+        "query": "不存在的负载词"
+      },
+      {
+        "ok": true,
+        "seconds": 0.4986,
+        "bytes": 4839,
+        "query": "物资核对"
+      },
+      {
+        "ok": true,
+        "seconds": 0.4865,
+        "bytes": 4839,
+        "query": "组号07"
+      },
+      {
+        "ok": true,
+        "seconds": 0.4775,
+        "bytes": 1529,
+        "query": "不存在的负载词"
+      },
+      {
+        "ok": true,
+        "seconds": 0.5097,
+        "bytes": 4839,
+        "query": "物资核对"
+      },
+      {
+        "ok": true,
+        "seconds": 0.378,
+        "bytes": 4839,
+        "query": "组号07"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3652,
+        "bytes": 1529,
+        "query": "不存在的负载词"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3701,
+        "bytes": 4839,
+        "query": "物资核对"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3871,
+        "bytes": 4839,
+        "query": "组号07"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3706,
+        "bytes": 1529,
+        "query": "不存在的负载词"
+      },
+      {
+        "ok": true,
+        "seconds": 0.4013,
+        "bytes": 4839,
+        "query": "物资核对"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3967,
+        "bytes": 4839,
+        "query": "组号07"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3385,
+        "bytes": 1529,
+        "query": "不存在的负载词"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3653,
+        "bytes": 4839,
+        "query": "物资核对"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3813,
+        "bytes": 4839,
+        "query": "组号07"
+      },
+      {
+        "ok": true,
+        "seconds": 0.352,
+        "bytes": 1529,
+        "query": "不存在的负载词"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3456,
+        "bytes": 4839,
+        "query": "物资核对"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3786,
+        "bytes": 4839,
+        "query": "组号07"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3579,
+        "bytes": 1529,
+        "query": "不存在的负载词"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3701,
+        "bytes": 4839,
+        "query": "物资核对"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3704,
+        "bytes": 4839,
+        "query": "组号07"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3539,
+        "bytes": 1529,
+        "query": "不存在的负载词"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3385,
+        "bytes": 4839,
+        "query": "物资核对"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3468,
+        "bytes": 4839,
+        "query": "组号07"
+      },
+      {
+        "ok": true,
+        "seconds": 0.3384,
+        "bytes": 1529,
+        "query": "不存在的负载词"
+      }
+    ]
+  },
+  "search_by_query": {
+    "物资核对": {
+      "requests": 10,
+      "errors": 0,
+      "p50_seconds": 0.3857,
+      "p95_seconds": 0.5197,
+      "max_seconds": 0.5197,
+      "response_bytes_max": 4839
+    },
+    "组号07": {
+      "requests": 10,
+      "errors": 0,
+      "p50_seconds": 0.3842,
+      "p95_seconds": 0.5053,
+      "max_seconds": 0.5053,
+      "response_bytes_max": 4839
+    },
+    "不存在的负载词": {
+      "requests": 10,
+      "errors": 0,
+      "p50_seconds": 0.3616,
+      "p95_seconds": 0.4775,
+      "max_seconds": 0.4775,
+      "response_bytes_max": 1529
+    }
+  },
+  "graph": {
+    "requests": 30,
+    "errors": 0,
+    "p50_seconds": 0.2298,
+    "p95_seconds": 0.2788,
+    "max_seconds": 0.2911,
+    "response_bytes_max": 31835,
+    "samples": [
+      {
+        "ok": true,
+        "seconds": 0.2616,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2721,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2385,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2482,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2088,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2495,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2317,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2731,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2646,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2717,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2187,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2279,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2143,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2297,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2262,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2271,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2657,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2397,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2788,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2205,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2911,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2177,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2129,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2305,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2298,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2111,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2154,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.2057,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.1907,
+        "bytes": 31835
+      },
+      {
+        "ok": true,
+        "seconds": 0.1717,
+        "bytes": 31835
+      }
+    ]
+  },
+  "ai_passage": {
+    "requests": 30,
+    "errors": 0,
+    "p50_seconds": 0.0561,
+    "p95_seconds": 0.0718,
+    "max_seconds": 0.0719,
+    "response_bytes_max": 2337,
+    "samples": [
+      {
+        "ok": true,
+        "seconds": 0.0674,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0551,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0676,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0654,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0664,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0719,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0718,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0714,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0691,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0707,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0187,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0115,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0567,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0378,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0381,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0567,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0556,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0586,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0616,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0616,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0598,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0527,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0471,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0462,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.035,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0341,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0338,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0322,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0309,
+        "bytes": 2337
+      },
+      {
+        "ok": true,
+        "seconds": 0.0281,
+        "bytes": 2337
+      }
+    ]
+  },
+  "service_targets": {
+    "search": true,
+    "graph": true
+  },
+  "during_idempotent_import": {
+    "status": "unchanged",
+    "import_seconds": 2.161,
+    "query": {
+      "ok": true,
+      "seconds": 0.6031,
+      "bytes": 4839,
+      "query": "组号07"
+    }
+  },
+  "peak_rss_bytes": 524058624
+}

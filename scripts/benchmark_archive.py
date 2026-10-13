@@ -90,7 +90,7 @@ def run(count=100000, concurrency=10, requests=30):
     data = synthetic_sample(count)
     report = {'dataset_kind': 'synthetic', 'generated_at_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
               'environment': machine(), 'network': 'HTTP over loopback; server and client in same Python process',
-              'storage': 'SQLite snapshots; import-time validated query indexes with bounded indexed reads; no FTS or cache',
+              'storage': 'SQLite query indexes; shared dependency checks, fused text/count/facet scan, sparse topology page merge; no FTS or result cache',
               'scope_ids': ['opening'], 'passages': count, 'concurrency': concurrency, 'requests_per_warm_scenario': requests,
               'cold_definition': 'First application request; OS disk cache is NOT flushed',
               'latency_definition': 'Client start to full body read and JSON parse; errors are recorded separately',
@@ -131,15 +131,19 @@ def run(count=100000, concurrency=10, requests=30):
                     expected = [expected_broad, len(range(107, count, 100)), 0][index % 3]
                     assert result['pagination']['total'] == expected, (result['pagination']['total'], expected)
                     assert len(result['results']) <= 8
+                    positions = [range(32, min(count, 40)), range(107, min(count, 907), 100), []][index % 3]
+                    assert [row['id'] for row in result['results']] == [f'passage:bench-{position:06}' for position in positions]
                 elif kind == 'graph':
                     assert len(result['characters']) <= 50 and len(result['relationships']) <= 100
                     assert result['truncated']
                 else:
                     assert result['purpose'] == 'external_ai' and result['target_id'] == 'passage:03'
-                return {'ok': True, 'seconds': round(time.perf_counter()-started, 4), 'bytes': size}
+                return {'ok': True, 'seconds': round(time.perf_counter()-started, 4), 'bytes': size,
+                        **({'query': query} if kind == 'search' else {})}
             except Exception as error:
                 return {'ok': False, 'seconds': round(time.perf_counter()-started, 4), 'bytes': size,
-                        'error': f'{type(error).__name__}: {error}'}
+                        'error': f'{type(error).__name__}: {error}',
+                        **({'query': query} if kind == 'search' else {})}
         try:
             report['first_search'] = request_one('search', 0)
             print(json.dumps({'phase': 'first_search', **report['first_search']}), file=sys.stderr, flush=True)
@@ -148,6 +152,11 @@ def run(count=100000, concurrency=10, requests=30):
                 with ThreadPoolExecutor(max_workers=concurrency) as executor:
                     rows = list(executor.map(lambda index: request_one(kind, index), range(requests)))
                 report[kind] = summarize(rows)
+                if kind == 'search':
+                    report['search_by_query'] = {query: {key: value for key, value in
+                        summarize([row for row in rows if row.get('query') == query]).items() if key != 'samples'}
+                        for query in ('物资核对', '组号07', '不存在的负载词')
+                        if any(row.get('query') == query for row in rows)}
                 print(json.dumps({'phase': kind, **{key: value for key, value in report[kind].items() if key != 'samples'}}), file=sys.stderr, flush=True)
             report['service_targets'] = {kind: report[kind]['errors'] == 0 and report[kind]['p95_seconds'] <= 1 for kind in ('search', 'graph')}
             # Idempotent import under concurrent requests; no active version change.

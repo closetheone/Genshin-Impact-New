@@ -1,4 +1,5 @@
 import json
+import random
 from contextlib import closing
 from pathlib import Path
 import tempfile
@@ -135,6 +136,77 @@ class IndexedTests(unittest.TestCase):
             archive.reader(None, None, SECRET)
             archive.graph(options(), SECRET)
         self.assertEqual(self.database.read_bytes(), before)
+
+    def test_sparse_order_matches_full_topology_through_all_pages(self):
+        # Shuffled DAGs mix backward links, joins, isolated nodes and invisible
+        # predecessors. Match filtering must happen after visible topology.
+        for seed in range(6):
+            rng = random.Random(seed)
+            data = next_snapshot(SAMPLE, f'order-{seed}')
+            template = data['passages'][0]
+            data['relationships'] = [{**data['relationships'][0], 'evidence_groups': [['passage:random-001']]}]
+            data['passages'] = [{**template, 'id': f'passage:random-{index:03}',
+                'text': '命中' if index % 3 else '其他',
+                'required_scope_ids': ['opening', 'later'] if index % 5 == 0 else ['opening'],
+                'source_locator': f'data/samples/story.json#/passages/{index}', 'next_ids': []}
+                for index in range(60)]
+            order = list(range(60)); rng.shuffle(order)
+            for position, index in enumerate(order):
+                if position % 3:
+                    data['passages'][index]['next_ids'] = [data['passages'][following]['id']
+                        for following in rng.sample(order[position + 1:], min(2, len(order) - position - 1))]
+            data['withdrawn_ids'] = [data['passages'][seed]['id']]
+            import_snapshot(data, self.database, activate=True)
+            stored = load_snapshot(self.database)
+            for scopes in (['opening'], ['opening', 'later']):
+                for query in ('', '命中'):
+                    with self.subTest(seed=seed, scopes=scopes, query=query):
+                        view = project(stored, scopes)
+                        expected = [p for p in ordered_passages(view['passages']) if query in p['text']]
+                        with indexed_view(self.database, None, scopes, 'display') as archive:
+                            cursor = ''; actual = []
+                            while True:
+                                page = archive.search(search_options({'q': [query], 'limit': ['7'],
+                                    'snapshot': [data['snapshot_id']], **({'cursor': [cursor]} if cursor else {})}), SECRET)
+                                actual.extend(page['results'])
+                                self.assertEqual(page['pagination']['total'], len(expected))
+                                cursor = page['pagination']['next_cursor']
+                                if not cursor:
+                                    break
+                            self.assertEqual(actual, expected)
+
+    def test_search_normalization_literal_characters_and_keyword_and(self):
+        data = next_snapshot(SAMPLE, 'normalization')
+        data['passages'][0]['text'] = 'ＡＢＣ\t  中文词句\n"%_" 🙂🙂🙂 abC'
+        import_snapshot(data, self.database, activate=True)
+        view = project(data, ['opening'])
+        with indexed_view(self.database, None, ['opening'], 'display') as archive:
+            for query in ('ＡＢＣ', 'ABC', 'abc', '中文', '文', '"%_"', '🙂🙂🙂', 'ＡＢＣ\n中文词句', '中文词句 ABC'):
+                for mode in ('literal', 'keywords'):
+                    for speaker in ('all', 'narration', 'person:student'):
+                        with self.subTest(query=query, mode=mode, speaker=speaker):
+                            opts = search_options({'q': [query], 'mode': [mode], 'speaker': [speaker]})
+                            actual = archive.search(opts, SECRET)
+                            expected = search_view(view, opts, SECRET)
+                            self.assertEqual(actual['results'], expected['results'])
+                            self.assertEqual(actual['pagination']['total'], expected['pagination']['total'])
+                            self.assertEqual(actual['facets'], expected['facets'])
+
+    def test_search_stale_cursor_and_facets_after_new_restrictions(self):
+        opts = search_options({'limit': ['2']})
+        with indexed_view(self.database, None, ['opening'], 'display') as archive:
+            first = archive.search(opts, SECRET)
+        update = next_snapshot(SAMPLE, 'restricted-search')
+        update['withdrawn_ids'] = ['passage:03', 'person:merchant']
+        import_snapshot(update, self.database, activate=True)
+        view = project(load_snapshot(self.database, SAMPLE['snapshot_id']), ['opening'])
+        with indexed_view(self.database, SAMPLE['snapshot_id'], ['opening'], 'display') as archive:
+            with self.assertRaises(StaleCursor):
+                archive.search({**opts, 'cursor': first['pagination']['next_cursor']}, SECRET)
+            result = archive.search(opts, SECRET)
+            expected = search_view(view, opts, SECRET)
+            for key in ('results', 'facets', 'stats'):
+                self.assertEqual(result[key], expected[key])
 
 
 if __name__ == '__main__':

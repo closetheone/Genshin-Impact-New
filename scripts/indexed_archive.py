@@ -47,6 +47,7 @@ class IndexedArchive:
         self.snapshot = snapshot
         self.has_backlinks = bool(index['has_backlinks'])
         self._ordered = None
+        self._order_adjustments = None
         self.scopes = sorted(set(scopes)); self.purpose = purpose
         self.mask = sum(1 << self.metadata['scope_ids'].index(scope) for scope in self.scopes)
         self.meta = {key: self.metadata[key] for key in ('dataset_kind', 'notice', 'snapshot_id')}
@@ -55,17 +56,21 @@ class IndexedArchive:
         # including old snapshots. No raw policy counts or revision are exposed.
         self.revision = fingerprint({'snapshot': row['content_hash'], 'policy': state['policy_revision']})
         self.params = {'snapshot': snapshot, 'mask': self.mask, 'purpose': purpose}
-        self.cte = '''WITH base AS NOT MATERIALIZED (
-          SELECT q.* FROM query_records q JOIN source_policies s ON q.source_id=s.id
+        self.cte = '''WITH allowed_sources AS MATERIALIZED (
+          SELECT s.id FROM source_policies s
+          WHERE json_extract(s.rights, '$.' || :purpose)='allowed'
+          AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=s.id)
+        ), base AS NOT MATERIALIZED (
+          SELECT q.* FROM query_records q
           WHERE q.snapshot_id=:snapshot AND (q.scope_mask & :mask)=q.scope_mask
-          AND json_extract(s.rights, '$.' || :purpose)='allowed'
-          AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=q.id OR w.id=q.source_id)
-        ), people AS NOT MATERIALIZED (SELECT * FROM base WHERE collection='characters'),
-        entries AS NOT MATERIALIZED (SELECT * FROM base WHERE collection='entries'),
+          AND q.source_id IN (SELECT id FROM allowed_sources)
+          AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=q.id)
+        ), people AS MATERIALIZED (SELECT * FROM base WHERE collection='characters'),
+        entries AS MATERIALIZED (SELECT * FROM base WHERE collection='entries'),
         passages AS NOT MATERIALIZED (
           SELECT p.* FROM base p WHERE p.collection='passages'
-          AND EXISTS(SELECT 1 FROM entries e WHERE e.id=p.entry_id)
-          AND (p.speaker_id IS NULL OR EXISTS(SELECT 1 FROM people c WHERE c.id=p.speaker_id))
+          AND p.entry_id IN (SELECT id FROM entries)
+          AND (p.speaker_id IS NULL OR p.speaker_id IN (SELECT id FROM people))
         ), groups AS NOT MATERIALIZED (
           SELECT e.relation_id,e.group_number FROM query_evidence e
           WHERE e.snapshot_id=:snapshot GROUP BY e.relation_id,e.group_number
@@ -82,16 +87,15 @@ class IndexedArchive:
 
     def records(self, collection, where='1', parameters=None, order='v.position', limit=None, identifiers=None):
         table = {'characters': 'people', 'entries': 'entries', 'passages': 'passages', 'relationships': 'relations'}[collection]
-        ordering = ''
-        if order == 'v.sort_rank' and self.has_backlinks:
-            ordering = ' JOIN json_each(:ordered) ord ON ord.value=v.id'
-            parameters = {**(parameters or {}), 'ordered': json.dumps(self.ordered_ids())}
-            order = 'CAST(ord.key AS INTEGER)'
+        if collection == 'passages' and order == 'v.sort_rank':
+            identifiers = self.ordered_page(where, parameters, limit)
+            payloads = {p['id']: p for p in self.selected('passages', set(identifiers))}
+            return [payloads[identifier] for identifier in identifiers]
         origin = f'{table} v'
         if identifiers is not None:
             origin = f'json_each(:selected_ids) wanted CROSS JOIN {table} v ON wanted.value=v.id'
             parameters = {**(parameters or {}), 'selected_ids': json.dumps(sorted(identifiers))}
-        sql = f'SELECT r.payload FROM {origin} CROSS JOIN records r ON r.snapshot_id=:snapshot AND r.id=v.id{ordering} WHERE {where} ORDER BY {order}'
+        sql = f'SELECT r.payload FROM {origin} CROSS JOIN records r ON r.snapshot_id=:snapshot AND r.id=v.id WHERE {where} ORDER BY {order}'
         if limit is not None:
             sql += ' LIMIT :take OFFSET :skip'
             parameters = {**(parameters or {}), 'take': limit[0], 'skip': limit[1]}
@@ -105,6 +109,54 @@ class IndexedArchive:
                 allowed = {row[0] for row in self.rows('SELECT group_number FROM groups WHERE relation_id=:id', {'id': relation['id']})}
                 relation['evidence_groups'] = [group for number, group in enumerate(relation['evidence_groups']) if number in allowed]
         return result
+
+    def linked_order(self):
+        """Merge isolated positions with the stable topology of visible linked nodes.
+
+        Kahn's position-priority traversal emits isolated nodes before the next
+        linked node's running maximum source position. Only linked nodes need
+        adjusted keys; filtering a global topological rank would be incorrect.
+        """
+        if not self.has_backlinks:
+            return {}
+        if self._order_adjustments is None:
+            nodes = {}
+            for row in self.rows('''SELECT l.from_id,l.to_id,a.position AS a_pos,b.position AS b_pos
+                FROM query_links l CROSS JOIN passages a ON a.id=l.from_id
+                CROSS JOIN passages b ON b.id=l.to_id WHERE l.snapshot_id=:snapshot'''):
+                nodes.setdefault(row['from_id'], {'id': row['from_id'], 'position': row['a_pos'], 'next_ids': []})['next_ids'].append(row['to_id'])
+                nodes.setdefault(row['to_id'], {'id': row['to_id'], 'position': row['b_pos'], 'next_ids': []})
+            ordered = ordered_passages(sorted(nodes.values(), key=lambda p: p['position']))
+            released = -1
+            adjustments = {}
+            for sequence, node in enumerate(ordered):
+                released = max(released, node['position'])
+                adjustments[node['id']] = (released, sequence)
+            self._order_adjustments = adjustments
+        return self._order_adjustments
+
+    def ordered_page(self, where, parameters, limit):
+        linked = self.linked_order()
+        params = {**(parameters or {}), 'linked': json.dumps(list(linked))}
+        matches = self.rows(f'''SELECT v.id,v.position FROM json_each(:linked) wanted
+            CROSS JOIN passages v ON v.id=wanted.value WHERE {where}''', params) if linked else []
+        sql = f'SELECT v.id,v.position FROM passages v WHERE {where}'
+        if linked:
+            sql += ' AND v.id NOT IN (SELECT value FROM json_each(:linked))'
+        sql += ' ORDER BY v.position'
+        start = 0
+        if limit is not None:
+            # At most len(matches) linked nodes can precede this page. Everything
+            # omitted from the ordinary prefix must therefore precede the page.
+            start = max(0, limit[1] - len(matches))
+            sql += ' LIMIT :take OFFSET :skip'
+            params.update(take=limit[0] + len(matches), skip=start)
+        ordinary = self.rows(sql, params)
+        merged = sorted([*ordinary, *matches], key=lambda row: linked.get(row['id'], (row['position'], -1)))
+        if limit is not None:
+            relative = limit[1] - start
+            merged = merged[relative:relative + limit[0]]
+        return [row['id'] for row in merged]
 
     def ordered_ids(self):
         # Rare out-of-order source occurrences need topology of the visible graph,
@@ -138,10 +190,12 @@ class IndexedArchive:
             where.append(f'instr(v.text_norm,:term{number})>0'); params[f'term{number}'] = term
         # The current contract only accepts the quest category, so all/quest have identical matches.
         condition = ' AND '.join(where)
-        total = self.rows(f'SELECT count(*) FROM passages v WHERE {condition}', params)[0][0]
+        speakers = self.rows(f'''SELECT coalesce(v.speaker_id,"narration") AS speaker,count(*) AS n,
+            sum(CASE WHEN {condition} THEN 1 ELSE 0 END) AS matches
+            FROM passages v GROUP BY speaker ORDER BY speaker''', params)
+        total = sum(row['matches'] for row in speakers)
         require(offset % query['limit'] == 0 and (offset == 0 or offset < total), 'cursor outside results')
         results = self.records('passages', condition, params, order='v.sort_rank', limit=(query['limit'], offset)) if total else []
-        speakers = self.rows('SELECT coalesce(speaker_id,"narration") AS speaker,count(*) AS n FROM passages GROUP BY speaker ORDER BY speaker')
         count = sum(row['n'] for row in speakers)
         characters = self.selected('characters', {row['speaker'] for row in speakers if row['speaker'] != 'narration'})
         counts = self.counts(passage_count=count)
