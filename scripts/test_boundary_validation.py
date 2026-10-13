@@ -1,12 +1,25 @@
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 
 from benchmark_boundaries import workload
+from benchmark_search_misses import queries, run as run_search_misses
 from check_live_restrictions import run_case
 from search_archive import ordered_passages
 from validate_sample import project
 
 
 class BoundaryTests(unittest.TestCase):
+    def test_search_miss_matrix_checks_eviction_and_withdrawal(self):
+        self.assertEqual(len(set(queries(30))), 30)
+        with redirect_stdout(StringIO()):
+            result = run_search_misses(count=300, requests=3, concurrency=3)
+        self.assertTrue(result['all_correct'])
+        for scenario in result['scenarios'].values():
+            self.assertEqual(scenario['cache_hits'], 0)
+            self.assertEqual(scenario['cache_misses'], scenario['requests'])
+        self.assertEqual(result['scenarios']['rotating_eight_queries']['requests'], 16)
+
     def test_long_and_linked_fixture_contract(self):
         for profile in ('long', 'linked', 'deep', 'combined'):
             data, spec = workload(profile, 300)

@@ -181,7 +181,7 @@ class IndexedArchive:
           SELECT q.id FROM query_records q WHERE q.snapshot_id=:snapshot AND q.collection='entries'
             AND (q.scope_mask & :mask)=q.scope_mask AND q.source_id IN (SELECT id FROM allowed_sources)
             AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=q.id)
-        ), passages AS MATERIALIZED (
+        ), passages AS NOT MATERIALIZED (
           SELECT q.* FROM query_records q WHERE q.snapshot_id=:snapshot AND q.collection='passages'
             AND (q.scope_mask & :mask)=q.scope_mask AND q.source_id IN (SELECT id FROM allowed_sources)
             AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=q.id)
@@ -415,14 +415,32 @@ class IndexedArchive:
         cache_key = (self.topology_cache_key, tuple(sorted(query.items())))
         cached = _search_get(cache_key)
         if cached is None:
-            speakers = self.rows(f'''SELECT coalesce(v.speaker_id,"narration") AS speaker,count(*) AS n,
-                sum(CASE WHEN {condition} THEN 1 ELSE 0 END) AS matches
-                FROM passages v GROUP BY speaker ORDER BY speaker''', params)
-            total = sum(row['matches'] for row in speakers)
-            if total:
-                matching_ids = self.ordered_page(condition, params, None)
+            # Evaluate text once, then materialize only IDs, positions, speakers
+            # and match flags. Grouping the original rows spills long text bodies.
+            # Aggregate in SQLite to avoid one Python row conversion per passage
+            # for every concurrent miss. Facets still count ALL visible passages.
+            rows = self.rows(f''', search_hits AS MATERIALIZED (
+                SELECT v.id,v.position,coalesce(v.speaker_id,"narration") AS speaker,
+                    CASE WHEN {condition} THEN 1 ELSE 0 END AS matched
+                FROM passages v
+            ) SELECT speaker,count(*) AS n,
+                json_group_array(json_array(id,position)) FILTER (WHERE matched) AS matches
+              FROM search_hits GROUP BY speaker ORDER BY speaker''', params)
+            matches = [match for row in rows for match in json.loads(row['matches'])]
+            if matches and self.has_backlinks:
+                # Sort hits by the topology of ALL visible nodes, so an unmatched
+                # or hidden predecessor cannot incorrectly reorder search hits.
+                if len(self.visible_links()) > 5000:
+                    self.ordered_ids()
+                    matches.sort(key=lambda row: self._ordered_index[row[0]])
+                else:
+                    linked = self.linked_order()
+                    matches.sort(key=lambda row: linked.get(row[0], (row[1], -1)))
             else:
-                matching_ids = []
+                matches.sort(key=lambda row: row[1])
+            matching_ids = [identifier for identifier, _ in matches]
+            speakers = [{'speaker': row['speaker'], 'n': row['n']} for row in rows]
+            total = len(matching_ids)
             cached = _search_put(cache_key, (matching_ids, speakers, total))
         matching_ids, speakers, total = cached
         require(offset % query['limit'] == 0 and (offset == 0 or offset < total), 'cursor outside results')

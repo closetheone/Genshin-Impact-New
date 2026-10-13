@@ -1,0 +1,623 @@
+{
+  "dataset_kind": "synthetic",
+  "workload": {
+    "passages": 100000,
+    "characters": 1024,
+    "fanout": 0
+  },
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "python": "3.13.3",
+    "sqlite": "3.49.2",
+    "logical_cpus": 8,
+    "cpu": "Apple M1",
+    "memory_bytes": "8589934592"
+  },
+  "generated_at_utc": "2026-10-13T06:38:58Z",
+  "implementation_sha256": "0e01c5625e20ca724f12956b422421f03233354c3af740090fa0657a50d6cd49",
+  "network": "Loopback HTTP; client and server share one Python process",
+  "latency_definition": "Full HTTP body read, JSON parse and oracle assertions; setup and writes excluded",
+  "limitations": [
+    "Synthetic data only; not production or real-story acceptance",
+    "OS disk cache is not flushed; topology caches may be warm",
+    "Only new_queries is concurrent; eviction and withdrawal are sequential to guarantee misses",
+    "Withdrawal timing excludes writer latency; concurrent policy changes have separate regression tests"
+  ],
+  "scenarios": {
+    "new_queries": {
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 2.2397,
+      "p95_seconds": 6.2215,
+      "max_seconds": 6.223,
+      "response_bytes_max": 169222,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 6.2207,
+          "bytes": 169136,
+          "query": "原创负"
+        },
+        {
+          "ok": true,
+          "seconds": 6.2103,
+          "bytes": 169222,
+          "query": "组号00"
+        },
+        {
+          "ok": true,
+          "seconds": 3.1194,
+          "bytes": 1503,
+          "query": "不存在的负载词02"
+        },
+        {
+          "ok": true,
+          "seconds": 6.2215,
+          "bytes": 169139,
+          "query": "原创负载"
+        },
+        {
+          "ok": true,
+          "seconds": 6.2211,
+          "bytes": 169222,
+          "query": "组号01"
+        },
+        {
+          "ok": true,
+          "seconds": 3.1585,
+          "bytes": 1503,
+          "query": "不存在的负载词05"
+        },
+        {
+          "ok": true,
+          "seconds": 6.223,
+          "bytes": 169142,
+          "query": "原创负载正"
+        },
+        {
+          "ok": true,
+          "seconds": 6.1965,
+          "bytes": 169222,
+          "query": "组号02"
+        },
+        {
+          "ok": true,
+          "seconds": 3.1866,
+          "bytes": 1503,
+          "query": "不存在的负载词08"
+        },
+        {
+          "ok": true,
+          "seconds": 6.2214,
+          "bytes": 169145,
+          "query": "原创负载正文"
+        },
+        {
+          "ok": true,
+          "seconds": 3.1418,
+          "bytes": 169222,
+          "query": "组号03"
+        },
+        {
+          "ok": true,
+          "seconds": 2.7015,
+          "bytes": 1503,
+          "query": "不存在的负载词11"
+        },
+        {
+          "ok": true,
+          "seconds": 3.0355,
+          "bytes": 169148,
+          "query": "原创负载正文只"
+        },
+        {
+          "ok": true,
+          "seconds": 1.8717,
+          "bytes": 169222,
+          "query": "组号04"
+        },
+        {
+          "ok": true,
+          "seconds": 2.1987,
+          "bytes": 1503,
+          "query": "不存在的负载词14"
+        },
+        {
+          "ok": true,
+          "seconds": 1.9199,
+          "bytes": 169151,
+          "query": "原创负载正文只供"
+        },
+        {
+          "ok": true,
+          "seconds": 2.2433,
+          "bytes": 169222,
+          "query": "组号05"
+        },
+        {
+          "ok": true,
+          "seconds": 2.2429,
+          "bytes": 1503,
+          "query": "不存在的负载词17"
+        },
+        {
+          "ok": true,
+          "seconds": 1.9073,
+          "bytes": 169154,
+          "query": "原创负载正文只供检"
+        },
+        {
+          "ok": true,
+          "seconds": 2.2315,
+          "bytes": 169222,
+          "query": "组号06"
+        },
+        {
+          "ok": true,
+          "seconds": 2.2366,
+          "bytes": 1503,
+          "query": "不存在的负载词20"
+        },
+        {
+          "ok": true,
+          "seconds": 1.9076,
+          "bytes": 169157,
+          "query": "原创负载正文只供检索"
+        },
+        {
+          "ok": true,
+          "seconds": 2.1912,
+          "bytes": 169222,
+          "query": "组号07"
+        },
+        {
+          "ok": true,
+          "seconds": 1.8251,
+          "bytes": 1503,
+          "query": "不存在的负载词23"
+        },
+        {
+          "ok": true,
+          "seconds": 1.3083,
+          "bytes": 169160,
+          "query": "原创负载正文只供检索边"
+        },
+        {
+          "ok": true,
+          "seconds": 1.5248,
+          "bytes": 169222,
+          "query": "组号08"
+        },
+        {
+          "ok": true,
+          "seconds": 1.5258,
+          "bytes": 1503,
+          "query": "不存在的负载词26"
+        },
+        {
+          "ok": true,
+          "seconds": 1.1684,
+          "bytes": 169163,
+          "query": "原创负载正文只供检索边界"
+        },
+        {
+          "ok": true,
+          "seconds": 1.2917,
+          "bytes": 169222,
+          "query": "组号09"
+        },
+        {
+          "ok": true,
+          "seconds": 1.287,
+          "bytes": 1503,
+          "query": "不存在的负载词29"
+        }
+      ],
+      "concurrency": 10,
+      "cache_hits": 0,
+      "cache_misses": 30,
+      "all_missed": true,
+      "within_one_second": false
+    },
+    "rotating_eight_queries": {
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.4515,
+      "p95_seconds": 0.5247,
+      "max_seconds": 0.5691,
+      "response_bytes_max": 169221,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.4971,
+          "bytes": 169221,
+          "query": "组号80"
+        },
+        {
+          "ok": true,
+          "seconds": 0.458,
+          "bytes": 169221,
+          "query": "组号81"
+        },
+        {
+          "ok": true,
+          "seconds": 0.459,
+          "bytes": 169221,
+          "query": "组号82"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4343,
+          "bytes": 169221,
+          "query": "组号83"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4322,
+          "bytes": 169221,
+          "query": "组号84"
+        },
+        {
+          "ok": true,
+          "seconds": 0.431,
+          "bytes": 169221,
+          "query": "组号85"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4356,
+          "bytes": 169221,
+          "query": "组号86"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4223,
+          "bytes": 169221,
+          "query": "组号87"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4196,
+          "bytes": 169221,
+          "query": "组号80"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4864,
+          "bytes": 169221,
+          "query": "组号81"
+        },
+        {
+          "ok": true,
+          "seconds": 0.5134,
+          "bytes": 169221,
+          "query": "组号82"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4922,
+          "bytes": 169221,
+          "query": "组号83"
+        },
+        {
+          "ok": true,
+          "seconds": 0.5247,
+          "bytes": 169221,
+          "query": "组号84"
+        },
+        {
+          "ok": true,
+          "seconds": 0.5041,
+          "bytes": 169221,
+          "query": "组号85"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4882,
+          "bytes": 169221,
+          "query": "组号86"
+        },
+        {
+          "ok": true,
+          "seconds": 0.5105,
+          "bytes": 169221,
+          "query": "组号87"
+        },
+        {
+          "ok": true,
+          "seconds": 0.5691,
+          "bytes": 169221,
+          "query": "组号80"
+        },
+        {
+          "ok": true,
+          "seconds": 0.439,
+          "bytes": 169221,
+          "query": "组号81"
+        },
+        {
+          "ok": true,
+          "seconds": 0.437,
+          "bytes": 169221,
+          "query": "组号82"
+        },
+        {
+          "ok": true,
+          "seconds": 0.41,
+          "bytes": 169221,
+          "query": "组号83"
+        },
+        {
+          "ok": true,
+          "seconds": 0.407,
+          "bytes": 169221,
+          "query": "组号84"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4088,
+          "bytes": 169221,
+          "query": "组号85"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4172,
+          "bytes": 169221,
+          "query": "组号86"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4502,
+          "bytes": 169221,
+          "query": "组号87"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4667,
+          "bytes": 169221,
+          "query": "组号80"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4693,
+          "bytes": 169221,
+          "query": "组号81"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4528,
+          "bytes": 169221,
+          "query": "组号82"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4595,
+          "bytes": 169221,
+          "query": "组号83"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4118,
+          "bytes": 169221,
+          "query": "组号84"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4196,
+          "bytes": 169221,
+          "query": "组号85"
+        }
+      ],
+      "concurrency": 1,
+      "cache_hits": 0,
+      "cache_misses": 30,
+      "all_missed": true,
+      "within_one_second": true
+    },
+    "after_withdrawal": {
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.6989,
+      "p95_seconds": 0.7776,
+      "max_seconds": 0.8837,
+      "response_bytes_max": 169151,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.6815,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6442,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7362,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6917,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6654,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6929,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7091,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7276,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.702,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6575,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6983,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7776,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7123,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7464,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6913,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6995,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7294,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.694,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7507,
+          "bytes": 169140,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6632,
+          "bytes": 169141,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6641,
+          "bytes": 169142,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7013,
+          "bytes": 169143,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6731,
+          "bytes": 169144,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6983,
+          "bytes": 169145,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.8837,
+          "bytes": 169146,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7344,
+          "bytes": 169147,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6865,
+          "bytes": 169148,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7084,
+          "bytes": 169149,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.6782,
+          "bytes": 169150,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.7401,
+          "bytes": 169151,
+          "query": "物资核对"
+        }
+      ],
+      "concurrency": 1,
+      "cache_hits": 0,
+      "cache_misses": 30,
+      "all_missed": true,
+      "within_one_second": true
+    }
+  },
+  "import_seconds": 25.3742,
+  "database_bytes": 867659776,
+  "before_withdrawal": {
+    "ok": true,
+    "seconds": 0.5056,
+    "bytes": 169139,
+    "query": "物资核对"
+  },
+  "all_correct": true
+}

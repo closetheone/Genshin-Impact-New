@@ -54,6 +54,21 @@ class IndexedTests(unittest.TestCase):
                         self.assertEqual(actual[key], expected[key])
                     self.assertEqual(archive.relationship('relation:mentor'), relation_view(view, 'relation:mentor'))
 
+    def test_grouped_search_restores_source_order_without_backlinks(self):
+        data = next_snapshot(SAMPLE, 'unlinked-search')
+        for passage in data['passages']:
+            passage['next_ids'] = []
+        import_snapshot(data, self.database, activate=True)
+        view = project(data, data['scope_ids'])
+        self.assertGreater(len({p['speaker_id'] for p in view['passages']}), 1)
+        with indexed_view(self.database, None, data['scope_ids'], 'display') as archive:
+            self.assertFalse(archive.has_backlinks)
+            opts = search_options({'limit': ['50']})
+            expected = search_view(view, opts, SECRET)
+            actual = archive.search(opts, SECRET)
+            for key in ('results', 'facets', 'stats'):
+                self.assertEqual(actual[key], expected[key])
+
     def test_reader_target_pages_and_cursor_bindings(self):
         with indexed_view(self.database, None, ['opening'], 'display') as archive:
             expected = ordered_passages(project(SAMPLE, ['opening'])['passages'])
