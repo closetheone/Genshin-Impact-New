@@ -1,0 +1,1211 @@
+{
+  "dataset_kind": "synthetic",
+  "profile": "linked",
+  "workload": {
+    "passages": 100000,
+    "characters": 96,
+    "fanout": 2,
+    "visible_passages": 89989,
+    "visible_links": 159962
+  },
+  "generated_at_utc": "2026-10-13T08:18:49Z",
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "python": "3.13.3",
+    "sqlite": "3.49.2",
+    "logical_cpus": 8,
+    "cpu": "Apple M1",
+    "memory_bytes": "8589934592"
+  },
+  "concurrency": 10,
+  "requests_per_scenario": 30,
+  "network": "Loopback HTTP, client and server share one Python process",
+  "latency_definition": "Client request start through full body read, JSON parse and oracle assertions",
+  "deep_page_definition": "90% match offset; trusted harness signs cursor before timing; preceding page walk excluded",
+  "limitations": [
+    "Synthetic text, not real story accuracy or production certification",
+    "OS disk cache not flushed; first requests are not cold-disk tests",
+    "Combined profile intentionally uses 20000 passages to bound local memory; not a 100k acceptance test",
+    "Each scenario runs separately; P95 uses nearest rank; RSS includes fixture/oracle setup"
+  ],
+  "scenarios": {
+    "broad_first": {
+      "first_request": {
+        "ok": true,
+        "seconds": 1.0551,
+        "bytes": 32111
+      },
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.0624,
+      "p95_seconds": 0.0677,
+      "max_seconds": 0.07,
+      "response_bytes_max": 32111,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.058,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0603,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0645,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0626,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0647,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0658,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0585,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0607,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0631,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0621,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0546,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0676,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0626,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0643,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0677,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.07,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0671,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0642,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0658,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0632,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0627,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0494,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0457,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0524,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.049,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0499,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0522,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0526,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0493,
+          "bytes": 32111
+        },
+        {
+          "ok": true,
+          "seconds": 0.0484,
+          "bytes": 32111
+        }
+      ],
+      "offset": 0,
+      "total": 89972,
+      "within_one_second": true
+    },
+    "rare_tail": {
+      "first_request": {
+        "ok": true,
+        "seconds": 0.0256,
+        "bytes": 32434
+      },
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.0612,
+      "p95_seconds": 0.072,
+      "max_seconds": 0.0733,
+      "response_bytes_max": 32434,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.0579,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0596,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0718,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0615,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0706,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0719,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.072,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0692,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0733,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.07,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0612,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0602,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.061,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0636,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0656,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0613,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0641,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0626,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.071,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0668,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0595,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0571,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0594,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0604,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.06,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0558,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0532,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0539,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0505,
+          "bytes": 32434
+        },
+        {
+          "ok": true,
+          "seconds": 0.0489,
+          "bytes": 32434
+        }
+      ],
+      "offset": 0,
+      "total": 999,
+      "within_one_second": true
+    },
+    "missing_tail": {
+      "first_request": {
+        "ok": true,
+        "seconds": 0.0036,
+        "bytes": 1511
+      },
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.044,
+      "p95_seconds": 0.0501,
+      "max_seconds": 0.0531,
+      "response_bytes_max": 1511,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.0477,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0436,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0433,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.045,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0436,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0531,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0454,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0468,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0455,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0489,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0397,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0391,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0435,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.043,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0458,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0496,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0486,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0467,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0501,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0425,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0452,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0444,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0455,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.041,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0399,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0394,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0394,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0385,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0383,
+          "bytes": 1511
+        },
+        {
+          "ok": true,
+          "seconds": 0.0344,
+          "bytes": 1511
+        }
+      ],
+      "offset": 0,
+      "total": 0,
+      "within_one_second": true
+    },
+    "broad_deep": {
+      "first_request": {
+        "ok": true,
+        "seconds": 0.0054,
+        "bytes": 32523
+      },
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.0593,
+      "p95_seconds": 0.0672,
+      "max_seconds": 0.0676,
+      "response_bytes_max": 32523,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.0624,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0582,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0585,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0588,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0606,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0672,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0662,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0643,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0626,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0648,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0613,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0562,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0676,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0602,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0608,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0579,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0642,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0599,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0631,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0624,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0489,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0573,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0533,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0505,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0564,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0518,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0449,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0504,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0488,
+          "bytes": 32523
+        },
+        {
+          "ok": true,
+          "seconds": 0.0501,
+          "bytes": 32523
+        }
+      ],
+      "offset": 80950,
+      "total": 89972,
+      "within_one_second": true
+    },
+    "reader_deep_target": {
+      "first_request": {
+        "ok": true,
+        "seconds": 0.4597,
+        "bytes": 31462
+      },
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.0241,
+      "p95_seconds": 0.0323,
+      "max_seconds": 0.033,
+      "response_bytes_max": 31462,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.0242,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.026,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0242,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.028,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0253,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0241,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.033,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0285,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0258,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0216,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.02,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0301,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0171,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0251,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0299,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0323,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0283,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0279,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0247,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0226,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0173,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0153,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0116,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0173,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.02,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0193,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0152,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0178,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0173,
+          "bytes": 31462
+        },
+        {
+          "ok": true,
+          "seconds": 0.0155,
+          "bytes": 31462
+        }
+      ],
+      "offset": 80950,
+      "total": 89989,
+      "within_one_second": true
+    },
+    "graph": {
+      "first_request": {
+        "ok": true,
+        "seconds": 0.0144,
+        "bytes": 31423
+      },
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.2481,
+      "p95_seconds": 0.301,
+      "max_seconds": 0.3023,
+      "response_bytes_max": 31423,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.2441,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2684,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2723,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.253,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2855,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2836,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.277,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2368,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2808,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2804,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.3023,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.301,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2859,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2676,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2488,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.1858,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2031,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.1961,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2823,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2022,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.257,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.242,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2474,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2283,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2209,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.213,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2144,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2129,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.2047,
+          "bytes": 31423
+        },
+        {
+          "ok": true,
+          "seconds": 0.1821,
+          "bytes": 31423
+        }
+      ],
+      "within_one_second": true
+    },
+    "ai_linked_neighbors": {
+      "first_request": {
+        "ok": true,
+        "seconds": 0.3962,
+        "bytes": 3319
+      },
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.0377,
+      "p95_seconds": 0.0431,
+      "max_seconds": 0.0449,
+      "response_bytes_max": 3319,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.0388,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0399,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0371,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0399,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0407,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0362,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0427,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0383,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0431,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0407,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0286,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0429,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0307,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0371,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0449,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0405,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0426,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0421,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0395,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0413,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0333,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0354,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0346,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0321,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0327,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0315,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0305,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.031,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0301,
+          "bytes": 3319
+        },
+        {
+          "ok": true,
+          "seconds": 0.0294,
+          "bytes": 3319
+        }
+      ],
+      "within_one_second": true
+    }
+  },
+  "import_seconds": 20.3608,
+  "database_bytes": 238899200,
+  "peak_rss_bytes": 355041280,
+  "all_correct": true,
+  "search_target_passed": true
+}

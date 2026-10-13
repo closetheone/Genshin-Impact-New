@@ -1,0 +1,277 @@
+{
+  "dataset_kind": "synthetic",
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "python": "3.13.3",
+    "sqlite": "3.49.2",
+    "logical_cpus": 8,
+    "cpu": "Apple M1",
+    "memory_bytes": "8589934592"
+  },
+  "sqlite_version": "3.49.2",
+  "generated_at_utc": "2026-10-13T08:07:46Z",
+  "implementation_sha256": "25d0fc1a4913d50adf1deebcbafc4ea7d7aca66417a0b87399a9fe8361a37112",
+  "limitations": [
+    "Read-only synthetic database; no HTTP or concurrent requests in this profile",
+    "Sequential new queries share topology/facet caches; OS disk cache is not flushed",
+    "cProfile adds overhead; SQL phase includes execute and fetch, not just instr",
+    "FTS5 uses up to 10000 visible texts plus edge cases in a separate in-memory database",
+    "FTS microbenchmark excludes visibility, sorting, payloads and HTTP; not an API latency"
+  ],
+  "searches": [
+    {
+      "query": "原创负",
+      "matches": 99968,
+      "seconds": 1.119857,
+      "phases_seconds": {
+        "candidate_plan": 0.000236,
+        "exact_match_sql": 0.833846,
+        "topology_sql": 0.200832,
+        "payload_and_metadata_sql": 0.004403,
+        "python_sort_including_keys": 0.056246,
+        "other_python_and_cache": 0.024294
+      }
+    },
+    {
+      "query": "物资核对",
+      "matches": 99968,
+      "seconds": 0.517229,
+      "phases_seconds": {
+        "candidate_plan": 0.000106,
+        "exact_match_sql": 0.433868,
+        "payload_and_metadata_sql": 0.001771,
+        "python_sort_including_keys": 0.051802,
+        "other_python_and_cache": 0.029682
+      }
+    },
+    {
+      "query": "组号07",
+      "matches": 999,
+      "seconds": 0.073051,
+      "phases_seconds": {
+        "candidate_plan": 8.9e-05,
+        "exact_match_sql": 0.056825,
+        "payload_and_metadata_sql": 0.014268,
+        "python_sort_including_keys": 0.000374,
+        "other_python_and_cache": 0.001495
+      }
+    },
+    {
+      "query": "不存在的负载词",
+      "matches": 0,
+      "seconds": 0.00127,
+      "phases_seconds": {
+        "candidate_plan": 0.000206,
+        "payload_and_metadata_sql": 0.000953,
+        "python_sort_including_keys": 0.0,
+        "other_python_and_cache": 0.000111
+      }
+    }
+  ],
+  "sql_variants": [
+    {
+      "query": "原创负",
+      "matches": 99968,
+      "materialized_group_seconds": 0.160815,
+      "flat_aggregate_seconds": 0.108317,
+      "note": "Flat aggregate excludes facets; measured separately below."
+    },
+    {
+      "query": "物资核对",
+      "matches": 99968,
+      "materialized_group_seconds": 0.403356,
+      "flat_aggregate_seconds": 0.348965,
+      "note": "Flat aggregate excludes facets; measured separately below."
+    },
+    {
+      "query": "组号07",
+      "matches": 999,
+      "materialized_group_seconds": 0.39863,
+      "flat_aggregate_seconds": 0.33091,
+      "note": "Flat aggregate excludes facets; measured separately below."
+    },
+    {
+      "query": "不存在的负载词",
+      "matches": 0,
+      "materialized_group_seconds": 0.413275,
+      "flat_aggregate_seconds": 0.338383,
+      "note": "Flat aggregate excludes facets; measured separately below."
+    }
+  ],
+  "uncached_facets_seconds": 0.111755,
+  "visible_passages": 99985,
+  "fts5": {
+    "available": true,
+    "sample_passages": 10011,
+    "build_seconds": 0.29664,
+    "cases": [
+      {
+        "query": "原创负",
+        "exact_matches": 9983,
+        "scan_seconds": 0.004901,
+        "candidates": 9983,
+        "candidate_seconds": 0.002938,
+        "candidate_and_exact_seconds": 0.004112,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "物资核对",
+        "exact_matches": 9983,
+        "scan_seconds": 0.02751,
+        "candidates": 9983,
+        "candidate_seconds": 0.002875,
+        "candidate_and_exact_seconds": 0.02838,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "组号07",
+        "exact_matches": 100,
+        "scan_seconds": 0.025842,
+        "candidates": 100,
+        "candidate_seconds": 0.000102,
+        "candidate_and_exact_seconds": 0.000372,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "不存在的负载词",
+        "exact_matches": 0,
+        "scan_seconds": 0.026891,
+        "candidates": 0,
+        "candidate_seconds": 3.7e-05,
+        "candidate_and_exact_seconds": 7e-06,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "abcdef",
+        "exact_matches": 2,
+        "scan_seconds": 0.026313,
+        "candidates": 2,
+        "candidate_seconds": 5.1e-05,
+        "candidate_and_exact_seconds": 2.3e-05,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "ＡＢＣ",
+        "exact_matches": 1,
+        "scan_seconds": 0.026392,
+        "candidates": 1,
+        "candidate_seconds": 2.6e-05,
+        "candidate_and_exact_seconds": 9e-06,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "\"_%\"",
+        "exact_matches": 1,
+        "scan_seconds": 0.026329,
+        "candidates": 1,
+        "candidate_seconds": 4.5e-05,
+        "candidate_and_exact_seconds": 1.4e-05,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "é",
+        "exact_matches": 1,
+        "scan_seconds": 0.026303,
+        "candidates": 0,
+        "candidate_seconds": 1.4e-05,
+        "candidate_and_exact_seconds": 3e-06,
+        "candidate_is_superset": false,
+        "exact_parity": false
+      },
+      {
+        "query": "🙂🚀界",
+        "exact_matches": 1,
+        "scan_seconds": 0.026178,
+        "candidates": 1,
+        "candidate_seconds": 4.4e-05,
+        "candidate_and_exact_seconds": 9e-06,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "空\u0000白",
+        "exact_matches": 1,
+        "scan_seconds": 0.02589,
+        "error": "unterminated string"
+      },
+      {
+        "query": "文",
+        "exact_matches": 9984,
+        "scan_seconds": 0.003889,
+        "candidates": 0,
+        "candidate_seconds": 1e-05,
+        "candidate_and_exact_seconds": 3e-06,
+        "candidate_is_superset": false,
+        "exact_parity": false
+      },
+      {
+        "query": "🙂🚀",
+        "exact_matches": 1,
+        "scan_seconds": 0.026209,
+        "candidates": 0,
+        "candidate_seconds": 1.2e-05,
+        "candidate_and_exact_seconds": 2e-06,
+        "candidate_is_superset": false,
+        "exact_parity": false
+      },
+      {
+        "query": "",
+        "exact_matches": 10011,
+        "scan_seconds": 0.003658,
+        "candidates": 0,
+        "candidate_seconds": 8e-06,
+        "candidate_and_exact_seconds": 2e-06,
+        "candidate_is_superset": false,
+        "exact_parity": false
+      },
+      {
+        "query": "甲乙丙 丁戊己",
+        "exact_matches": 1,
+        "scan_seconds": 0.025042,
+        "candidates": 1,
+        "candidate_seconds": 6.3e-05,
+        "candidate_and_exact_seconds": 2.4e-05,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "AaA",
+        "exact_matches": 1,
+        "scan_seconds": 0.026233,
+        "candidates": 1,
+        "candidate_seconds": 3e-05,
+        "candidate_and_exact_seconds": 9e-06,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "iii",
+        "exact_matches": 1,
+        "scan_seconds": 0.026264,
+        "candidates": 1,
+        "candidate_seconds": 3.2e-05,
+        "candidate_and_exact_seconds": 1e-05,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      },
+      {
+        "query": "%_\"",
+        "exact_matches": 1,
+        "scan_seconds": 0.026374,
+        "candidates": 1,
+        "candidate_seconds": 2.7e-05,
+        "candidate_and_exact_seconds": 8e-06,
+        "candidate_is_superset": true,
+        "exact_parity": true
+      }
+    ]
+  }
+}

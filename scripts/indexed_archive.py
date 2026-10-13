@@ -239,7 +239,8 @@ class IndexedArchive:
             linked_ids = set(links)
             linked_ids.update(identifier for values in links.values() for identifier in values)
             positions = {row['id']: row['position'] for row in self.passage_rows(
-                'SELECT id,position FROM passages WHERE id IN (SELECT value FROM json_each(:ids))',
+                '''SELECT v.id,v.position FROM json_each(:ids) wanted
+                   CROSS JOIN passages v ON v.id=wanted.value''',
                 {'ids': json.dumps(sorted(linked_ids))})}
             for from_id, following_ids in links.items():
                 nodes.setdefault(from_id, {'id': from_id, 'position': positions[from_id], 'next_ids': []})['next_ids'].extend(following_ids)
@@ -348,7 +349,8 @@ class IndexedArchive:
                 'SELECT from_id,to_id FROM query_links WHERE snapshot_id=?', (self.snapshot,)).fetchall()
             candidates = {identifier for row in pairs for identifier in (row['from_id'], row['to_id'])}
             visible = {row['id'] for row in self.passage_rows(
-                'SELECT id FROM passages WHERE id IN (SELECT value FROM json_each(:ids))',
+                '''SELECT v.id FROM json_each(:ids) wanted
+                   CROSS JOIN passages v ON v.id=wanted.value''',
                 {'ids': json.dumps(sorted(candidates))})}
             links = {}
             for row in pairs:
@@ -443,23 +445,16 @@ class IndexedArchive:
         cached = _search_get(cache_key)
         if cached is None:
             plan = self.candidate_plan(terms)
-            # Evaluate text once, then materialize only IDs, positions, speakers
-            # and match flags. Grouping the original rows spills long text bodies.
-            # Aggregate in SQLite to avoid one Python row conversion per passage
-            # for every concurrent miss. Facets still count ALL visible passages.
+            # Facets count ALL visible passages, independently of the query. Share
+            # that compact result across misses under the same visibility revision.
+            speakers = self.search_facets()
+            # Aggregate only hits, without materializing/grouping every visible
+            # passage again. Keep instr as the final literal-match authority.
             if plan['kind'] == 'scan':
-                rows = self.rows(f''', search_hits AS MATERIALIZED (
-                    SELECT v.id,v.position,coalesce(v.speaker_id,"narration") AS speaker,
-                        CASE WHEN {condition} THEN 1 ELSE 0 END AS matched
-                    FROM passages v
-                ) SELECT speaker,count(*) AS n,
-                    json_group_array(json_array(id,position)) FILTER (WHERE matched) AS matches
-                  FROM search_hits GROUP BY speaker ORDER BY speaker''', params)
-                matches = [match for row in rows for match in json.loads(row['matches'])]
-                speakers = [{'speaker': row['speaker'], 'n': row['n']} for row in rows]
-                _total_put(('search-facets', self.topology_cache_key), speakers)
+                rows = self.rows(f'''SELECT json_group_array(json_array(v.id,v.position)) AS matches
+                    FROM passages v WHERE {condition}''', params)
+                matches = json.loads(rows[0]['matches'])
             else:
-                speakers = self.search_facets()
                 # A gram match is only a superset. Recheck every term, speaker,
                 # permission and withdrawal in the same fixed read transaction.
                 matches = [(row['id'], row['position']) for row in self.rows(f'''

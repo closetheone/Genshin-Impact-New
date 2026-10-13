@@ -63,6 +63,43 @@ class IndexedTests(unittest.TestCase):
             self.assertEqual(archive.search(opts, SECRET)['results'],
                              search_view(project(data, ['opening']), opts, SECRET)['results'])
 
+    def test_scan_reuses_facets_without_narrowing_them_to_matches(self):
+        data, _ = workload('long', 300)
+        for index, passage in enumerate(data['passages'][32:]):
+            passage['text'] = '共用正文 ＡＢＣ "_%" 空\x00白 🙂🚀界'
+            passage['speaker_id'] = 'person:student' if index % 2 else 'person:merchant'
+        import_snapshot(data, self.database, activate=True)
+        snapshot = data['snapshot_id']
+
+        def check_queries():
+            for scopes in (['opening'], data['scope_ids']):
+                for purpose in ('display', 'export', 'external_ai'):
+                    view = project(load_snapshot(self.database, snapshot), scopes, purpose)
+                    # Different terms/speakers miss the result cache but reuse the
+                    # same facets. Hidden/zero hits must still count all visible text.
+                    for query, mode, speaker in (
+                        ('不存在的词', 'literal', 'all'),
+                        ('共用正文', 'literal', 'person:student'),
+                        ('ＡＢＣ 空\x00白', 'keywords', 'person:merchant'),
+                        ('🙂🚀', 'literal', 'all'),
+                        ('', 'literal', 'narration'),
+                    ):
+                        opts = search_options({'q': [query], 'mode': [mode], 'speaker': [speaker], 'limit': ['50']})
+                        expected = search_view(view, opts, SECRET)
+                        with indexed_view(self.database, snapshot, scopes, purpose) as archive:
+                            actual = archive.search(opts, SECRET)
+                        for key in ('results', 'facets', 'stats', 'characters'):
+                            self.assertEqual(actual[key], expected[key])
+                        self.assertEqual(actual['pagination']['total'], expected['pagination']['total'])
+
+        check_queries()
+        updated = next_snapshot(data, 'scan-facets-restricted')
+        updated['withdrawn_ids'] = ['person:merchant', data['passages'][33]['id']]
+        updated['sources'][1]['rights']['display'] = 'denied'
+        import_snapshot(updated, self.database, activate=True)
+        # The old snapshot must also use the new withdrawal/purpose boundary.
+        check_queries()
+
     def test_candidate_indexes_migrate_all_snapshots_atomically(self):
         updated = next_snapshot(SAMPLE, 'candidate-migration-new')
         updated['withdrawn_ids'] = ['passage:03']
