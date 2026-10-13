@@ -18,6 +18,9 @@ class BoundaryTests(unittest.TestCase):
         for scenario in result['scenarios'].values():
             self.assertEqual(scenario['cache_hits'], 0)
             self.assertEqual(scenario['cache_misses'], scenario['requests'])
+            self.assertEqual(len(scenario['candidate_plans']), scenario['requests'])
+        self.assertEqual({plan['kind'] for plan in result['scenarios']['new_queries']['candidate_plans']},
+                         {'scan', 'index', 'empty'})
         self.assertEqual(result['scenarios']['rotating_eight_queries']['requests'], 16)
 
     def test_long_and_linked_fixture_contract(self):

@@ -20,6 +20,7 @@ from archive_store import connect, import_snapshot
 from benchmark_archive import BenchServer, QuietHandler, machine, summarize
 from benchmark_boundaries import workload
 import indexed_archive
+import query_index
 from search_archive import normalize_text, ordered_passages
 from validate_sample import project
 
@@ -61,6 +62,7 @@ def run(count=100000, requests=30, concurrency=10):
     report = {'dataset_kind': 'synthetic', 'workload': spec, 'environment': machine(),
               'generated_at_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
               'implementation_sha256': hashlib.sha256(Path(indexed_archive.__file__).read_bytes()).hexdigest(),
+              'query_index_sha256': hashlib.sha256(Path(query_index.__file__).read_bytes()).hexdigest(),
               'network': 'Loopback HTTP; client and server share one Python process',
               'latency_definition': 'Full HTTP body read, JSON parse and oracle assertions; setup and writes excluded',
               'limitations': ['Synthetic data only; not production or real-story acceptance',
@@ -73,6 +75,11 @@ def run(count=100000, requests=30, concurrency=10):
         started = time.perf_counter(); import_snapshot(data, database)
         report['import_seconds'] = round(time.perf_counter() - started, 4)
         report['database_bytes'] = database.stat().st_size
+        with closing(connect(database)) as connection:
+            report['candidate_index'] = dict(connection.execute('''SELECT count(*) AS grams,
+                sum(indexed) AS indexed_grams,
+                coalesce(sum(CASE WHEN indexed THEN passage_count ELSE 0 END),0) AS postings
+                FROM query_grams WHERE snapshot_id=?''', (snapshot,)).fetchone())
         del data, view, normalized
         gc.collect()
         server = BenchServer(('127.0.0.1', 0), QuietHandler)
@@ -82,12 +89,20 @@ def run(count=100000, requests=30, concurrency=10):
         cache_counts = Counter()
         lock = threading.Lock()
         original_get = indexed_archive._search_get
+        original_plan = indexed_archive.IndexedArchive.candidate_plan
+        plans = []
 
         def observed_get(key):
             value = original_get(key)
             with lock:
                 cache_counts['hits' if value is not None else 'misses'] += 1
             return value
+
+        def observed_plan(archive, terms):
+            plan = original_plan(archive, terms)
+            with lock:
+                plans.append({'terms': terms, 'kind': plan['kind'], 'candidates': plan['candidates']})
+            return plan
 
         def request_one(case):
             started = time.perf_counter(); size = 0
@@ -112,12 +127,15 @@ def run(count=100000, requests=30, concurrency=10):
                       'cache_hits': cache_counts['hits'], 'cache_misses': cache_counts['misses']}
             result['all_missed'] = result['cache_hits'] == 0 and result['cache_misses'] == len(rows)
             result['within_one_second'] = result['errors'] == 0 and result['p95_seconds'] <= 1
+            result['candidate_plans'] = list(plans)
             report['scenarios'][name] = result
-            print(json.dumps({'scenario': name, **{k: v for k, v in result.items() if k != 'samples'}}), flush=True)
+            print(json.dumps({'scenario': name, **{k: v for k, v in result.items() if k not in ('samples', 'candidate_plans')}}), flush=True)
             cache_counts.clear()
+            plans.clear()
 
         try:
-            with patch.object(indexed_archive, '_search_get', observed_get):
+            with patch.object(indexed_archive, '_search_get', observed_get), \
+                    patch.object(indexed_archive.IndexedArchive, 'candidate_plan', observed_plan):
                 with ThreadPoolExecutor(max_workers=concurrency) as executor:
                     rows = list(executor.map(request_one, fresh))
                 record('new_queries', rows, concurrency)
@@ -125,6 +143,7 @@ def run(count=100000, requests=30, concurrency=10):
                 record('rotating_eight_queries', [request_one(rotation[i % 8]) for i in range(max(16, requests))], 1)
                 report['before_withdrawal'] = request_one(broad)
                 cache_counts.clear()
+                plans.clear()
                 rows = []
                 for identifier, case in restrictions:
                     with closing(connect(database, writable=True)) as connection:

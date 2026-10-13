@@ -7,7 +7,7 @@ from contextlib import contextmanager
 
 from archive_store import StoreError, SnapshotNotFound, connect, ensure_schema
 from graph_archive import GraphUnavailable, graph_view, relation_view
-from query_index import VERSION
+from query_index import VERSION, trigrams
 from search_archive import fingerprint, encode_cursor, decode_cursor, ordered_passages
 from validate_sample import require
 
@@ -140,7 +140,7 @@ class IndexedArchive:
         self.meta.update(scope_ids=self.scopes, purpose=purpose)
         # Conservative invalidation: any restriction update invalidates continuations,
         # including old snapshots. No raw policy counts or revision are exposed.
-        self.revision = fingerprint({'snapshot': row['content_hash'], 'policy': state['policy_revision']})
+        self.revision = fingerprint({'snapshot': row['content_hash'], 'policy': state['policy_revision'], 'index': VERSION})
         database_path = connection.execute('PRAGMA database_list').fetchone()[2]
         self.topology_cache_key = (database_path, snapshot, tuple(self.scopes), purpose, self.revision)
         self.params = {'snapshot': snapshot, 'mask': self.mask, 'purpose': purpose}
@@ -401,6 +401,33 @@ class IndexedArchive:
         return [dict(json.loads(row['payload']), rights=json.loads(row['rights'])) for row in self.connection.execute(
             "SELECT r.payload,s.rights FROM records r JOIN source_policies s ON s.id=r.id WHERE r.snapshot_id=? AND r.collection='sources' AND r.id IN (SELECT value FROM json_each(?)) ORDER BY r.position", (self.snapshot, json.dumps(sorted(identifiers))))]
 
+    def candidate_plan(self, terms):
+        """Internal planning only; candidates never bypass the visible projection."""
+        grams = set().union(*(trigrams(term) for term in terms))
+        if not grams:
+            return {'kind': 'scan', 'candidates': None}
+        rows = self.connection.execute('''SELECT gram,passage_count,indexed FROM query_grams
+            WHERE snapshot_id=:snapshot AND gram IN (SELECT value FROM json_each(:grams))''',
+            {'snapshot': self.snapshot, 'grams': json.dumps(sorted(grams))}).fetchall()
+        if len(rows) != len(grams):
+            return {'kind': 'empty', 'candidates': 0}
+        indexed = [row for row in rows if row['indexed']]
+        if not indexed:
+            return {'kind': 'scan', 'candidates': None}
+        rarest = min(indexed, key=lambda row: (row['passage_count'], row['gram']))
+        return {'kind': 'index', 'gram': rarest['gram'], 'candidates': rarest['passage_count']}
+
+    def search_facets(self):
+        key = ('search-facets', self.topology_cache_key)
+        # Only compact, query-independent metadata is cached at this boundary.
+        with _TOPOLOGY_CACHE_LOCK:
+            facets = _total_get(key)
+            if facets is None:
+                facets = [dict(row) for row in self.rows('''SELECT coalesce(speaker_id,"narration") AS speaker,
+                    count(*) AS n FROM passages GROUP BY speaker ORDER BY speaker''')]
+                _total_put(key, facets)
+            return facets
+
     def search(self, options, secret):
         query = {key: value for key, value in options.items() if key != 'cursor'}
         binding = fingerprint({'kind': 'indexed_search', 'query': query, **self.meta})
@@ -415,18 +442,31 @@ class IndexedArchive:
         cache_key = (self.topology_cache_key, tuple(sorted(query.items())))
         cached = _search_get(cache_key)
         if cached is None:
+            plan = self.candidate_plan(terms)
             # Evaluate text once, then materialize only IDs, positions, speakers
             # and match flags. Grouping the original rows spills long text bodies.
             # Aggregate in SQLite to avoid one Python row conversion per passage
             # for every concurrent miss. Facets still count ALL visible passages.
-            rows = self.rows(f''', search_hits AS MATERIALIZED (
-                SELECT v.id,v.position,coalesce(v.speaker_id,"narration") AS speaker,
-                    CASE WHEN {condition} THEN 1 ELSE 0 END AS matched
-                FROM passages v
-            ) SELECT speaker,count(*) AS n,
-                json_group_array(json_array(id,position)) FILTER (WHERE matched) AS matches
-              FROM search_hits GROUP BY speaker ORDER BY speaker''', params)
-            matches = [match for row in rows for match in json.loads(row['matches'])]
+            if plan['kind'] == 'scan':
+                rows = self.rows(f''', search_hits AS MATERIALIZED (
+                    SELECT v.id,v.position,coalesce(v.speaker_id,"narration") AS speaker,
+                        CASE WHEN {condition} THEN 1 ELSE 0 END AS matched
+                    FROM passages v
+                ) SELECT speaker,count(*) AS n,
+                    json_group_array(json_array(id,position)) FILTER (WHERE matched) AS matches
+                  FROM search_hits GROUP BY speaker ORDER BY speaker''', params)
+                matches = [match for row in rows for match in json.loads(row['matches'])]
+                speakers = [{'speaker': row['speaker'], 'n': row['n']} for row in rows]
+                _total_put(('search-facets', self.topology_cache_key), speakers)
+            else:
+                speakers = self.search_facets()
+                # A gram match is only a superset. Recheck every term, speaker,
+                # permission and withdrawal in the same fixed read transaction.
+                matches = [(row['id'], row['position']) for row in self.rows(f'''
+                    SELECT v.id,v.position FROM query_postings candidate CROSS JOIN passages v
+                      ON v.position=candidate.position
+                    WHERE candidate.snapshot_id=:snapshot AND candidate.gram=:candidate_gram
+                      AND {condition}''', {**params, 'candidate_gram': plan['gram']})] if plan['kind'] == 'index' else []
             if matches and self.has_backlinks:
                 # Sort hits by the topology of ALL visible nodes, so an unmatched
                 # or hidden predecessor cannot incorrectly reorder search hits.
@@ -439,7 +479,6 @@ class IndexedArchive:
             else:
                 matches.sort(key=lambda row: row[1])
             matching_ids = [identifier for identifier, _ in matches]
-            speakers = [{'speaker': row['speaker'], 'n': row['n']} for row in rows]
             total = len(matching_ids)
             cached = _search_put(cache_key, (matching_ids, speakers, total))
         matching_ids, speakers, total = cached

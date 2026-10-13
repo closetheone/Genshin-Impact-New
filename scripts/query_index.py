@@ -1,12 +1,16 @@
 """Rebuildable, transactionally published query indexes over immutable snapshots."""
 from archive_store import COLLECTIONS, StoreError, connect, ensure_schema, read_snapshot
 from pathlib import Path
+from collections import Counter
 from search_archive import normalize_text, ordered_passages
 
-VERSION = 1
+VERSION = 2
+# Bound posting storage; unindexed/common grams always use the exact scan path.
+MAX_POSTINGS_PER_PASSAGE = 32
+MAX_CANDIDATES = 10000
 DDL = (
     'CREATE TABLE query_state(singleton INTEGER PRIMARY KEY CHECK(singleton=1), version INTEGER NOT NULL, policy_revision INTEGER NOT NULL)',
-    'INSERT INTO query_state VALUES(1, 1, 0)',
+    'INSERT INTO query_state VALUES(1, 2, 0)',
     'CREATE TABLE query_snapshots(snapshot_id TEXT PRIMARY KEY, content_hash TEXT NOT NULL, ready INTEGER NOT NULL DEFAULT 0, has_backlinks INTEGER NOT NULL DEFAULT 0)',
     '''CREATE TABLE query_records(snapshot_id TEXT NOT NULL, id TEXT NOT NULL, collection TEXT NOT NULL, position INTEGER NOT NULL,
        scope_mask INTEGER NOT NULL, source_id TEXT, entry_id TEXT, speaker_id TEXT, text_norm TEXT, sort_rank INTEGER,
@@ -24,6 +28,44 @@ DDL = (
 )
 
 
+def trigrams(text):
+    """Unicode code-point substrings of already-normalized text, including NUL."""
+    return {text[index:index + 3] for index in range(len(text) - 2)}
+
+
+def install_candidates(connection):
+    connection.execute('''CREATE TABLE query_grams(snapshot_id TEXT NOT NULL, gram TEXT NOT NULL,
+        passage_count INTEGER NOT NULL, indexed INTEGER NOT NULL,
+        PRIMARY KEY(snapshot_id,gram)) WITHOUT ROWID''')
+    connection.execute('''CREATE TABLE query_postings(snapshot_id TEXT NOT NULL, gram TEXT NOT NULL,
+        position INTEGER NOT NULL, PRIMARY KEY(snapshot_id,gram,position)) WITHOUT ROWID''')
+    for table in ('query_grams', 'query_postings'):
+        for action, alias in (('INSERT', 'NEW'), ('DELETE', 'OLD'), ('UPDATE', 'OLD')):
+            extra = ' UPDATE query_snapshots SET ready=0 WHERE snapshot_id=NEW.snapshot_id;' if action == 'UPDATE' else ''
+            connection.execute(f'''CREATE TRIGGER dirty_{table}_{action.lower()} AFTER {action} ON {table}
+                BEGIN UPDATE query_snapshots SET ready=0 WHERE snapshot_id={alias}.snapshot_id;{extra} END''')
+
+
+def build_candidates(connection, data):
+    snapshot = data['snapshot_id']
+    frequencies = Counter()
+    for passage in data['passages']:
+        frequencies.update(trigrams(normalize_text(passage['text'])))
+    budget = len(data['passages']) * MAX_POSTINGS_PER_PASSAGE
+    threshold = min(MAX_CANDIDATES, max(1, len(data['passages']) // 5))
+    selected = set()
+    for gram, count in sorted(frequencies.items(), key=lambda pair: (pair[1], pair[0])):
+        if count > threshold or count > budget:
+            break
+        selected.add(gram)
+        budget -= count
+    connection.executemany('INSERT INTO query_grams VALUES(?,?,?,?)',
+        ((snapshot, gram, count, int(gram in selected)) for gram, count in frequencies.items()))
+    connection.executemany('INSERT INTO query_postings VALUES(?,?,?)',
+        ((snapshot, gram, position) for position, passage in enumerate(data['passages'])
+         for gram in sorted(trigrams(normalize_text(passage['text'])) & selected)))
+
+
 def installed(connection):
     return connection.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='query_state'").fetchone() is not None
 
@@ -31,11 +73,16 @@ def installed(connection):
 def ensure_indexes(connection):
     if installed(connection):
         row = connection.execute('SELECT version FROM query_state WHERE singleton=1').fetchone()
-        if not row or row[0] != VERSION:
+        if row and row[0] == 1:
+            install_candidates(connection)
+            connection.execute('UPDATE query_snapshots SET ready=0')
+            connection.execute('UPDATE query_state SET version=?,policy_revision=policy_revision+1', (VERSION,))
+        elif not row or row[0] != VERSION:
             raise StoreError('Unsupported query index version; explicit migration required.')
         return
     for statement in DDL:
         connection.execute(statement)
+    install_candidates(connection)
     # Detect ordinary SQL edits, including maintenance/restore. No authorization
     # result is cached. A DBA able to remove triggers is outside this local boundary.
     for table in ('records', 'query_records', 'query_links', 'query_evidence'):
@@ -82,7 +129,7 @@ def build_index(connection, data):
     positions = {p['id']: index for index, p in enumerate(data['passages'])}
     backlinks = any(positions[following] < positions[p['id']] for p in data['passages'] for following in p['next_ids'])
     connection.execute('INSERT INTO query_snapshots VALUES(?,?,0,?) ON CONFLICT(snapshot_id) DO UPDATE SET ready=0,content_hash=excluded.content_hash,has_backlinks=excluded.has_backlinks', (snapshot, content_hash, int(backlinks)))
-    for table in ('query_records', 'query_links', 'query_evidence'):
+    for table in ('query_records', 'query_links', 'query_evidence', 'query_grams', 'query_postings'):
         connection.execute(f'DELETE FROM {table} WHERE snapshot_id=?', (snapshot,))
     for collection in COLLECTIONS:
         rows = []
@@ -95,6 +142,7 @@ def build_index(connection, data):
         connection.executemany('INSERT INTO query_records VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', rows)
     connection.executemany('INSERT INTO query_links VALUES(?,?,?)', [(snapshot, p['id'], following) for p in data['passages'] for following in p['next_ids']])
     connection.executemany('INSERT INTO query_evidence VALUES(?,?,?,?)', [(snapshot, r['id'], number, identifier) for r in data['relationships'] for number, group in enumerate(r['evidence_groups']) for identifier in group])
+    build_candidates(connection, data)
     connection.execute('UPDATE query_snapshots SET ready=1 WHERE snapshot_id=?', (snapshot,))
 
 

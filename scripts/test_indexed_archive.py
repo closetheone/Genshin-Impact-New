@@ -7,6 +7,7 @@ import unittest
 from unittest.mock import patch
 
 from archive_store import StoreError, connect, import_snapshot, load_snapshot
+from benchmark_boundaries import workload
 from graph_archive import graph_view, relation_view
 from indexed_archive import indexed_view
 from query_index import prepare_indexes
@@ -27,6 +28,68 @@ class IndexedTests(unittest.TestCase):
     def test_missing_database_reports_unavailable(self):
         with self.assertRaises(StoreError), indexed_view(Path(self.temp.name) / 'missing.sqlite3', None, ['opening'], 'display'):
             pass
+
+    def test_candidate_filter_is_a_superset_with_literal_and_unicode_parity(self):
+        data, _ = workload('long', 300)
+        texts = ['abcdef', 'abc bcd cde def', 'ＡＢＣ "_%" e\u0301 🙂🚀界 空\x00白',
+                 'abc', '甲乙丙 丁戊己', '甲乙丙 其他', '丁戊己 其他']
+        for passage, text in zip(data['passages'][32:], texts):
+            passage['text'] = text
+        import_snapshot(data, self.database, activate=True)
+        view = project(data, ['opening'])
+        with indexed_view(self.database, None, ['opening'], 'display') as archive:
+            self.assertEqual(archive.candidate_plan(['abcdef'])['kind'], 'index')
+            self.assertEqual(archive.candidate_plan(['abcdef'])['candidates'], 2)
+            self.assertEqual(archive.candidate_plan(['物资核对'])['kind'], 'scan')
+            self.assertEqual(archive.candidate_plan(['无此词'])['kind'], 'empty')
+            for query in ('abcdef', 'ＡＢＣ', 'abc', '"_%"', 'e\u0301', '🙂🚀界', '空\x00白',
+                          '物资核对', '文', '🙂🚀', '', '甲乙丙 丁戊己', '甲乙丙 其', '无此词'):
+                for mode in ('literal', 'keywords'):
+                    with self.subTest(query=query, mode=mode):
+                        opts = search_options({'q': [query], 'mode': [mode], 'limit': ['50']})
+                        result = archive.search(opts, SECRET)
+                        expected = search_view(view, opts, SECRET)
+                        for key in ('results', 'facets', 'stats'):
+                            self.assertEqual(result[key], expected[key])
+                        self.assertEqual(result['pagination']['total'], expected['pagination']['total'])
+
+    def test_candidate_posting_budget_falls_back_without_losing_results(self):
+        data, _ = workload('long', 300)
+        with patch('query_index.MAX_POSTINGS_PER_PASSAGE', 0):
+            import_snapshot(data, self.database, activate=True)
+        with indexed_view(self.database, None, ['opening'], 'display') as archive:
+            self.assertEqual(archive.candidate_plan(['组号07'])['kind'], 'scan')
+            opts = search_options({'q': ['组号07']})
+            self.assertEqual(archive.search(opts, SECRET)['results'],
+                             search_view(project(data, ['opening']), opts, SECRET)['results'])
+
+    def test_candidate_indexes_migrate_all_snapshots_atomically(self):
+        updated = next_snapshot(SAMPLE, 'candidate-migration-new')
+        updated['withdrawn_ids'] = ['passage:03']
+        updated['sources'][1]['rights']['display'] = 'denied'
+        import_snapshot(updated, self.database, activate=True)
+        with closing(connect(self.database, writable=True)) as connection:
+            connection.execute('DROP TABLE query_postings')
+            connection.execute('DROP TABLE query_grams')
+            connection.execute('UPDATE query_state SET version=1')
+        with self.assertRaises(StoreError), indexed_view(self.database, None, ['opening'], 'display'):
+            pass
+        with patch('query_index.build_candidates', side_effect=RuntimeError('interrupted rebuild')):
+            with self.assertRaises(RuntimeError):
+                prepare_indexes(self.database)
+        with closing(connect(self.database)) as connection:
+            self.assertEqual(connection.execute('SELECT version FROM query_state').fetchone()[0], 1)
+            self.assertIsNone(connection.execute("SELECT name FROM sqlite_master WHERE name='query_grams'").fetchone())
+        result = prepare_indexes(self.database)
+        self.assertEqual(result['index_version'], 2)
+        self.assertEqual(set(result['rebuilt_snapshots']), {SAMPLE['snapshot_id'], updated['snapshot_id']})
+        for snapshot in result['rebuilt_snapshots']:
+            opts = search_options({'q': ['物资']})
+            expected = search_view(project(load_snapshot(self.database, snapshot), ['opening']), opts, SECRET)
+            with indexed_view(self.database, snapshot, ['opening'], 'display') as archive:
+                actual = archive.search(opts, SECRET)
+            for key in ('results', 'facets', 'stats'):
+                self.assertEqual(actual[key], expected[key])
 
     def test_search_parity_across_scopes_purposes_and_filters(self):
         for scopes in (['opening'], SAMPLE['scope_ids'], ['opening', 'east'], ['opening', 'west'], ['later']):
@@ -174,6 +237,8 @@ class IndexedTests(unittest.TestCase):
             "UPDATE query_records SET text_norm='tampered' WHERE id='passage:03'",
             "DELETE FROM query_links WHERE from_id='passage:03'",
             "DELETE FROM query_evidence WHERE relation_id='relation:mentor'",
+            "DELETE FROM query_postings WHERE snapshot_id='fixture-2026-10-10-v1'",
+            'UPDATE query_grams SET passage_count=0',
             'UPDATE query_snapshots SET ready=0',
         ]
         for sql in mutations:
@@ -199,7 +264,7 @@ class IndexedTests(unittest.TestCase):
             triggers = connection.execute("SELECT name FROM sqlite_master WHERE type='trigger'").fetchall()
             for row in triggers:
                 connection.execute(f'DROP TRIGGER "{row[0]}"')
-            for table in ('query_records', 'query_links', 'query_evidence', 'query_snapshots', 'query_state'):
+            for table in ('query_records', 'query_links', 'query_evidence', 'query_grams', 'query_postings', 'query_snapshots', 'query_state'):
                 connection.execute(f'DROP TABLE {table}')
         with self.assertRaises(StoreError), indexed_view(self.database, None, ['opening'], 'display'):
             pass
