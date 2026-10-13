@@ -88,6 +88,65 @@ class IndexedTests(unittest.TestCase):
             expected = project(load_snapshot(self.database), SAMPLE['scope_ids'])
             self.assertEqual(archive.counts()['passages'], len(expected['passages']))
 
+    def assert_reader_matches_projection(self, snapshot, scopes, purpose, limit=7):
+        expected = ordered_passages(project(load_snapshot(self.database, snapshot), scopes, purpose)['passages'])
+        cursor = None
+        actual = []
+        while True:
+            # Each page is a new transaction, as it is for separate HTTP requests.
+            with indexed_view(self.database, snapshot, scopes, purpose) as archive:
+                page = archive.reader(None, cursor, SECRET, limit=limit)
+            self.assertEqual(page['pagination']['total'], len(expected))
+            self.assertEqual(page['pagination']['offset'], len(actual))
+            actual.extend(page['passages'])
+            cursor = page['pagination']['next_cursor']
+            if not cursor:
+                break
+        self.assertEqual(actual, expected)
+        if expected:
+            target = expected[-1]['id']
+            with indexed_view(self.database, snapshot, scopes, purpose) as archive:
+                page = archive.reader(target, None, SECRET, limit=limit)
+            self.assertEqual(page['target_id'], target)
+            self.assertEqual(page['passages'], expected[(len(expected) - 1) // limit * limit:])
+
+    def test_reader_cache_isolated_by_snapshot_scope_and_purpose(self):
+        updated = next_snapshot(SAMPLE, 'reader-cache-new')
+        updated['passages'][0]['text'] = '新快照的正文，旧快照仍保留原句。'
+        import_snapshot(updated, self.database, activate=True)
+        boundaries = [(snapshot, scopes, purpose)
+            for snapshot in (SAMPLE['snapshot_id'], updated['snapshot_id'])
+            for scopes in (['opening'], ['opening', 'west'], SAMPLE['scope_ids'])
+            for purpose in ('display', 'export', 'external_ai')]
+        for boundary in boundaries:
+            with self.subTest(boundary=boundary):
+                self.assert_reader_matches_projection(*boundary)
+                self.assert_reader_matches_projection(*boundary)
+
+    def test_reader_cached_pages_and_totals_follow_new_restrictions(self):
+        for change in ('policy', 'withdrawal'):
+            with self.subTest(change=change):
+                self.database = Path(self.temp.name) / f'{change}.sqlite3'
+                import_snapshot(SAMPLE, self.database)
+                snapshot = SAMPLE['snapshot_id']
+                scopes = SAMPLE['scope_ids']
+                for purpose in ('display', 'export', 'external_ai'):
+                    self.assert_reader_matches_projection(snapshot, scopes, purpose)
+                with indexed_view(self.database, snapshot, scopes, 'display') as archive:
+                    token = archive.reader(None, None, SECRET, limit=7)['pagination']['next_cursor']
+                updated = next_snapshot(SAMPLE, f'reader-cache-{change}')
+                if change == 'policy':
+                    updated['sources'][1]['rights']['display'] = 'denied'
+                else:
+                    updated['withdrawn_ids'].extend(['passage:03', 'person:merchant'])
+                import_snapshot(updated, self.database, activate=True)
+                with indexed_view(self.database, snapshot, scopes, 'display') as archive:
+                    with self.assertRaises(StaleCursor):
+                        archive.reader(None, token, SECRET, limit=7)
+                for purpose in ('display', 'export', 'external_ai'):
+                    self.assert_reader_matches_projection(snapshot, scopes, purpose)
+                    self.assert_reader_matches_projection(updated['snapshot_id'], scopes, purpose)
+
     def test_small_neighborhood_does_not_read_archive_topology(self):
         with indexed_view(self.database, None, ['opening'], 'external_ai') as archive:
             with patch.object(archive, 'ordered_ids', side_effect=AssertionError('Unneeded archive scan')):
@@ -174,6 +233,8 @@ class IndexedTests(unittest.TestCase):
                                 if not cursor:
                                     break
                             self.assertEqual(actual, expected)
+                # Reader pages and target positioning use a separate sparse path.
+                self.assert_reader_matches_projection(data['snapshot_id'], scopes, 'display')
 
     def test_search_normalization_literal_characters_and_keyword_and(self):
         data = next_snapshot(SAMPLE, 'normalization')
