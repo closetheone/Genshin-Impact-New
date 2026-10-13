@@ -19,6 +19,8 @@ _SEARCH_CACHE = OrderedDict()
 _SEARCH_CACHE_LIMIT = 6
 _PAGE_CACHE = OrderedDict()
 _PAGE_CACHE_LIMIT = 12
+_TOTAL_CACHE = OrderedDict()
+_TOTAL_CACHE_LIMIT = 12
 
 
 def _cache_get(key):
@@ -69,6 +71,23 @@ def _page_put(key, value):
         _PAGE_CACHE.move_to_end(key)
         while len(_PAGE_CACHE) > _PAGE_CACHE_LIMIT:
             _PAGE_CACHE.popitem(last=False)
+        return value
+
+
+def _total_get(key):
+    with _TOPOLOGY_CACHE_LOCK:
+        value = _TOTAL_CACHE.get(key)
+        if value is not None:
+            _TOTAL_CACHE.move_to_end(key)
+        return value
+
+
+def _total_put(key, value):
+    with _TOPOLOGY_CACHE_LOCK:
+        _TOTAL_CACHE[key] = value
+        _TOTAL_CACHE.move_to_end(key)
+        while len(_TOTAL_CACHE) > _TOTAL_CACHE_LIMIT:
+            _TOTAL_CACHE.popitem(last=False)
         return value
 
 
@@ -150,9 +169,31 @@ class IndexedArchive:
           AND EXISTS(SELECT 1 FROM people b WHERE b.id=r.to_id)
           AND EXISTS(SELECT 1 FROM groups g WHERE g.relation_id=r.id)
         ) '''
+        self.passages_cte = '''WITH allowed_sources AS MATERIALIZED (
+          SELECT s.id FROM source_policies s
+          WHERE json_extract(s.rights, '$.' || :purpose)='allowed'
+          AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=s.id)
+        ), people AS MATERIALIZED (
+          SELECT q.id FROM query_records q WHERE q.snapshot_id=:snapshot AND q.collection='characters'
+            AND (q.scope_mask & :mask)=q.scope_mask AND q.source_id IN (SELECT id FROM allowed_sources)
+            AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=q.id)
+        ), entries AS MATERIALIZED (
+          SELECT q.id FROM query_records q WHERE q.snapshot_id=:snapshot AND q.collection='entries'
+            AND (q.scope_mask & :mask)=q.scope_mask AND q.source_id IN (SELECT id FROM allowed_sources)
+            AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=q.id)
+        ), passages AS MATERIALIZED (
+          SELECT q.* FROM query_records q WHERE q.snapshot_id=:snapshot AND q.collection='passages'
+            AND (q.scope_mask & :mask)=q.scope_mask AND q.source_id IN (SELECT id FROM allowed_sources)
+            AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=q.id)
+            AND q.entry_id IN (SELECT id FROM entries)
+            AND (q.speaker_id IS NULL OR q.speaker_id IN (SELECT id FROM people))
+        ) '''
 
     def rows(self, sql, parameters=None):
         return self.connection.execute(self.cte + sql, {**self.params, **(parameters or {})}).fetchall()
+
+    def passage_rows(self, sql, parameters=None):
+        return self.connection.execute(self.passages_cte + sql, {**self.params, **(parameters or {})}).fetchall()
 
     def records(self, collection, where='1', parameters=None, order='v.position', limit=None, identifiers=None):
         table = {'characters': 'people', 'entries': 'entries', 'passages': 'passages', 'relationships': 'relations'}[collection]
@@ -195,7 +236,11 @@ class IndexedArchive:
                 return cached
             links = self.visible_links()
             nodes = {}
-            positions = {row['id']: row['position'] for row in self.visible_passage_rows()}
+            linked_ids = set(links)
+            linked_ids.update(identifier for values in links.values() for identifier in values)
+            positions = {row['id']: row['position'] for row in self.passage_rows(
+                'SELECT id,position FROM passages WHERE id IN (SELECT value FROM json_each(:ids))',
+                {'ids': json.dumps(sorted(linked_ids))})}
             for from_id, following_ids in links.items():
                 nodes.setdefault(from_id, {'id': from_id, 'position': positions[from_id], 'next_ids': []})['next_ids'].extend(following_ids)
                 for following in following_ids:
@@ -217,12 +262,27 @@ class IndexedArchive:
             if limit is not None:
                 sql += ' LIMIT :take OFFSET :skip'
                 params.update(take=limit[0], skip=limit[1])
-            return [row['id'] for row in self.rows(sql, params)]
+            return [row['id'] for row in self.passage_rows(sql, params)]
+        if where == '1' and limit is not None and len(self.visible_links()) <= 5000:
+            rows = self.visible_passage_rows()
+            linked = self.linked_order()
+            if not linked:
+                return [row['id'] for row in rows[limit[1]:limit[1] + limit[0]]]
+            linked_ids = set(linked)
+            positions = {row['id']: row['position'] for row in rows}
+            start = max(0, limit[1] - len(linked))
+            ordinary = [{'id': row['id'], 'position': row['position']}
+                        for row in rows if row['id'] not in linked_ids]
+            ordinary = ordinary[start:start + limit[0] + len(linked)]
+            linked_rows = [{'id': identifier, 'position': positions[identifier]} for identifier in linked]
+            merged = sorted([*ordinary, *linked_rows], key=lambda row: linked.get(row['id'], (row['position'], -1)))
+            relative = limit[1] - start
+            return [row['id'] for row in merged[relative:relative + limit[0]]]
         if self.has_backlinks and len(self.visible_links()) > 5000:
             ordered = self.ordered_ids()
             if where == '1':
                 return ordered[limit[1]:limit[1] + limit[0]] if limit is not None else ordered
-            rows = self.rows(f'SELECT v.id FROM passages v WHERE {where}', parameters)
+            rows = self.passage_rows(f'SELECT v.id FROM passages v WHERE {where}', parameters)
             matching = {row['id'] for row in rows}
             identifiers = [identifier for identifier in ordered if identifier in matching]
             return identifiers[limit[1]:limit[1] + limit[0]] if limit is not None else identifiers
@@ -234,7 +294,7 @@ class IndexedArchive:
                 return identifiers[limit[1]:limit[1] + limit[0]]
             return identifiers
         params = {**(parameters or {}), 'linked': json.dumps(list(linked))}
-        matches = self.rows(f'''SELECT v.id,v.position FROM json_each(:linked) wanted
+        matches = self.passage_rows(f'''SELECT v.id,v.position FROM json_each(:linked) wanted
             CROSS JOIN passages v ON v.id=wanted.value WHERE {where}''', params) if linked else []
         sql = f'SELECT v.id,v.position FROM passages v WHERE {where}'
         if linked:
@@ -247,7 +307,7 @@ class IndexedArchive:
             start = max(0, limit[1] - len(matches))
             sql += ' LIMIT :take OFFSET :skip'
             params.update(take=limit[0] + len(matches), skip=start)
-        ordinary = self.rows(sql, params)
+        ordinary = self.passage_rows(sql, params)
         merged = sorted([*ordinary, *matches], key=lambda row: linked.get(row['id'], (row['position'], -1)))
         if limit is not None:
             relative = limit[1] - start
@@ -274,7 +334,7 @@ class IndexedArchive:
         if self._visible_rows is None:
             cached = _cache_get(('rows', self.topology_cache_key))
             self._visible_rows = cached if cached is not None else _cache_put(
-                ('rows', self.topology_cache_key), self.rows('SELECT id,position FROM passages ORDER BY position'))
+                ('rows', self.topology_cache_key), self.passage_rows('SELECT id,position FROM passages ORDER BY position'))
             self._visible_ids = {row['id'] for row in self._visible_rows}
         return self._visible_rows
 
@@ -284,9 +344,14 @@ class IndexedArchive:
             if cached is not None:
                 self._visible_links = cached
                 return cached
-            visible = self._visible_ids if self._visible_ids is not None else {row['id'] for row in self.visible_passage_rows()}
+            pairs = self.connection.execute(
+                'SELECT from_id,to_id FROM query_links WHERE snapshot_id=?', (self.snapshot,)).fetchall()
+            candidates = {identifier for row in pairs for identifier in (row['from_id'], row['to_id'])}
+            visible = {row['id'] for row in self.passage_rows(
+                'SELECT id FROM passages WHERE id IN (SELECT value FROM json_each(:ids))',
+                {'ids': json.dumps(sorted(candidates))})}
             links = {}
-            for row in self.connection.execute('SELECT from_id,to_id FROM query_links WHERE snapshot_id=?', (self.snapshot,)):
+            for row in pairs:
                 if row['from_id'] in visible and row['to_id'] in visible:
                     links.setdefault(row['from_id'], []).append(row['to_id'])
             self._visible_links = links
@@ -297,6 +362,39 @@ class IndexedArchive:
         if not identifiers:
             return []
         return self.records(collection, identifiers=identifiers)
+
+    def passage_page(self, identifiers):
+        """Hydrate a known page without re-running the full archive CTE."""
+        if not identifiers:
+            return []
+        sql = '''SELECT r.payload FROM json_each(:selected_ids) wanted
+            CROSS JOIN query_records v ON v.snapshot_id=:snapshot AND v.id=wanted.value
+            CROSS JOIN records r ON r.snapshot_id=:snapshot AND r.id=v.id
+            WHERE v.collection='passages' AND (v.scope_mask & :mask)=v.scope_mask
+              AND v.source_id IN (SELECT s.id FROM source_policies s
+                    WHERE json_extract(s.rights, '$.' || :purpose)='allowed'
+                    AND NOT EXISTS (SELECT 1 FROM withdrawals w WHERE w.id=s.id))
+              AND NOT EXISTS (SELECT 1 FROM withdrawals w WHERE w.id=v.id)
+              AND EXISTS (SELECT 1 FROM query_records e
+                    WHERE e.snapshot_id=:snapshot AND e.collection='entries' AND e.id=v.entry_id
+                      AND (e.scope_mask & :mask)=e.scope_mask
+                      AND e.source_id IN (SELECT s.id FROM source_policies s
+                        WHERE json_extract(s.rights, '$.' || :purpose)='allowed'
+                          AND NOT EXISTS (SELECT 1 FROM withdrawals w WHERE w.id=s.id)))
+              AND (v.speaker_id IS NULL OR EXISTS (SELECT 1 FROM query_records p
+                    WHERE p.snapshot_id=:snapshot AND p.collection='characters' AND p.id=v.speaker_id
+                      AND (p.scope_mask & :mask)=p.scope_mask
+                      AND p.source_id IN (SELECT s.id FROM source_policies s
+                        WHERE json_extract(s.rights, '$.' || :purpose)='allowed'
+                          AND NOT EXISTS (SELECT 1 FROM withdrawals w WHERE w.id=s.id))))
+            ORDER BY v.position'''
+        rows = self.connection.execute(sql, {**self.params, 'selected_ids': json.dumps(list(identifiers))}).fetchall()
+        links = self.visible_links()
+        result = [json.loads(row[0]) for row in rows]
+        for passage in result:
+            passage['next_ids'] = [identifier for identifier in passage['next_ids'] if identifier in links.get(passage['id'], ())]
+        by_id = {passage['id']: passage for passage in result}
+        return [by_id[identifier] for identifier in identifiers if identifier in by_id]
 
     def sources(self, result):
         identifiers = {record['source_id'] for key in ('entries', 'characters', 'passages', 'relationships', 'results') for record in result.get(key, [])}
@@ -391,7 +489,10 @@ class IndexedArchive:
 
     def reader(self, target, cursor, secret, limit=50):
         binding = fingerprint({'kind': 'indexed_reader', 'target': target, 'limit': limit, **self.meta})
-        total = self.rows('SELECT count(*) FROM passages')[0][0]
+        total_key = ('reader-total', self.topology_cache_key)
+        total = _total_get(total_key)
+        if total is None:
+            total = _total_put(total_key, self.rows('SELECT count(*) FROM passages')[0][0])
         offset = 0
         if cursor:
             offset = decode_cursor(cursor, binding, self.revision, secret)
@@ -400,10 +501,18 @@ class IndexedArchive:
             if not rows:
                 raise GraphUnavailable('这个位置在当前范围、用途或快照中不可用，未自动扩大范围。')
             if self.has_backlinks:
-                self.ordered_ids()
-                preceding = self._ordered_index[target]
-                self._dense_order = True
-                self._order_adjustments = {}
+                linked = self.linked_order()
+                if len(linked) > 5000:
+                    self.ordered_ids()
+                    preceding = self._ordered_index[target]
+                    self._dense_order = True
+                    self._order_adjustments = {}
+                else:
+                    positions = {row['id']: row['position'] for row in self.visible_passage_rows()}
+                    target_position = positions[target]
+                    target_key = linked.get(target, (target_position, -1))
+                    preceding = sum(1 for identifier, position in positions.items()
+                                    if linked.get(identifier, (position, -1)) < target_key)
             else:
                 preceding = self.rows('SELECT count(*) FROM passages WHERE sort_rank<:rank', {'rank': rows[0][0]})[0][0]
             offset = preceding // limit * limit
@@ -412,7 +521,8 @@ class IndexedArchive:
         with _TOPOLOGY_CACHE_LOCK:
             passages = _PAGE_CACHE.get(page_key)
             if passages is None:
-                passages = self.records('passages', order='v.sort_rank', limit=(limit, offset))
+                identifiers = self.ordered_page('1', {}, (limit, offset))
+                passages = self.passage_page(identifiers)
                 _PAGE_CACHE[page_key] = passages
                 _PAGE_CACHE.move_to_end(page_key)
                 while len(_PAGE_CACHE) > _PAGE_CACHE_LIMIT:
