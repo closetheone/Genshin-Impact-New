@@ -56,7 +56,7 @@ def bundle(view, nodes, edges):
             "entries": [entry for entry in view["entries"] if entry["id"] in entry_ids]}
 
 
-def graph_view(view, options, secret):
+def graph_view(view, options, secret, revision=None):
     characters = {character["id"]: character for character in view["characters"]}
     center = options["center"]
     if center not in characters:
@@ -88,7 +88,7 @@ def graph_view(view, options, secret):
     pages.append((node_ids, page_edges))
     query = {name: value for name, value in options.items() if name not in ("cursor", "page")}
     binding = fingerprint({"kind": "graph", "query": query, "snapshot": view["snapshot_id"], "scope": view["scope_ids"], "purpose": view["purpose"]})
-    revision = fingerprint(view)
+    revision = revision or fingerprint(view)
     index = decode_cursor(options["cursor"], binding, revision, secret) if options["cursor"] else options["page"] - 1
     if index >= len(pages):
         raise GraphUnavailable("此局部图分页已不可用，请从第一页重新读取。")

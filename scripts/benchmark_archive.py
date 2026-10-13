@@ -90,7 +90,7 @@ def run(count=100000, concurrency=10, requests=30):
     data = synthetic_sample(count)
     report = {'dataset_kind': 'synthetic', 'generated_at_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
               'environment': machine(), 'network': 'HTTP over loopback; server and client in same Python process',
-              'storage': 'SQLite snapshots; full reconstruction/validation/projection per request; no FTS or cache',
+              'storage': 'SQLite snapshots; import-time validated query indexes with bounded indexed reads; no FTS or cache',
               'scope_ids': ['opening'], 'passages': count, 'concurrency': concurrency, 'requests_per_warm_scenario': requests,
               'cold_definition': 'First application request; OS disk cache is NOT flushed',
               'latency_definition': 'Client start to full body read and JSON parse; errors are recorded separately',

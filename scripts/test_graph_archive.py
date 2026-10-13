@@ -250,6 +250,33 @@ class GraphHTTPTests(unittest.TestCase):
         self.server.cursor_secret = secrets.token_bytes(32)
         self.assertEqual(self.get('/api/graph', **args)[0], 400)
 
+    def test_reader_pagination_requires_fixed_snapshot_and_boundary(self):
+        data = next_snapshot(SAMPLE, 'reader-v2')
+        for index in range(32, 100):
+            data['passages'].append({**data['passages'][0], 'id': f'passage:reader-{index:03}',
+                                     'text': f'阅读分页测试 {index}', 'source_locator': f'data/samples/story.json#/passages/{index}',
+                                     'next_ids': []})
+        validate(data)
+        import_snapshot(data, self.database, activate=True)
+        status, first = self.get('/api/read', id='passage:03')
+        self.assertEqual(status, 200)
+        self.assertEqual(first['target_id'], 'passage:03')
+        cursor = first['pagination']['next_cursor']
+        self.assertIsNotNone(cursor)
+        self.assertEqual(self.get('/api/read', cursor=cursor, id='passage:03')[0], 400)
+        args = {'snapshot': data['snapshot_id'], 'id': 'passage:03', 'cursor': cursor}
+        status, second = self.get('/api/read', **args)
+        self.assertEqual(status, 200)
+        self.assertIsNone(second['target_id'])
+        self.assertNotEqual(first['passages'][0]['id'], second['passages'][0]['id'])
+        self.assertLessEqual(len(first['passages']), 50)
+        self.assertEqual(self.get('/api/read', **{**args, 'purpose': 'export'})[0], 400)
+        updated = next_snapshot(data, 'reader-v3')
+        updated['withdrawn_ids'] = ['passage:03']
+        import_snapshot(updated, self.database)
+        self.assertEqual(self.get('/api/read', **args)[0], 409)
+        self.assertEqual(self.get('/api/read', snapshot=data['snapshot_id'], id='passage:03')[0], 404)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -68,11 +68,16 @@ def import_snapshot(data, database=DEFAULT_DATABASE, activate=False):
     try:
         connection.execute("BEGIN IMMEDIATE")
         ensure_schema(connection, initialize=True)
+        from query_index import ensure_indexes, build_index
+        ensure_indexes(connection)
         existing = connection.execute("SELECT content_hash FROM snapshots WHERE id = ?", (snapshot_id,)).fetchone()
         if existing and existing["content_hash"] != digest:
             raise StoreError("Snapshot ID already exists with different content; create a new snapshot ID instead of overwriting citations.")
         if existing:
             read_snapshot(connection, snapshot_id)
+            ready = connection.execute('SELECT ready FROM query_snapshots WHERE snapshot_id=?', (snapshot_id,)).fetchone()
+            if not ready or not ready['ready']:
+                build_index(connection, data)
         else:
             metadata = {key: value for key, value in data.items() if key not in COLLECTIONS}
             connection.execute("INSERT INTO snapshots (id, content_hash, metadata) VALUES (?, ?, ?)", (snapshot_id, digest, canonical_json(metadata)))
@@ -98,6 +103,7 @@ def import_snapshot(data, database=DEFAULT_DATABASE, activate=False):
                 "INSERT OR IGNORE INTO withdrawals (id, first_snapshot_id) VALUES (?, ?)",
                 [(identifier, snapshot_id) for identifier in data["withdrawn_ids"]],
             )
+            build_index(connection, data)
         active = connection.execute("SELECT active_snapshot_id FROM archive_state WHERE singleton = 1").fetchone()
         if active is None:
             raise StoreError("Archive state is missing.")
@@ -118,7 +124,7 @@ def import_snapshot(data, database=DEFAULT_DATABASE, activate=False):
         connection.close()
 
 
-def read_snapshot(connection, snapshot_id=None):
+def read_snapshot(connection, snapshot_id=None, apply_restrictions=True):
     if snapshot_id is None:
         active = connection.execute("SELECT active_snapshot_id FROM archive_state WHERE singleton = 1").fetchone()
         if not active or active["active_snapshot_id"] is None:
@@ -139,6 +145,8 @@ def read_snapshot(connection, snapshot_id=None):
     validate(data)
     if data["snapshot_id"] != snapshot_id or content_hash(data) != snapshot["content_hash"]:
         raise StoreError("Stored snapshot integrity check failed.")
+    if not apply_restrictions:
+        return data
     all_ids = {record["id"] for collection in COLLECTIONS for record in data[collection]}
     withdrawn = {row["id"] for row in connection.execute("SELECT id FROM withdrawals")}
     data["withdrawn_ids"] = sorted(set(data["withdrawn_ids"]) | (withdrawn & all_ids))

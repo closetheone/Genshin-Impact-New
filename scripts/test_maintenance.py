@@ -195,6 +195,10 @@ class MaintenanceTests(unittest.TestCase):
     def test_verify_rejects_inactive_corruption_and_loosened_policies(self):
         self.restricted()
         with closing(connect(self.database, writable=True)) as connection:
+            with self.assertRaises(sqlite3.IntegrityError):
+                connection.execute("UPDATE source_policies SET rights=? WHERE id='source:fixture'", (json.dumps(SAMPLE['sources'][0]['rights']),))
+            # Simulate out-of-band corruption bypassing ordinary SQL protection.
+            connection.execute('DROP TRIGGER no_policy_loosen')
             connection.execute("UPDATE source_policies SET rights=? WHERE id='source:fixture'", (json.dumps(SAMPLE['sources'][0]['rights']),))
         with self.assertRaisesRegex(StoreError, 'loosen'):
             verify(self.database)

@@ -11,9 +11,11 @@ from import_sample import read_sample, unique_object, reject_constant
 from material_archive import MaterialCapacity, material_view, selection_request
 from feedback_store import FeedbackConflict, FeedbackRateLimit, submit_feedback
 from ai_archive import AIArchive
+from indexed_archive import indexed_view
+from query_index import prepare_indexes
 from skill_package import skill_zip
-from graph_archive import GraphUnavailable, character_view, graph_options, graph_view, relation_view
-from search_archive import StaleCursor, search_options, search_view
+from graph_archive import GraphUnavailable, graph_options
+from search_archive import StaleCursor, search_options
 from validate_sample import SampleError, project
 
 
@@ -75,7 +77,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             except OSError:
                 self.respond(503, {"error": "原型资源暂不可用。"})
             return
-        if parsed.path not in ("/api/view", "/api/search", "/api/graph", "/api/relationship", "/api/characters", "/api/status"):
+        if parsed.path not in ("/api/view", "/api/read", "/api/search", "/api/graph", "/api/relationship", "/api/characters", "/api/status"):
             self.respond(404, {"error": "原型中没有这个入口。"})
             return
         try:
@@ -89,6 +91,8 @@ class PrototypeHandler(BaseHTTPRequestHandler):
                 allowed |= {"id"}
             elif parsed.path == "/api/characters":
                 allowed |= {"q"}
+            elif parsed.path == '/api/read':
+                allowed |= {'id', 'cursor'}
             if set(arguments) - allowed:
                 raise SampleError("unknown query parameter")
             scopes = arguments.get("scope", [])
@@ -102,20 +106,29 @@ class PrototypeHandler(BaseHTTPRequestHandler):
                 raise SampleError("expected one nonempty snapshot")
             options = search_options(arguments) if parsed.path == "/api/search" else None
             graph_query = graph_options(arguments) if parsed.path == "/api/graph" else None
-            data = load_snapshot(self.server.database, snapshots[0] if snapshots else None)
-            view = project(data, scopes, purposes[0])
-            if parsed.path == "/api/status":
-                view = {key: view[key] for key in ("dataset_kind", "notice", "snapshot_id", "scope_ids", "purpose")}
-            if options is not None:
-                view = search_view(view, options, self.server.cursor_secret)
-            elif graph_query is not None:
-                view = graph_view(view, graph_query, self.server.cursor_secret)
-            elif parsed.path in ("/api/relationship", "/api/characters"):
-                field = "id" if parsed.path == "/api/relationship" else "q"
-                values = arguments.get(field, [""])
-                if len(values) != 1 or len(values[0]) > 160 or (field == "id" and not values[0]):
-                    raise SampleError("invalid lookup parameter")
-                view = relation_view(view, values[0]) if field == "id" else character_view(view, values[0])
+            snapshot = snapshots[0] if snapshots else None
+            if parsed.path == '/api/view':
+                view = project(load_snapshot(self.server.database, snapshot), scopes, purposes[0])
+            else:
+                with indexed_view(self.server.database, snapshot, scopes, purposes[0]) as archive:
+                    if options is not None:
+                        view = archive.search(options, self.server.cursor_secret)
+                    elif graph_query is not None:
+                        view = archive.graph(graph_query, self.server.cursor_secret)
+                    elif parsed.path == '/api/status':
+                        view = dict(archive.meta)
+                    elif parsed.path == '/api/read':
+                        values = arguments.get('id', [''])
+                        cursors = arguments.get('cursor', [''])
+                        if len(values) != 1 or len(values[0]) > 160 or len(cursors) != 1 or len(cursors[0]) > 1024 or ('cursor' in arguments and not cursors[0]) or (cursors[0] and not snapshot):
+                            raise SampleError('invalid reader parameters')
+                        view = archive.reader(values[0] or None, cursors[0], self.server.cursor_secret)
+                    else:
+                        field = 'id' if parsed.path == '/api/relationship' else 'q'
+                        values = arguments.get(field, [''])
+                        if len(values) != 1 or len(values[0]) > 160 or (field == 'id' and not values[0]):
+                            raise SampleError('invalid lookup parameter')
+                        view = archive.relationship(values[0]) if field == 'id' else archive.characters(values[0])
             view["storage"] = "sqlite"
             self.respond(200, view)
         except StaleCursor:
@@ -206,6 +219,7 @@ def main():
     try:
         if args.database is None and not database.exists():
             import_snapshot(read_sample(SAMPLE_PATH), database)
+        prepare_indexes(database)
         load_snapshot(database)
         server = ThreadingHTTPServer(("127.0.0.1", args.port), PrototypeHandler)
         server.database = database

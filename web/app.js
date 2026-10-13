@@ -77,8 +77,8 @@ async function fetchArchive(path, purpose, signal, snapshot, extra = {}) {
   return view;
 }
 
-function fetchView(purpose, signal, snapshot = route().params.get("snapshot")) {
-  return fetchArchive("/api/view", purpose, signal, snapshot);
+function fetchReader(purpose, signal, snapshot = route().params.get("snapshot"), cursor = null) {
+  return fetchArchive("/api/read", purpose, signal, snapshot, { ...(route().params.get("passage") ? { id: route().params.get("passage") } : {}), ...(cursor ? { cursor } : {}) });
 }
 
 function fetchGraph(purpose, signal, snapshot = route().params.get("snapshot"), cursor = null) {
@@ -107,7 +107,7 @@ async function loadView(cursor = null) {
       ? await fetchArchive("/api/search", purposeSelect.value, requestController.signal, route().params.get("snapshot"), parameters)
       : isGraph
         ? await fetchGraph(purposeSelect.value, requestController.signal, route().params.get("snapshot"), cursor)
-      : await fetchView(purposeSelect.value, requestController.signal);
+      : await fetchReader(purposeSelect.value, requestController.signal, route().params.get("snapshot"), cursor);
     if (version !== requestVersion) return;
     state.view = view;
     if (isGraph) state.graphPage = view.query.page;
@@ -149,7 +149,7 @@ function render() {
   if (!state.view) return;
   try {
     if (current.page === "search") renderSearch();
-    else if (current.page === "read") renderReader(current.params.get("passage"));
+    else if (current.page === "read") renderReader(state.view.target_id);
     else if (current.page === "graph") renderGraph(current.params.get("center"));
     else replacePage('<div class="empty-state"><h2>未找到这个页面</h2><a class="button" href="#/search">返回文本检索</a></div>');
   } catch (error) {
@@ -257,7 +257,8 @@ function renderReader(targetId) {
   replacePage(`
     <div class="page-title-row"><div><div class="eyebrow">THE READING ROOM</div><h1>让解读，回到原文。</h1></div><a class="button" href="#/graph">探索人物关系 ↗</a></div>
     ${unavailable ? '<div class="callout" role="alert">这个位置在当前范围、用途或快照中不可用。未自动扩大范围，也未加载隐藏正文。</div>' : ""}
-    <div class="reader-layout"><article class="reading-paper"><header class="document-header"><div class="eyebrow">ORIGINAL SYNTHETIC FIXTURE / 001</div><h2>${escapeHtml(view.entries[0]?.title || "暂无可用条目")}</h2><div class="document-meta">${tag("原创测试 · 非原神剧情", "tag-warm")}<span>${passages.length} 段可读文本</span><span>按显式对话连接排序</span></div></header>
+    <div class="reader-layout"><article class="reading-paper"><header class="document-header"><div class="eyebrow">ORIGINAL SYNTHETIC FIXTURE / 001</div><h2>${escapeHtml(view.entries[0]?.title || "暂无可用条目")}</h2><div class="document-meta">${tag("原创测试 · 非原神剧情", "tag-warm")}<span>本页 ${passages.length} 段 · 当前范围共 ${view.pagination.total} 段</span><span>按显式对话连接排序</span></div></header>
+      <div class="page-title-row"><button class="button button-soft" data-read-page="previous" ${view.pagination.previous_cursor ? "" : "disabled"}>上一页</button><span>第 ${Math.floor(view.pagination.offset / view.pagination.limit) + 1} 页</span><button class="button button-soft" data-read-page="next" ${view.pagination.next_cursor ? "" : "disabled"}>下一页</button></div>
       <div class="callout">只展示当前边界内的段落，缺失处不补写。两条分支分开展示，不代表同时发生；切换范围可单独阅读。</div>
       ${passages.map((passage) => {
         const section = scopeLabel(passage);
@@ -271,6 +272,7 @@ function renderReader(targetId) {
       }).join("")}
     </article><aside class="reader-aside"><div class="aside-card"><div class="eyebrow">READ WITH CONTEXT</div><h3>一段话，不止一句。</h3><p>人物身份、发生分支和后续证据，都是理解一句对白的上下文。</p><div class="outline-list">${passages.filter((passage, index) => !index || scopeLabel(passage) !== scopeLabel(passages[index - 1])).map((passage) => `<button data-scroll="${escapeHtml(passage.id)}">${escapeHtml(scopeLabel(passage))} · ${escapeHtml(passage.id)}</button>`).join("")}</div></div><div class="aside-info"><h3>引用与使用边界</h3><p>复制前会重新核验导出用途。可读不等于可导出；快照变化时请先刷新。</p><code>${escapeHtml(view.snapshot_id)}</code></div></aside></div>`);
   document.querySelectorAll("[data-copy]").forEach((button) => button.addEventListener("click", () => copyCitation(button)));
+  document.querySelectorAll("[data-read-page]").forEach((button) => button.addEventListener("click", () => loadView(view.pagination[`${button.dataset.readPage}_cursor`])));
   document.querySelectorAll("[data-scroll]").forEach((button) => button.addEventListener("click", () => focusPassage(button.dataset.scroll)));
   if (targetId && !unavailable) requestAnimationFrame(() => focusPassage(targetId));
 }
