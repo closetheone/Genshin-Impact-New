@@ -2,6 +2,8 @@
 import json
 import sqlite3
 import threading
+from array import array
+from bisect import bisect_left
 from collections import OrderedDict
 from contextlib import contextmanager
 
@@ -21,6 +23,9 @@ _PAGE_CACHE = OrderedDict()
 _PAGE_CACHE_LIMIT = 12
 _TOTAL_CACHE = OrderedDict()
 _TOTAL_CACHE_LIMIT = 12
+# A per-connection upper bound on SQLite's read-only file mapping, not a heap
+# reservation. SQLite caps/ignores this on builds without mmap and reads normally.
+READ_MMAP_BYTES = 1 << 30
 
 
 def _cache_get(key):
@@ -96,6 +101,7 @@ def indexed_view(database, snapshot, scopes, purpose):
     connection = None
     try:
         connection = connect(database)
+        connection.execute(f'PRAGMA mmap_size={READ_MMAP_BYTES}')
         connection.execute('BEGIN')
         yield IndexedArchive(connection, snapshot, scopes, purpose)
     except sqlite3.Error as error:
@@ -129,7 +135,9 @@ class IndexedArchive:
         self.has_backlinks = bool(index['has_backlinks'])
         self._ordered = None
         self._ordered_index = None
+        self._ordered_position_index = None
         self._order_adjustments = None
+        self._position_adjustments = None
         self._visible_rows = None
         self._visible_ids = None
         self._visible_links = None
@@ -232,8 +240,8 @@ class IndexedArchive:
         if self._order_adjustments is None:
             cached = _cache_get(('linked', self.topology_cache_key))
             if cached is not None:
-                self._order_adjustments = cached
-                return cached
+                self._order_adjustments, self._position_adjustments = cached
+                return self._order_adjustments
             links = self.visible_links()
             nodes = {}
             linked_ids = set(links)
@@ -253,7 +261,8 @@ class IndexedArchive:
                 released = max(released, node['position'])
                 adjustments[node['id']] = (released, sequence)
             self._order_adjustments = adjustments
-            _cache_put(('linked', self.topology_cache_key), self._order_adjustments)
+            self._position_adjustments = {positions[identifier]: key for identifier, key in adjustments.items()}
+            _cache_put(('linked', self.topology_cache_key), (self._order_adjustments, self._position_adjustments))
         return self._order_adjustments
 
     def ordered_page(self, where, parameters, limit):
@@ -321,14 +330,17 @@ class IndexedArchive:
         if self._ordered is None:
             cached = _cache_get(('ordered', self.topology_cache_key))
             if cached is not None:
-                self._ordered, self._ordered_index = cached
+                self._ordered, self._ordered_index, self._ordered_position_index = cached
                 return self._ordered
             links = self.visible_links()
             nodes = [{'id': row['id'], 'next_ids': list(links.get(row['id'], ())) }
                      for row in self.visible_passage_rows()]
             self._ordered = [p['id'] for p in ordered_passages(nodes)]
             self._ordered_index = {identifier: rank for rank, identifier in enumerate(self._ordered)}
-            _cache_put(('ordered', self.topology_cache_key), (self._ordered, self._ordered_index))
+            self._ordered_position_index = {row['position']: self._ordered_index[row['id']]
+                                            for row in self.visible_passage_rows()}
+            _cache_put(('ordered', self.topology_cache_key),
+                       (self._ordered, self._ordered_index, self._ordered_position_index))
         return self._ordered
 
     def visible_passage_rows(self):
@@ -430,6 +442,34 @@ class IndexedArchive:
                 _total_put(key, facets)
             return facets
 
+    def order_search_positions(self, positions):
+        """Keep hits compact while using the topology of ALL visible passages."""
+        if positions and self.has_backlinks:
+            if len(self.visible_links()) > 5000:
+                self.ordered_ids()
+                positions.sort(key=self._ordered_position_index.__getitem__)
+                return
+            self.linked_order()
+            adjustments = self._position_adjustments
+            positions.sort()
+            # Ordinary positions already have the right relative order. When no
+            # linked node matched, avoid constructing a sort tuple for every hit.
+            for position in adjustments:
+                index = bisect_left(positions, position)
+                if index < len(positions) and positions[index] == position:
+                    positions.sort(key=lambda p: adjustments.get(p, (p, -1)))
+                    break
+        else:
+            positions.sort()
+
+    def search_page_ids(self, positions):
+        if not positions:
+            return []
+        rows = self.passage_rows('''SELECT v.id,v.position FROM json_each(:positions) wanted
+            CROSS JOIN passages v ON v.position=wanted.value''', {'positions': json.dumps(list(positions))})
+        identifiers = {row['position']: row['id'] for row in rows}
+        return [identifiers[position] for position in positions]
+
     def search(self, options, secret):
         query = {key: value for key, value in options.items() if key != 'cursor'}
         binding = fingerprint({'kind': 'indexed_search', 'query': query, **self.meta})
@@ -448,37 +488,28 @@ class IndexedArchive:
             # Facets count ALL visible passages, independently of the query. Share
             # that compact result across misses under the same visibility revision.
             speakers = self.search_facets()
-            # Aggregate only hits, without materializing/grouping every visible
-            # passage again. Keep instr as the final literal-match authority.
+            # Transfer only integer positions. String IDs are resolved for the
+            # requested page, after sorting/counting the entire exact result.
             if plan['kind'] == 'scan':
-                rows = self.rows(f'''SELECT json_group_array(json_array(v.id,v.position)) AS matches
+                rows = self.rows(f'''SELECT json_group_array(v.position) AS matches
                     FROM passages v WHERE {condition}''', params)
                 matches = json.loads(rows[0]['matches'])
             else:
                 # A gram match is only a superset. Recheck every term, speaker,
                 # permission and withdrawal in the same fixed read transaction.
-                matches = [(row['id'], row['position']) for row in self.rows(f'''
-                    SELECT v.id,v.position FROM query_postings candidate CROSS JOIN passages v
+                matches = [row['position'] for row in self.rows(f'''
+                    SELECT v.position FROM query_postings candidate CROSS JOIN passages v
                       ON v.position=candidate.position
                     WHERE candidate.snapshot_id=:snapshot AND candidate.gram=:candidate_gram
                       AND {condition}''', {**params, 'candidate_gram': plan['gram']})] if plan['kind'] == 'index' else []
-            if matches and self.has_backlinks:
-                # Sort hits by the topology of ALL visible nodes, so an unmatched
-                # or hidden predecessor cannot incorrectly reorder search hits.
-                if len(self.visible_links()) > 5000:
-                    self.ordered_ids()
-                    matches.sort(key=lambda row: self._ordered_index[row[0]])
-                else:
-                    linked = self.linked_order()
-                    matches.sort(key=lambda row: linked.get(row[0], (row[1], -1)))
-            else:
-                matches.sort(key=lambda row: row[1])
-            matching_ids = [identifier for identifier, _ in matches]
-            total = len(matching_ids)
-            cached = _search_put(cache_key, (matching_ids, speakers, total))
-        matching_ids, speakers, total = cached
+            self.order_search_positions(matches)
+            total = len(matches)
+            # Signed 64-bit positions match SQLite's integer range. This bounded
+            # LRU stores packed numbers rather than a Python object per hit.
+            cached = _search_put(cache_key, (array('q', matches), speakers, total))
+        matching_positions, speakers, total = cached
         require(offset % query['limit'] == 0 and (offset == 0 or offset < total), 'cursor outside results')
-        page_ids = matching_ids[offset:offset + query['limit']]
+        page_ids = self.search_page_ids(matching_positions[offset:offset + query['limit']])
         payloads = {passage['id']: passage for passage in self.selected('passages', set(page_ids))}
         results = [payloads[identifier] for identifier in page_ids]
         count = sum(row['n'] for row in speakers)

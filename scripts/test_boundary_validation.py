@@ -4,12 +4,23 @@ from io import StringIO
 
 from benchmark_boundaries import workload
 from benchmark_search_misses import queries, run as run_search_misses
+from benchmark_search_concurrency import query_groups
 from check_live_restrictions import run_case
 from search_archive import ordered_passages
 from validate_sample import project
 
 
 class BoundaryTests(unittest.TestCase):
+    def test_concurrency_queries_remain_distinct_after_normalization(self):
+        from search_archive import normalize_text
+        data, _ = workload('long', 300)
+        groups = query_groups(data)
+        terms = [q for group in groups.values() for q in group]
+        self.assertEqual(len({normalize_text(q) for q in terms}), 50)
+        self.assertEqual(len(groups['broad_suffixes']), 10)
+        for q in groups['broad_prefixes'] + groups['broad_suffixes']:
+            self.assertTrue(all(q in normalize_text(p['text']) for p in data['passages'][32:]))
+
     def test_search_miss_matrix_checks_eviction_and_withdrawal(self):
         self.assertEqual(len(set(queries(30))), 30)
         with redirect_stdout(StringIO()):

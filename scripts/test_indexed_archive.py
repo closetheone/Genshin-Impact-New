@@ -100,6 +100,71 @@ class IndexedTests(unittest.TestCase):
         # The old snapshot must also use the new withdrawal/purpose boundary.
         check_queries()
 
+    def assert_search_pages(self, snapshot, query, scopes, limit=50):
+        from search_archive import normalize_text
+        view = project(load_snapshot(self.database, snapshot), scopes)
+        expected = [p for p in ordered_passages(view['passages']) if normalize_text(query) in normalize_text(p['text'])]
+        actual = []
+        cursor = ''
+        while True:
+            opts = search_options({'q': [query], 'limit': [str(limit)], 'snapshot': [snapshot],
+                                   **({'cursor': [cursor]} if cursor else {})})
+            with indexed_view(self.database, snapshot, scopes, 'display') as archive:
+                result = archive.search(opts, SECRET)
+            self.assertEqual(result['pagination']['total'], len(expected))
+            self.assertEqual(result['pagination']['offset'], len(actual))
+            actual.extend(result['results'])
+            cursor = result['pagination']['next_cursor']
+            if not cursor:
+                break
+        self.assertEqual(actual, expected)
+
+    def test_search_positions_are_isolated_across_reordered_snapshots(self):
+        data, _ = workload('long', 300)
+        import_snapshot(data, self.database, activate=True)
+        updated = next_snapshot(data, 'reordered-search-positions')
+        updated['passages'].reverse()
+        for index, passage in enumerate(updated['passages']):
+            passage['source_locator'] = f'data/samples/story.json#/passages/{index}'
+        updated['passages'][0]['text'] = '新快照物资核对'
+        import_snapshot(updated, self.database, activate=True)
+        for snapshot in (data['snapshot_id'], updated['snapshot_id'], data['snapshot_id']):
+            for query in ('', '物资核对', '组号07'):
+                self.assert_search_pages(snapshot, query, ['opening'], limit=17)
+
+    def test_dense_search_positions_follow_visible_order_after_withdrawal(self):
+        data, _ = workload('linked', 6200)
+        import_snapshot(data, self.database, activate=True)
+        with indexed_view(self.database, None, ['opening'], 'display') as archive:
+            self.assertGreater(len(archive.visible_links()), 5000)
+        for query in ('物资核对', '组号07'):
+            self.assert_search_pages(data['snapshot_id'], query, ['opening'])
+        updated = next_snapshot(data, 'dense-search-restricted')
+        updated['withdrawn_ids'] = [data['passages'][index]['id'] for index in (33, 34, 99, 101)]
+        import_snapshot(updated, self.database, activate=True)
+        for query in ('物资核对', '组号07'):
+            self.assert_search_pages(data['snapshot_id'], query, ['opening'])
+
+    def test_search_with_disabled_read_mapping_keeps_literal_results(self):
+        data, _ = workload('long', 300)
+        data['passages'][32]['text'] = 'ＡＢＣ 空\x00白 🙂🚀界'
+        import_snapshot(data, self.database, activate=True)
+        view = project(data, ['opening'])
+        before = self.database.read_bytes()
+        for cap, limit in ((0, 7), (1 << 30, 8)):
+            with patch('indexed_archive.READ_MMAP_BYTES', cap):
+                for query in ('物资核对', '组号07', 'ＡＢＣ', '空\x00白', '🙂🚀', '文', ''):
+                    opts = search_options({'q': [query], 'limit': [str(limit)]})
+                    with indexed_view(self.database, None, ['opening'], 'display') as archive:
+                        result = archive.search(opts, SECRET)
+                        if cap == 0:
+                            setting = archive.connection.execute('PRAGMA mmap_size').fetchone()
+                            self.assertTrue(setting is None or setting[0] == 0)
+                    expected = search_view(view, opts, SECRET)
+                    for key in ('results', 'facets', 'stats'):
+                        self.assertEqual(result[key], expected[key])
+        self.assertEqual(self.database.read_bytes(), before)
+
     def test_candidate_indexes_migrate_all_snapshots_atomically(self):
         updated = next_snapshot(SAMPLE, 'candidate-migration-new')
         updated['withdrawn_ids'] = ['passage:03']
