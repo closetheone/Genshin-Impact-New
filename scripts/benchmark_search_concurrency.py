@@ -92,10 +92,10 @@ def run(database, mmap_bytes=None):
                 phase = 'order_positions_inclusive'
             elif 'instr(' in args[0]:
                 phase = 'match_sql'
-            elif name == 'passage_rows':
-                phase = 'topology_or_page_sql'
             elif 'GROUP BY speaker' in args[0]:
                 phase = 'facets_sql'
+            elif name == 'passage_rows':
+                phase = 'topology_or_page_sql'
             else:
                 phase = 'metadata_sql'
             start = time.perf_counter(); cpu = time.thread_time()

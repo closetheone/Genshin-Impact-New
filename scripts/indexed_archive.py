@@ -437,7 +437,10 @@ class IndexedArchive:
         with _TOPOLOGY_CACHE_LOCK:
             facets = _total_get(key)
             if facets is None:
-                facets = [dict(row) for row in self.rows('''SELECT coalesce(speaker_id,"narration") AS speaker,
+                # This projection needs only visibility fields. The passage CTE
+                # materializes parent IDs, allowing all three record collections
+                # to use query_visibility without reading normalized body text.
+                facets = [dict(row) for row in self.passage_rows('''SELECT coalesce(speaker_id,"narration") AS speaker,
                     count(*) AS n FROM passages GROUP BY speaker ORDER BY speaker''')]
                 _total_put(key, facets)
             return facets

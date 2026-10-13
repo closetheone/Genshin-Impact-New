@@ -36,10 +36,10 @@ def profile_search(archive, query):
                 phase = 'candidate_plan'
             elif 'instr(' in args[0]:
                 phase = 'exact_match_sql'
-            elif _name == 'passage_rows':
-                phase = 'topology_sql'
             elif 'GROUP BY speaker' in args[0]:
                 phase = 'facets_sql'
+            elif _name == 'passage_rows':
+                phase = 'topology_sql'
             else:
                 phase = 'payload_and_metadata_sql'
             result, seconds = timed(lambda: _method(*args, **kwargs))

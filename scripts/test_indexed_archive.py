@@ -1,8 +1,10 @@
 import json
 import random
 from contextlib import closing
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import tempfile
+import threading
 import unittest
 from unittest.mock import patch
 
@@ -10,7 +12,7 @@ from archive_store import StoreError, connect, import_snapshot, load_snapshot
 from benchmark_boundaries import workload
 from graph_archive import graph_view, relation_view
 from indexed_archive import indexed_view
-from query_index import prepare_indexes
+from query_index import VERSION, prepare_indexes
 from search_archive import search_options, search_view, ordered_passages, StaleCursor
 from test_graph_archive import SAMPLE, SECRET, next_snapshot, options
 from validate_sample import project, SampleError
@@ -72,7 +74,7 @@ class IndexedTests(unittest.TestCase):
         snapshot = data['snapshot_id']
 
         def check_queries():
-            for scopes in (['opening'], data['scope_ids']):
+            for scopes in ([], ['opening'], data['scope_ids']):
                 for purpose in ('display', 'export', 'external_ai'):
                     view = project(load_snapshot(self.database, snapshot), scopes, purpose)
                     # Different terms/speakers miss the result cache but reuse the
@@ -99,6 +101,98 @@ class IndexedTests(unittest.TestCase):
         import_snapshot(updated, self.database, activate=True)
         # The old snapshot must also use the new withdrawal/purpose boundary.
         check_queries()
+        updated = next_snapshot(updated, 'scan-facets-parent-restricted')
+        updated['withdrawn_ids'].extend([data['entries'][0]['id'], data['sources'][0]['id']])
+        import_snapshot(updated, self.database, activate=True)
+        check_queries()
+
+    def test_first_facets_use_covering_reads_for_all_record_collections(self):
+        data, _ = workload('long', 300)
+        import_snapshot(data, self.database, activate=True)
+        with indexed_view(self.database, None, ['opening'], 'display') as archive:
+            original = archive.passage_rows
+            plans = []
+
+            def observe(sql, parameters=None):
+                plans.extend(row[3] for row in archive.connection.execute(
+                    'EXPLAIN QUERY PLAN ' + archive.passages_cte + sql, archive.params))
+                return original(sql, parameters)
+
+            with patch.object(archive, 'passage_rows', side_effect=observe):
+                facets = archive.search_facets()
+            self.assertEqual(sum(row['n'] for row in facets), len(project(data, ['opening'])['passages']))
+            reads = [plan for plan in plans if plan.startswith(('SEARCH q ', 'SCAN q '))]
+            self.assertEqual(len(reads), 3)
+            self.assertTrue(all('USING COVERING INDEX query_visibility' in plan for plan in reads), reads)
+
+    def test_concurrent_first_facets_share_one_scan(self):
+        from indexed_archive import IndexedArchive
+        expected = search_view(project(SAMPLE, ['opening']), search_options({}), SECRET)['facets']['speakers']
+        barrier = threading.Barrier(10)
+        original = IndexedArchive.passage_rows
+        scans = []
+
+        def observe(archive, sql, parameters=None):
+            if 'GROUP BY speaker' in sql:
+                scans.append(archive.topology_cache_key)
+            return original(archive, sql, parameters)
+
+        def request(_):
+            with indexed_view(self.database, None, ['opening'], 'display') as archive:
+                barrier.wait(timeout=10)
+                return [{'value': row['speaker'], 'count': row['n']} for row in archive.search_facets()]
+
+        with patch.object(IndexedArchive, 'passage_rows', new=observe):
+            with ThreadPoolExecutor(max_workers=10) as executor:
+                results = list(executor.map(request, range(10)))
+        self.assertEqual(results, [expected] * 10)
+        self.assertEqual(len(scans), 1)
+
+    def test_visibility_v2_migration_preserves_ready_content_and_postings(self):
+        updated = next_snapshot(SAMPLE, 'visibility-migration-restricted')
+        updated['withdrawn_ids'] = ['passage:03']
+        import_snapshot(updated, self.database, activate=True)
+        with closing(connect(self.database, writable=True)) as connection:
+            connection.execute('DROP INDEX query_visibility')
+            connection.execute('UPDATE query_state SET version=2')
+            before = {table: [tuple(row) for row in connection.execute(f'SELECT * FROM {table}')]
+                      for table in ('query_records', 'query_postings', 'query_grams', 'query_snapshots')}
+            revision = connection.execute('SELECT policy_revision FROM query_state').fetchone()[0]
+        old_bytes = self.database.read_bytes()
+        with self.assertRaises(StoreError), indexed_view(self.database, None, ['opening'], 'display'):
+            pass
+        self.assertEqual(self.database.read_bytes(), old_bytes)
+        with patch('query_index.build_index', side_effect=AssertionError('no rebuild needed')):
+            self.assertEqual(prepare_indexes(self.database), {'index_version': VERSION, 'rebuilt_snapshots': []})
+            self.assertEqual(prepare_indexes(self.database)['rebuilt_snapshots'], [])
+        with closing(connect(self.database)) as connection:
+            self.assertEqual(connection.execute('SELECT policy_revision FROM query_state').fetchone()[0], revision + 1)
+            for table, rows in before.items():
+                self.assertEqual([tuple(row) for row in connection.execute(f'SELECT * FROM {table}')], rows)
+        for snapshot in (SAMPLE['snapshot_id'], updated['snapshot_id']):
+            expected = search_view(project(load_snapshot(self.database, snapshot), ['opening']), search_options({}), SECRET)
+            with indexed_view(self.database, snapshot, ['opening'], 'display') as archive:
+                actual = archive.search(search_options({}), SECRET)
+            for key in ('results', 'facets', 'stats'):
+                self.assertEqual(actual[key], expected[key])
+
+    def test_visibility_migration_rolls_back_with_failed_dirty_rebuild(self):
+        with closing(connect(self.database, writable=True)) as connection:
+            connection.execute('DROP INDEX query_visibility')
+            connection.execute('UPDATE query_state SET version=2')
+            connection.execute('UPDATE query_snapshots SET ready=0')
+            state = tuple(connection.execute('SELECT * FROM query_state').fetchone())
+        with patch('query_index.build_index', side_effect=RuntimeError('interrupted rebuild')):
+            with self.assertRaises(RuntimeError):
+                prepare_indexes(self.database)
+        with closing(connect(self.database)) as connection:
+            self.assertEqual(tuple(connection.execute('SELECT * FROM query_state').fetchone()), state)
+            self.assertIsNone(connection.execute("SELECT name FROM sqlite_master WHERE name='query_visibility'").fetchone())
+            self.assertEqual(connection.execute('SELECT ready FROM query_snapshots').fetchone()[0], 0)
+        result = prepare_indexes(self.database)
+        self.assertEqual(result['rebuilt_snapshots'], [SAMPLE['snapshot_id']])
+        with indexed_view(self.database, None, ['opening'], 'display') as archive:
+            self.assertTrue(archive.search_facets())
 
     def assert_search_pages(self, snapshot, query, scopes, limit=50):
         from search_archive import normalize_text
@@ -173,6 +267,7 @@ class IndexedTests(unittest.TestCase):
         with closing(connect(self.database, writable=True)) as connection:
             connection.execute('DROP TABLE query_postings')
             connection.execute('DROP TABLE query_grams')
+            connection.execute('DROP INDEX query_visibility')
             connection.execute('UPDATE query_state SET version=1')
         with self.assertRaises(StoreError), indexed_view(self.database, None, ['opening'], 'display'):
             pass
@@ -183,7 +278,7 @@ class IndexedTests(unittest.TestCase):
             self.assertEqual(connection.execute('SELECT version FROM query_state').fetchone()[0], 1)
             self.assertIsNone(connection.execute("SELECT name FROM sqlite_master WHERE name='query_grams'").fetchone())
         result = prepare_indexes(self.database)
-        self.assertEqual(result['index_version'], 2)
+        self.assertEqual(result['index_version'], VERSION)
         self.assertEqual(set(result['rebuilt_snapshots']), {SAMPLE['snapshot_id'], updated['snapshot_id']})
         for snapshot in result['rebuilt_snapshots']:
             opts = search_options({'q': ['物资']})

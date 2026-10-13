@@ -1,0 +1,389 @@
+{
+  "dataset_kind": "synthetic",
+  "snapshot": "boundary-long-100000-v1",
+  "passages": 100000,
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "python": "3.13.3",
+    "sqlite": "3.49.2",
+    "logical_cpus": 8,
+    "cpu": "Apple M1",
+    "memory_bytes": "8589934592"
+  },
+  "generated_at_utc": "2026-10-13T09:14:37Z",
+  "implementation_sha256": "c3dc90189434118b83624da6b02269523fc3f01f78951c8fd87ab9bd88d0c0f5",
+  "query_index_sha256": "b8cbda0f09a2ebedc1e070ed886964d34f14db3f0ea170243a4ce91ef970a55a",
+  "limitations": [
+    "Direct calls, no HTTP; oracle validation is outside timing",
+    "Application caches cleared before each round; OS disk cache is not flushed",
+    "Sequential rounds share OS caches; SQL plans captured outside timing",
+    "Concurrency exercises ten readers of the same visibility boundary"
+  ],
+  "scenarios": {
+    "facets": {
+      "requests": 5,
+      "errors": 0,
+      "p50_seconds": 0.0418,
+      "p95_seconds": 0.0498,
+      "max_seconds": 0.0498,
+      "response_bytes_max": 0,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.049786,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.04129,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.041871,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.041768,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.041427,
+          "bytes": 0
+        }
+      ]
+    },
+    "search": {
+      "requests": 5,
+      "errors": 0,
+      "p50_seconds": 0.3728,
+      "p95_seconds": 1.2319,
+      "max_seconds": 1.2319,
+      "response_bytes_max": 0,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 1.231903,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.379014,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.372788,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.372392,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.371656,
+          "bytes": 0
+        }
+      ]
+    },
+    "concurrent_facets": {
+      "requests": 50,
+      "errors": 0,
+      "p50_seconds": 0.0512,
+      "p95_seconds": 0.0545,
+      "max_seconds": 0.0546,
+      "response_bytes_max": 0,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.052649,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.052309,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.052661,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.052942,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.052286,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.052423,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051929,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.052625,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.052923,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.052829,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.052959,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.054473,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.054324,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.054306,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.052405,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.05423,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.053144,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.053172,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.054512,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.054607,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050809,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051298,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050966,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050978,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.05074,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051222,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051156,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051095,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051258,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051284,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050554,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050712,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050366,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050884,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050982,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051077,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050668,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050884,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051034,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051424,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050034,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051107,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050949,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051057,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.049767,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050657,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050809,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050931,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.051114,
+          "bytes": 0
+        },
+        {
+          "ok": true,
+          "seconds": 0.050875,
+          "bytes": 0
+        }
+      ]
+    }
+  },
+  "facets_query_plan": [
+    "SEARCH q USING COVERING INDEX query_visibility (snapshot_id=? AND collection=?)",
+    "LIST SUBQUERY 9",
+    "MATERIALIZE allowed_sources",
+    "SCAN s",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH w USING COVERING INDEX sqlite_autoindex_withdrawals_1 (id=?)",
+    "SCAN allowed_sources",
+    "CREATE BLOOM FILTER",
+    "CORRELATED SCALAR SUBQUERY 10",
+    "SEARCH w USING COVERING INDEX sqlite_autoindex_withdrawals_1 (id=?)",
+    "LIST SUBQUERY 11",
+    "MATERIALIZE entries",
+    "SEARCH q USING COVERING INDEX query_visibility (snapshot_id=? AND collection=?)",
+    "LIST SUBQUERY 6",
+    "SCAN allowed_sources",
+    "CREATE BLOOM FILTER",
+    "CORRELATED SCALAR SUBQUERY 7",
+    "SEARCH w USING COVERING INDEX sqlite_autoindex_withdrawals_1 (id=?)",
+    "SCAN entries",
+    "CREATE BLOOM FILTER",
+    "LIST SUBQUERY 12",
+    "MATERIALIZE people",
+    "SEARCH q USING COVERING INDEX query_visibility (snapshot_id=? AND collection=?)",
+    "LIST SUBQUERY 3",
+    "SCAN allowed_sources",
+    "CREATE BLOOM FILTER",
+    "CORRELATED SCALAR SUBQUERY 4",
+    "SEARCH w USING COVERING INDEX sqlite_autoindex_withdrawals_1 (id=?)",
+    "SCAN people",
+    "CREATE BLOOM FILTER",
+    "USE TEMP B-TREE FOR GROUP BY"
+  ],
+  "all_correct": true
+}

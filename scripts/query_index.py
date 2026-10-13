@@ -4,13 +4,13 @@ from pathlib import Path
 from collections import Counter
 from search_archive import normalize_text, ordered_passages
 
-VERSION = 2
+VERSION = 3
 # Bound posting storage; unindexed/common grams always use the exact scan path.
 MAX_POSTINGS_PER_PASSAGE = 32
 MAX_CANDIDATES = 10000
 DDL = (
     'CREATE TABLE query_state(singleton INTEGER PRIMARY KEY CHECK(singleton=1), version INTEGER NOT NULL, policy_revision INTEGER NOT NULL)',
-    'INSERT INTO query_state VALUES(1, 2, 0)',
+    f'INSERT INTO query_state VALUES(1, {VERSION}, 0)',
     'CREATE TABLE query_snapshots(snapshot_id TEXT PRIMARY KEY, content_hash TEXT NOT NULL, ready INTEGER NOT NULL DEFAULT 0, has_backlinks INTEGER NOT NULL DEFAULT 0)',
     '''CREATE TABLE query_records(snapshot_id TEXT NOT NULL, id TEXT NOT NULL, collection TEXT NOT NULL, position INTEGER NOT NULL,
        scope_mask INTEGER NOT NULL, source_id TEXT, entry_id TEXT, speaker_id TEXT, text_norm TEXT, sort_rank INTEGER,
@@ -26,6 +26,12 @@ DDL = (
     'CREATE TABLE query_evidence(snapshot_id TEXT NOT NULL, relation_id TEXT NOT NULL, group_number INTEGER NOT NULL, passage_id TEXT NOT NULL, PRIMARY KEY(snapshot_id,relation_id,group_number,passage_id))',
     'CREATE INDEX query_evidence_passage ON query_evidence(snapshot_id,passage_id)',
 )
+
+
+def install_visibility(connection):
+    # Cover live visibility checks without visiting rows containing long text.
+    connection.execute('''CREATE INDEX query_visibility ON query_records(
+        snapshot_id,collection,scope_mask,source_id,id,entry_id,speaker_id)''')
 
 
 def trigrams(text):
@@ -73,9 +79,14 @@ def installed(connection):
 def ensure_indexes(connection):
     if installed(connection):
         row = connection.execute('SELECT version FROM query_state WHERE singleton=1').fetchone()
-        if row and row[0] == 1:
-            install_candidates(connection)
-            connection.execute('UPDATE query_snapshots SET ready=0')
+        if row and row[0] in (1, 2):
+            if row[0] == 1:
+                install_candidates(connection)
+                connection.execute('UPDATE query_snapshots SET ready=0')
+            # v2 records are already validated: adding a covering index does not
+            # change content, readiness or postings. Publish with the version in
+            # the caller's write transaction, rolling both back on any failure.
+            install_visibility(connection)
             connection.execute('UPDATE query_state SET version=?,policy_revision=policy_revision+1', (VERSION,))
         elif not row or row[0] != VERSION:
             raise StoreError('Unsupported query index version; explicit migration required.')
@@ -83,6 +94,7 @@ def ensure_indexes(connection):
     for statement in DDL:
         connection.execute(statement)
     install_candidates(connection)
+    install_visibility(connection)
     # Detect ordinary SQL edits, including maintenance/restore. No authorization
     # result is cached. A DBA able to remove triggers is outside this local boundary.
     for table in ('records', 'query_records', 'query_links', 'query_evidence'):
