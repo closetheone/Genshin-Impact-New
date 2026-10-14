@@ -3,6 +3,7 @@
 This gate reads source metadata only. It never downloads or imports source text.
 """
 import argparse
+from datetime import date
 import json
 from pathlib import Path
 import sys
@@ -45,6 +46,12 @@ def load_audit(path):
             for field in ("authorization_reference", "authorization_checked_on", "authorization_scope"):
                 require(isinstance(page.get(field), str) and page[field],
                         f"{identifier}: admitted page needs {field}")
+            try:
+                date.fromisoformat(page["authorization_checked_on"])
+            except ValueError:
+                raise AdmissionError(
+                    f"{identifier}: authorization_checked_on must be ISO YYYY-MM-DD"
+                )
     validate_policy_probe(data.get("follow_up_probe"))
     return data
 

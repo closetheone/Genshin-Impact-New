@@ -66,6 +66,23 @@ class SourceAdmissionTests(unittest.TestCase):
                 load_audit(path)
             self.assertIn('authorization_reference', str(error.exception))
 
+    def test_admitted_page_rejects_non_iso_authorization_date(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'audit.json'
+            page = {
+                'id': 'audit:test', 'source_id': 'test', 'admission_status': 'allowed',
+                'authorization_confirmed_by': 'record-1',
+                'authorization_reference': 'https://example.invalid/record-1',
+                'authorization_checked_on': '14/10/2026',
+                'authorization_scope': 'all test uses',
+                'allowed_uses': {use: 'allowed' for use in
+                                 ('collect', 'store', 'display', 'export', 'ai_retrieval', 'external_ai')},
+            }
+            path.write_text(json.dumps({'schema_version': 'source-audit-0.1', 'pages': [page]}), encoding='utf-8')
+            with self.assertRaises(ValueError) as error:
+                load_audit(path)
+            self.assertIn('ISO YYYY-MM-DD', str(error.exception))
+
     def test_policy_metadata_cannot_grant_source_uses(self):
         data = load_audit(ROOT / 'data/source-audit.json')
         policy = data['follow_up_probe']['policy_pages_probe']
