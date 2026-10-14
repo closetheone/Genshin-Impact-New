@@ -24,6 +24,9 @@ class SourceAdmissionTests(unittest.TestCase):
             page = {
                 'id': 'audit:test', 'source_id': 'test', 'admission_status': 'limited',
                 'authorization_confirmed_by': 'record-1',
+                'authorization_reference': 'https://example.invalid/record-1',
+                'authorization_checked_on': '2026-10-14',
+                'authorization_scope': 'collect and store for test dataset',
                 'allowed_uses': {use: 'allowed' for use in
                                  ('collect', 'store', 'display', 'export', 'ai_retrieval', 'external_ai')},
             }
@@ -40,11 +43,28 @@ class SourceAdmissionTests(unittest.TestCase):
             page = {
                 'id': 'audit:test', 'source_id': 'test', 'admission_status': 'allowed',
                 'authorization_confirmed_by': 'record-1',
+                'authorization_reference': 'https://example.invalid/record-1',
+                'authorization_checked_on': '2026-10-14',
+                'authorization_scope': 'all test uses',
                 'allowed_uses': {use: 'allowed' for use in
                                  ('collect', 'store', 'display', 'export', 'ai_retrieval', 'external_ai')},
             }
             path.write_text(json.dumps({'schema_version': 'source-audit-0.1', 'pages': [page]}), encoding='utf-8')
             self.assertTrue(evaluate(load_audit(path), ['collect', 'store', 'external_ai'], 'test')[0]['ready'])
+
+    def test_admitted_page_requires_reproducible_authorization_record(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'audit.json'
+            page = {
+                'id': 'audit:test', 'source_id': 'test', 'admission_status': 'allowed',
+                'authorization_confirmed_by': 'record-1',
+                'allowed_uses': {use: 'allowed' for use in
+                                 ('collect', 'store', 'display', 'export', 'ai_retrieval', 'external_ai')},
+            }
+            path.write_text(json.dumps({'schema_version': 'source-audit-0.1', 'pages': [page]}), encoding='utf-8')
+            with self.assertRaises(ValueError) as error:
+                load_audit(path)
+            self.assertIn('authorization_reference', str(error.exception))
 
     def test_policy_metadata_cannot_grant_source_uses(self):
         data = load_audit(ROOT / 'data/source-audit.json')

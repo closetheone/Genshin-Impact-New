@@ -42,6 +42,9 @@ def load_audit(path):
             require(isinstance(page.get("authorization_confirmed_by"), str)
                     and page["authorization_confirmed_by"],
                     f"{identifier}: admitted page needs authorization_confirmed_by")
+            for field in ("authorization_reference", "authorization_checked_on", "authorization_scope"):
+                require(isinstance(page.get(field), str) and page[field],
+                        f"{identifier}: admitted page needs {field}")
     validate_policy_probe(data.get("follow_up_probe"))
     return data
 
