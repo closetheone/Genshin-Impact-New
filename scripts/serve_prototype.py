@@ -7,7 +7,7 @@ import sqlite3
 from urllib.parse import parse_qs, urlsplit
 
 from archive_store import DEFAULT_DATABASE, SnapshotNotFound, StoreError, import_snapshot, load_snapshot
-from import_sample import read_sample, unique_object, reject_constant
+from import_sample import read_synthetic_sample, unique_object, reject_constant
 from material_archive import MaterialCapacity, material_view, selection_request
 from feedback_store import FeedbackConflict, FeedbackRateLimit, submit_feedback
 from ai_archive import AIArchive
@@ -218,7 +218,7 @@ def main():
     database = (args.database or DEFAULT_DATABASE).expanduser().resolve()
     try:
         if args.database is None and not database.exists():
-            import_snapshot(read_sample(SAMPLE_PATH), database)
+            import_snapshot(read_synthetic_sample(SAMPLE_PATH), database)
         prepare_indexes(database)
         load_snapshot(database)
         server = ThreadingHTTPServer(("127.0.0.1", args.port), PrototypeHandler)

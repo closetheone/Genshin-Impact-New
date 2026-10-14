@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from import_sample import guard_import_boundary
+from import_sample import guard_import_boundary, read_synthetic_sample
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +20,10 @@ class ImportBoundaryTests(unittest.TestCase):
     def test_synthetic_dataset_reaches_contract_validator(self):
         data = {"dataset_kind": "synthetic", "snapshot_id": "fixture-test"}
         self.assertIs(guard_import_boundary(data, Path("synthetic.json")), data)
+
+    def test_bootstrap_reader_uses_same_synthetic_boundary(self):
+        data = read_synthetic_sample(ROOT / "data/samples/story.json")
+        self.assertEqual(data["dataset_kind"], "synthetic")
 
 
 if __name__ == "__main__":

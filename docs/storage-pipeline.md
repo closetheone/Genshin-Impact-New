@@ -14,7 +14,7 @@
 
 `scripts/archive_store.py` 提供存储读写，`scripts/import_sample.py` 是导入入口。网页不再逐次读取原始 JSON；仍复用 `validate_sample.py` 的字段校验和投影规则。只接受 `synthetic` 输入，不新增真实采集器或外部 AI 连接。
 
-导入入口会在打开数据库前拒绝 `data/source-audit.json`、`source-audit-0.1` 台账结构和任何 `dataset_kind` 不是 `synthetic` 的输入，并提示先运行来源准入报告。来源审计台账只用于记录准入缺口，不能作为剧情语料或导入样本；即使来源获得授权，也仍需单独完成数据契约和授权后的导入流程。
+导入入口和原型首次启动的自动初始化会在打开数据库前拒绝 `data/source-audit.json`、`source-audit-0.1` 台账结构和任何 `dataset_kind` 不是 `synthetic` 的输入，并提示先运行来源准入报告。来源审计台账只用于记录准入缺口，不能作为剧情语料或导入样本；即使来源获得授权，也仍需单独完成数据契约和授权后的导入流程。
 
 ## 2. 运行和导入
 

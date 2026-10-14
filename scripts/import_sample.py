@@ -42,6 +42,10 @@ def guard_import_boundary(data, path):
     return data
 
 
+def read_synthetic_sample(path):
+    return guard_import_boundary(read_sample(path), path)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Transactionally import synthetic JSON into the local archive; no real game data admission.")
     parser.add_argument("path", nargs="?", type=Path, default=ROOT / "data/samples/story.json")
@@ -49,7 +53,7 @@ def main():
     parser.add_argument("--activate", action="store_true", help="Activate this snapshot after import; the first snapshot is activated automatically")
     args = parser.parse_args()
     try:
-        data = guard_import_boundary(read_sample(args.path), args.path)
+        data = read_synthetic_sample(args.path)
         result = import_snapshot(data, args.database, activate=args.activate)
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
