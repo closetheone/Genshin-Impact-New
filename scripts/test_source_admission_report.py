@@ -23,6 +23,22 @@ class SourceAdmissionReportTests(unittest.TestCase):
             self.assertIn('admission_status', source['missing_requirements'])
             self.assertIn('authorization_confirmed_by', source['missing_requirements'])
             self.assertTrue(source['unapproved_uses'])
+            self.assertTrue(source['next_actions'])
+
+    def test_ready_report_exposes_batch_next_action(self):
+        data = load_audit(ROOT / 'data/source-audit.json')
+        for page in data['pages']:
+            page['admission_status'] = 'allowed'
+            page['authorization_confirmed_by'] = 'Test Owner'
+            page['authorization_reference'] = 'https://example.invalid/auth'
+            page['authorization_checked_on'] = '2026-10-14'
+            page['authorization_scope'] = 'test scope'
+            page['authorization_valid_until'] = 'no_expiry'
+            page['allowed_uses'] = {use: 'allowed' for use in page['allowed_uses']}
+        report = build_report(data)
+        self.assertTrue(report['ready'])
+        self.assertTrue(all(item['next_actions'] == ['准备授权批次元数据并运行 validate_authorized_batch.py。']
+                            for item in report['sources']))
 
     def test_report_can_apply_uniform_requested_uses(self):
         data = load_audit(ROOT / 'data/source-audit.json')

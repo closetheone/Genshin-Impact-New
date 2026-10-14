@@ -648,7 +648,7 @@ async function renderAbout() {
   } else document.querySelector("#archive-snapshot").textContent = "收录快照暂不可用；仍可提交本地问题反馈。";
   const kinds = { text: "文本错误", attribution: "归属错误", branch: "分支问题", relationship: "人物关系错误", missing: "内容缺漏", usage: "内容使用问题" };
   const admission = status?.source_admission;
-  const admissionRows = admission?.sources?.map((source) => `<li><div><strong>${escapeHtml(source.source_id)}</strong><span class="small">申请：${escapeHtml(source.requested_uses.join("、"))}</span></div><span class="tag ${source.ready ? "tag-blue" : "tag-warm"}">${source.ready ? "已准入" : "待确认"}</span><p>${source.ready ? "授权字段已满足当前申请用途。" : `缺口：${escapeHtml(source.missing_requirements.join("、") || source.unapproved_uses.join("、") || "需复核")}`}</p></li>`).join("") || "";
+  const admissionRows = admission?.sources?.map((source) => `<li><div><strong>${escapeHtml(source.source_id)}</strong><span class="small">申请：${escapeHtml(source.requested_uses.join("、"))}</span></div><span class="tag ${source.ready ? "tag-blue" : "tag-warm"}">${source.ready ? "已准入" : "待确认"}</span><p>${source.ready ? "授权字段已满足当前申请用途。" : `缺口：${escapeHtml(source.missing_requirements.join("、") || source.unapproved_uses.join("、") || "需复核")}`}</p><ol class="source-next-actions">${(source.next_actions || []).map((action) => `<li>${escapeHtml(action)}</li>`).join("")}</ol></li>`).join("") || "";
   replacePage(`<section class="about-page"><div class="eyebrow">SOURCES & CORRECTIONS</div><h1>知道收录了什么，也能指出问题。</h1>
     <div class="callout">当前全部内容为原创合成样本，不是原神剧情。真实来源准入与剧情准确性尚未验收。</div>
     <h2>收录与已知缺口</h2><p>当前读取：<code>${escapeHtml(status?.snapshot_id || params.get("snapshot") || "暂不可用")}</code>。页面只展示顶部范围与用途允许的内容。</p>

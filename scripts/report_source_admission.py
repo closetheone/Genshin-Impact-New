@@ -14,6 +14,25 @@ DEFAULT_REQUESTS = {
 }
 
 
+def next_actions(missing_requirements, unapproved_uses, ready):
+    if ready:
+        return ["准备授权批次元数据并运行 validate_authorized_batch.py。"]
+    actions = []
+    if "admission_status" in missing_requirements:
+        actions.append("取得来源方明确的准入状态确认，并记录可复核授权依据。")
+    authorization_fields = {
+        "authorization_confirmed_by": "记录授权确认人及身份。",
+        "authorization_reference": "记录可复核的邮件、工单或许可链接。",
+        "authorization_checked_on": "填写授权核验日期。",
+        "authorization_scope": "明确页面、数据集、字段和排除对象范围。",
+        "authorization_valid_until": "填写授权有效期或 no_expiry。",
+    }
+    actions.extend(authorization_fields[field] for field in authorization_fields if field in missing_requirements)
+    if unapproved_uses:
+        actions.append(f"逐项确认用途：{'、'.join(unapproved_uses)}。")
+    return actions or ["复核授权记录和来源范围。"]
+
+
 def build_report(data, requested_by_source=None, source_filter=None):
     requested_by_source = requested_by_source or DEFAULT_REQUESTS
     source_ids = []
@@ -46,13 +65,15 @@ def build_report(data, requested_by_source=None, source_filter=None):
                     missing.append(field)
             unapproved.update(use for use in requested
                              if page.get("allowed_uses", {}).get(use) != "allowed")
+        ready = all(item["ready"] for item in results)
         sources.append({
             "source_id": source_id,
             "page_count": len(pages),
             "requested_uses": requested,
-            "ready": all(item["ready"] for item in results),
+            "ready": ready,
             "missing_requirements": sorted(set(missing)),
             "unapproved_uses": sorted(unapproved),
+            "next_actions": next_actions(sorted(set(missing)), sorted(unapproved), ready),
             "page_results": results,
         })
     return {"ready": all(source["ready"] for source in sources),
