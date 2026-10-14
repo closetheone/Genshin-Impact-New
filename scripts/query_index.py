@@ -4,7 +4,8 @@ from pathlib import Path
 from collections import Counter
 from search_archive import normalize_text, ordered_passages
 
-VERSION = 3
+VERSION = 4
+TEXT_EDGE_CHARS = 64
 # Bound posting storage; unindexed/common grams always use the exact scan path.
 MAX_POSTINGS_PER_PASSAGE = 32
 MAX_CANDIDATES = 10000
@@ -32,6 +33,14 @@ def install_visibility(connection):
     # Cover live visibility checks without visiting rows containing long text.
     connection.execute('''CREATE INDEX query_visibility ON query_records(
         snapshot_id,collection,scope_mask,source_id,id,entry_id,speaker_id)''')
+
+
+def install_search_text(connection):
+    # Small exact excerpts can prove a match without fetching the long body.
+    # Keep expressions identical to text_condition(); misses still read text_norm.
+    connection.execute(f'''CREATE INDEX query_search_text ON query_records(
+        snapshot_id,collection,position,scope_mask,source_id,id,entry_id,speaker_id,
+        substr(text_norm,1,{TEXT_EDGE_CHARS}),substr(text_norm,-{TEXT_EDGE_CHARS}))''')
 
 
 def trigrams(text):
@@ -79,14 +88,16 @@ def installed(connection):
 def ensure_indexes(connection):
     if installed(connection):
         row = connection.execute('SELECT version FROM query_state WHERE singleton=1').fetchone()
-        if row and row[0] in (1, 2):
+        if row and row[0] in (1, 2, 3):
             if row[0] == 1:
                 install_candidates(connection)
                 connection.execute('UPDATE query_snapshots SET ready=0')
             # v2 records are already validated: adding a covering index does not
             # change content, readiness or postings. Publish with the version in
             # the caller's write transaction, rolling both back on any failure.
-            install_visibility(connection)
+            if row[0] < 3:
+                install_visibility(connection)
+            install_search_text(connection)
             connection.execute('UPDATE query_state SET version=?,policy_revision=policy_revision+1', (VERSION,))
         elif not row or row[0] != VERSION:
             raise StoreError('Unsupported query index version; explicit migration required.')
@@ -95,6 +106,7 @@ def ensure_indexes(connection):
         connection.execute(statement)
     install_candidates(connection)
     install_visibility(connection)
+    install_search_text(connection)
     # Detect ordinary SQL edits, including maintenance/restore. No authorization
     # result is cached. A DBA able to remove triggers is outside this local boundary.
     for table in ('records', 'query_records', 'query_links', 'query_evidence'):
@@ -143,6 +155,13 @@ def build_index(connection, data):
     connection.execute('INSERT INTO query_snapshots VALUES(?,?,0,?) ON CONFLICT(snapshot_id) DO UPDATE SET ready=0,content_hash=excluded.content_hash,has_backlinks=excluded.has_backlinks', (snapshot, content_hash, int(backlinks)))
     for table in ('query_records', 'query_links', 'query_evidence', 'query_grams', 'query_postings'):
         connection.execute(f'DELETE FROM {table} WHERE snapshot_id=?', (snapshot,))
+    # An empty archive can build this relatively wide index in one pass after
+    # record insertion. Besides less write work, this keeps its pages together
+    # instead of interleaving them with long body rows. Never drop/rebuild it for
+    # other retained snapshots; incremental imports keep normal index maintenance.
+    bulk_search_text = connection.execute('SELECT 1 FROM query_records LIMIT 1').fetchone() is None
+    if bulk_search_text:
+        connection.execute('DROP INDEX query_search_text')
     for collection in COLLECTIONS:
         rows = []
         for position, record in enumerate(data[collection]):
@@ -152,6 +171,8 @@ def build_index(connection, data):
                          ranks.get(record['id']), record.get('from_id'), record.get('to_id'), record.get('predicate'),
                          record.get('branch_id'), int(record.get('review_status') == 'approved' and record.get('claim_kind') == 'explicit'), record.get('name')))
         connection.executemany('INSERT INTO query_records VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', rows)
+    if bulk_search_text:
+        install_search_text(connection)
     connection.executemany('INSERT INTO query_links VALUES(?,?,?)', [(snapshot, p['id'], following) for p in data['passages'] for following in p['next_ids']])
     connection.executemany('INSERT INTO query_evidence VALUES(?,?,?,?)', [(snapshot, r['id'], number, identifier) for r in data['relationships'] for number, group in enumerate(r['evidence_groups']) for identifier in group])
     build_candidates(connection, data)

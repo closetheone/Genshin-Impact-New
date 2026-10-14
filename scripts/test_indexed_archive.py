@@ -65,6 +65,102 @@ class IndexedTests(unittest.TestCase):
             self.assertEqual(archive.search(opts, SECRET)['results'],
                              search_view(project(data, ['opening']), opts, SECRET)['results'])
 
+    def test_text_edges_preserve_middle_boundary_long_and_nul_matches(self):
+        data, _ = workload('long', 300)
+        texts = ['首端命中 ＡＢＣ 空\x00白 🙂🚀' + '垫' * 200 + '尾端命中',
+                 '垫' * 80 + '中段命中' + '垫' * 80,
+                 '垫' * 62 + '跨边界匹配' + '垫' * 100,
+                 '甲' * 140 + '乙' * 140,
+                 'prefixfake' + '隔' * 160 + 'suffixfake']
+        for number, passage in enumerate(data['passages'][32:]):
+            passage['text'] = texts[number % len(texts)]
+        import_snapshot(data, self.database, activate=True)
+        for scopes in (['opening'], data['scope_ids']):
+            for purpose in ('display', 'export', 'external_ai'):
+                view = project(data, scopes, purpose)
+                with indexed_view(self.database, None, scopes, purpose) as archive:
+                    # Force exact scanning even when grams could reject the query,
+                    # exercising the excerpt/fallback boundary itself.
+                    with patch.object(archive, 'candidate_plan', return_value={'kind': 'scan', 'candidates': None}):
+                        for query in ('首端命中', '尾端命中', '中段命中', '跨边界匹配', '甲' * 70,
+                                      '甲' * 60 + '乙' * 60, 'prefixfakesuffixfake', 'ＡＢＣ',
+                                      '空\x00白', '🙂🚀', '垫', '', '首端命中 尾端命中'):
+                            for mode in ('literal', 'keywords'):
+                                opts = search_options({'q': [query], 'mode': [mode]})
+                                actual = archive.search(opts, SECRET)
+                                expected = search_view(view, opts, SECRET)
+                                for key in ('results', 'facets', 'stats'):
+                                    self.assertEqual(actual[key], expected[key], (scopes, purpose, query, mode, key))
+                                self.assertEqual(actual['pagination']['total'], expected['pagination']['total'])
+
+    def test_text_edges_skip_body_only_when_an_excerpt_proves_the_match(self):
+        data, _ = workload('long', 300)
+        text = '首端命中' + '垫' * 80 + '中段命中' + '垫' * 80 + '尾端命中'
+        for passage in data['passages'][32:]:
+            passage['text'] = text
+        import_snapshot(data, self.database, activate=True)
+        with indexed_view(self.database, None, ['opening'], 'display') as archive:
+            body_reads = []
+
+            def observe_body(body, term):
+                if body == text:
+                    body_reads.append(term)
+                return int(term in body)
+
+            archive.connection.create_function('observe_body', 2, observe_body)
+            original = archive.search_rows
+
+            def observe(sql, parameters=None):
+                return original(sql.replace('ELSE instr(v.text_norm,', 'ELSE observe_body(v.text_norm,'), parameters)
+
+            with patch.object(archive, 'search_rows', side_effect=observe):
+                for query, expected_reads in [('首端命中', 0), ('尾端命中', 0), ('中段命中', 268)]:
+                    body_reads.clear()
+                    opts = search_options({'q': [query]})
+                    self.assertEqual(archive.candidate_plan([query])['kind'], 'scan')
+                    result = archive.search(opts, SECRET)
+                    self.assertEqual(result['pagination']['total'], 268)
+                    self.assertEqual(len(body_reads), expected_reads)
+
+    def test_text_index_v3_migration_and_rollback(self):
+        with closing(connect(self.database, writable=True)) as connection:
+            connection.execute('DROP INDEX query_search_text')
+            connection.execute('UPDATE query_state SET version=3')
+            before = tuple(connection.execute('SELECT * FROM query_state').fetchone())
+            connection.execute('UPDATE query_snapshots SET ready=0')
+        with self.assertRaises(StoreError), indexed_view(self.database, None, ['opening'], 'display'):
+            pass
+        with patch('query_index.build_index', side_effect=RuntimeError('failed dirty rebuild')):
+            with self.assertRaises(RuntimeError):
+                prepare_indexes(self.database)
+        with closing(connect(self.database, writable=True)) as connection:
+            self.assertEqual(tuple(connection.execute('SELECT * FROM query_state').fetchone()), before)
+            self.assertIsNone(connection.execute("SELECT name FROM sqlite_master WHERE name='query_search_text'").fetchone())
+            self.assertEqual(connection.execute('SELECT ready FROM query_snapshots').fetchone()[0], 0)
+        self.assertEqual(prepare_indexes(self.database)['rebuilt_snapshots'], [SAMPLE['snapshot_id']])
+        with closing(connect(self.database, writable=True)) as connection:
+            connection.execute('DROP INDEX query_search_text')
+            connection.execute('UPDATE query_state SET version=3')
+        with patch('query_index.build_index', side_effect=AssertionError('ready v3 needs no rebuild')):
+            self.assertEqual(prepare_indexes(self.database), {'index_version': VERSION, 'rebuilt_snapshots': []})
+            self.assertEqual(prepare_indexes(self.database)['rebuilt_snapshots'], [])
+        with indexed_view(self.database, None, ['opening'], 'display') as archive:
+            actual = archive.search(search_options({}), SECRET)
+        self.assertEqual(actual['results'], search_view(project(SAMPLE, ['opening']), search_options({}), SECRET)['results'])
+
+    def test_bulk_text_index_rebuild_rolls_back_atomically(self):
+        with patch('query_index.build_candidates', side_effect=RuntimeError('failed after bulk index build')):
+            with self.assertRaises(RuntimeError):
+                prepare_indexes(self.database, rebuild=True)
+        with closing(connect(self.database)) as connection:
+            self.assertIsNotNone(connection.execute("SELECT name FROM sqlite_master WHERE name='query_search_text'").fetchone())
+            self.assertEqual(connection.execute('SELECT ready FROM query_snapshots').fetchone()[0], 1)
+        with indexed_view(self.database, None, ['opening'], 'display') as archive:
+            actual = archive.search(search_options({}), SECRET)
+        expected = search_view(project(SAMPLE, ['opening']), search_options({}), SECRET)
+        for key in ('results', 'facets', 'stats'):
+            self.assertEqual(actual[key], expected[key])
+
     def test_scan_reuses_facets_without_narrowing_them_to_matches(self):
         data, _ = workload('long', 300)
         for index, passage in enumerate(data['passages'][32:]):
@@ -110,15 +206,15 @@ class IndexedTests(unittest.TestCase):
         data, _ = workload('long', 300)
         import_snapshot(data, self.database, activate=True)
         with indexed_view(self.database, None, ['opening'], 'display') as archive:
-            original = archive.passage_rows
+            original = archive.visibility_rows
             plans = []
 
             def observe(sql, parameters=None):
                 plans.extend(row[3] for row in archive.connection.execute(
-                    'EXPLAIN QUERY PLAN ' + archive.passages_cte + sql, archive.params))
+                    'EXPLAIN QUERY PLAN ' + archive.visibility_cte + sql, archive.params))
                 return original(sql, parameters)
 
-            with patch.object(archive, 'passage_rows', side_effect=observe):
+            with patch.object(archive, 'visibility_rows', side_effect=observe):
                 facets = archive.search_facets()
             self.assertEqual(sum(row['n'] for row in facets), len(project(data, ['opening'])['passages']))
             reads = [plan for plan in plans if plan.startswith(('SEARCH q ', 'SCAN q '))]
@@ -129,7 +225,7 @@ class IndexedTests(unittest.TestCase):
         from indexed_archive import IndexedArchive
         expected = search_view(project(SAMPLE, ['opening']), search_options({}), SECRET)['facets']['speakers']
         barrier = threading.Barrier(10)
-        original = IndexedArchive.passage_rows
+        original = IndexedArchive.visibility_rows
         scans = []
 
         def observe(archive, sql, parameters=None):
@@ -142,7 +238,7 @@ class IndexedTests(unittest.TestCase):
                 barrier.wait(timeout=10)
                 return [{'value': row['speaker'], 'count': row['n']} for row in archive.search_facets()]
 
-        with patch.object(IndexedArchive, 'passage_rows', new=observe):
+        with patch.object(IndexedArchive, 'visibility_rows', new=observe):
             with ThreadPoolExecutor(max_workers=10) as executor:
                 results = list(executor.map(request, range(10)))
         self.assertEqual(results, [expected] * 10)
@@ -153,6 +249,7 @@ class IndexedTests(unittest.TestCase):
         updated['withdrawn_ids'] = ['passage:03']
         import_snapshot(updated, self.database, activate=True)
         with closing(connect(self.database, writable=True)) as connection:
+            connection.execute('DROP INDEX query_search_text')
             connection.execute('DROP INDEX query_visibility')
             connection.execute('UPDATE query_state SET version=2')
             before = {table: [tuple(row) for row in connection.execute(f'SELECT * FROM {table}')]
@@ -178,6 +275,7 @@ class IndexedTests(unittest.TestCase):
 
     def test_visibility_migration_rolls_back_with_failed_dirty_rebuild(self):
         with closing(connect(self.database, writable=True)) as connection:
+            connection.execute('DROP INDEX query_search_text')
             connection.execute('DROP INDEX query_visibility')
             connection.execute('UPDATE query_state SET version=2')
             connection.execute('UPDATE query_snapshots SET ready=0')
@@ -267,6 +365,7 @@ class IndexedTests(unittest.TestCase):
         with closing(connect(self.database, writable=True)) as connection:
             connection.execute('DROP TABLE query_postings')
             connection.execute('DROP TABLE query_grams')
+            connection.execute('DROP INDEX query_search_text')
             connection.execute('DROP INDEX query_visibility')
             connection.execute('UPDATE query_state SET version=1')
         with self.assertRaises(StoreError), indexed_view(self.database, None, ['opening'], 'display'):

@@ -9,7 +9,7 @@ from contextlib import contextmanager
 
 from archive_store import StoreError, SnapshotNotFound, connect, ensure_schema
 from graph_archive import GraphUnavailable, graph_view, relation_view
-from query_index import VERSION, trigrams
+from query_index import VERSION, TEXT_EDGE_CHARS, trigrams
 from search_archive import fingerprint, encode_cursor, decode_cursor, ordered_passages
 from validate_sample import require
 
@@ -26,6 +26,15 @@ _TOTAL_CACHE_LIMIT = 12
 # A per-connection upper bound on SQLite's read-only file mapping, not a heap
 # reservation. SQLite caps/ignores this on builds without mmap and reads normally.
 READ_MMAP_BYTES = 1 << 30
+
+
+def text_condition(parameter):
+    # Either excerpt is a contiguous substring of the normalized text. A hit
+    # proves containment, but a miss proves nothing (including SQLite substr's
+    # handling of NUL). Never concatenate excerpts or skip the full-body fallback.
+    return f'''CASE WHEN instr(substr(v.text_norm,1,{TEXT_EDGE_CHARS}),:{parameter})>0
+        OR instr(substr(v.text_norm,-{TEXT_EDGE_CHARS}),:{parameter})>0 THEN 1
+        ELSE instr(v.text_norm,:{parameter})>0 END'''
 
 
 def _cache_get(key):
@@ -177,31 +186,40 @@ class IndexedArchive:
           AND EXISTS(SELECT 1 FROM people b WHERE b.id=r.to_id)
           AND EXISTS(SELECT 1 FROM groups g WHERE g.relation_id=r.id)
         ) '''
-        self.passages_cte = '''WITH allowed_sources AS MATERIALIZED (
+        passages_cte = '''WITH allowed_sources AS MATERIALIZED (
           SELECT s.id FROM source_policies s
           WHERE json_extract(s.rights, '$.' || :purpose)='allowed'
           AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=s.id)
         ), people AS MATERIALIZED (
-          SELECT q.id FROM query_records q WHERE q.snapshot_id=:snapshot AND q.collection='characters'
+          SELECT q.id FROM query_records q{record_index} WHERE q.snapshot_id=:snapshot AND q.collection='characters'
             AND (q.scope_mask & :mask)=q.scope_mask AND q.source_id IN (SELECT id FROM allowed_sources)
             AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=q.id)
         ), entries AS MATERIALIZED (
-          SELECT q.id FROM query_records q WHERE q.snapshot_id=:snapshot AND q.collection='entries'
+          SELECT q.id FROM query_records q{record_index} WHERE q.snapshot_id=:snapshot AND q.collection='entries'
             AND (q.scope_mask & :mask)=q.scope_mask AND q.source_id IN (SELECT id FROM allowed_sources)
             AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=q.id)
         ), passages AS NOT MATERIALIZED (
-          SELECT q.* FROM query_records q WHERE q.snapshot_id=:snapshot AND q.collection='passages'
+          SELECT q.* FROM query_records q{record_index} WHERE q.snapshot_id=:snapshot AND q.collection='passages'
             AND (q.scope_mask & :mask)=q.scope_mask AND q.source_id IN (SELECT id FROM allowed_sources)
             AND NOT EXISTS(SELECT 1 FROM withdrawals w WHERE w.id=q.id)
             AND q.entry_id IN (SELECT id FROM entries)
             AND (q.speaker_id IS NULL OR q.speaker_id IN (SELECT id FROM people))
         ) '''
+        self.passages_cte = passages_cte.format(record_index='')
+        self.visibility_cte = passages_cte.format(record_index=' INDEXED BY query_visibility')
+        self.search_cte = passages_cte.format(record_index=' INDEXED BY query_search_text')
 
     def rows(self, sql, parameters=None):
         return self.connection.execute(self.cte + sql, {**self.params, **(parameters or {})}).fetchall()
 
     def passage_rows(self, sql, parameters=None):
         return self.connection.execute(self.passages_cte + sql, {**self.params, **(parameters or {})}).fetchall()
+
+    def search_rows(self, sql, parameters=None):
+        return self.connection.execute(self.search_cte + sql, {**self.params, **(parameters or {})}).fetchall()
+
+    def visibility_rows(self, sql, parameters=None):
+        return self.connection.execute(self.visibility_cte + sql, {**self.params, **(parameters or {})}).fetchall()
 
     def records(self, collection, where='1', parameters=None, order='v.position', limit=None, identifiers=None):
         table = {'characters': 'people', 'entries': 'entries', 'passages': 'passages', 'relationships': 'relations'}[collection]
@@ -440,7 +458,7 @@ class IndexedArchive:
                 # This projection needs only visibility fields. The passage CTE
                 # materializes parent IDs, allowing all three record collections
                 # to use query_visibility without reading normalized body text.
-                facets = [dict(row) for row in self.passage_rows('''SELECT coalesce(speaker_id,"narration") AS speaker,
+                facets = [dict(row) for row in self.visibility_rows('''SELECT coalesce(speaker_id,"narration") AS speaker,
                     count(*) AS n FROM passages GROUP BY speaker ORDER BY speaker''')]
                 _total_put(key, facets)
             return facets
@@ -481,7 +499,7 @@ class IndexedArchive:
         where = ['(:speaker="all" OR coalesce(v.speaker_id,"narration")=:speaker)']
         params = {'speaker': query['speaker']}
         for number, term in enumerate(terms):
-            where.append(f'instr(v.text_norm,:term{number})>0'); params[f'term{number}'] = term
+            where.append(text_condition(f'term{number}')); params[f'term{number}'] = term
         # The current contract only accepts the quest category, so all/quest have identical matches.
         condition = ' AND '.join(where)
         cache_key = (self.topology_cache_key, tuple(sorted(query.items())))
@@ -494,13 +512,13 @@ class IndexedArchive:
             # Transfer only integer positions. String IDs are resolved for the
             # requested page, after sorting/counting the entire exact result.
             if plan['kind'] == 'scan':
-                rows = self.rows(f'''SELECT json_group_array(v.position) AS matches
+                rows = self.search_rows(f'''SELECT json_group_array(v.position) AS matches
                     FROM passages v WHERE {condition}''', params)
                 matches = json.loads(rows[0]['matches'])
             else:
                 # A gram match is only a superset. Recheck every term, speaker,
                 # permission and withdrawal in the same fixed read transaction.
-                matches = [row['position'] for row in self.rows(f'''
+                matches = [row['position'] for row in self.search_rows(f'''
                     SELECT v.position FROM query_postings candidate CROSS JOIN passages v
                       ON v.position=candidate.position
                     WHERE candidate.snapshot_id=:snapshot AND candidate.gram=:candidate_gram

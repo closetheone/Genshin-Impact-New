@@ -221,6 +221,49 @@ query index version 3 增加仅含可见性字段的覆盖索引，首次筛选�
 
 首次长文本高命中从上轮 1.3645 秒变为本轮 1.6597 秒，首次请求是单次观察，不能与预热后的 P95 混用。本轮新增四项回归后共 97 项 Python 测试通过，覆盖索引执行计划、同边界并发单次统计、v2 无重建迁移及脏快照迁移失败回滚；原 v1 迁移、空范围 / 多用途、来源 / 条目 / 人物 / 段落撤下、旧快照、Unicode、拓扑及 DELETE/WAL 语义继续通过。编译、样本契约、JavaScript 语法和差异检查通过。
 
+## 正文首尾索引与完整回退（2026-10-13）
+
+本轮新增 query index version 4 的正文首尾表达式索引，保留规范化正文开头和结尾各 64 个字符，以及搜索可见性字段。扫描和候选复核均先检查这两个连续片段；片段命中即可证明原文包含，片段未命中则执行原有完整 `instr`。不拼接片段，不截断可搜索正文，也不缓存整段正文。中段、跨片段边缘、长于片段的查询和 NUL 均有完整回退。首次范围统计固定使用更小的可见性索引，避免 SQLite 自动选择更大的首尾索引。
+
+`scripts/benchmark_search_reads.py` 对比原匹配 SQL、精简父集合、行号范围读取、限制为一个 / 两个并发全文扫描，以及最终首尾索引。所有模式使用同一版数据库结构；baseline 只替换匹配 SQL，不能当成完整旧版本重跑。对照含 SQL 包装器开销，不含 HTTP，组间复用可见范围和拓扑，操作系统缓存不清空。额外的 `--middle` 负载在每段第 480 字处放入专用标记，十条不同的查询都只出现在中段，用来主动验证片段无法覆盖的情况。
+
+直接调用策略对照（每种 50 条不同查询，全部未命中且通过 oracle）：
+
+| 策略 | 混合新查询 P95 | 高命中前缀 P95 | 高命中末尾词 P95 |
+| --- | ---: | ---: | ---: |
+| [原匹配 SQL](evaluations/t09/search-reads-baseline-100k.json) | 1.3799 s | 0.3153 s | 0.7219 s |
+| [精简父集合](evaluations/t09/search-reads-lean-100k.json) | 1.3941 s | 0.3037 s | 0.7327 s |
+| [行号范围](evaluations/t09/search-reads-range-100k.json) | 1.5377 s | 0.2929 s | 0.7512 s |
+| [最多一个扫描](evaluations/t09/search-reads-serial-100k.json) | 1.3770 s | 0.8501 s | 3.4927 s |
+| [最多两个扫描](evaluations/t09/search-reads-pair-100k.json) | 1.2319 s | 0.4800 s | 1.7842 s |
+| [首尾索引](evaluations/t09/search-reads-edges-100k.json) | 0.7527 s | 0.2056 s | 0.2401 s |
+
+中段专用负载的十条查询全部只能回退正文，原 SQL / 首尾索引 P95 为 [1.9185](evaluations/t09/search-reads-middle-baseline-100k.json) / [1.8837](evaluations/t09/search-reads-middle-edges-100k.json) 秒，均未达到一秒，全部 oracle 正确。两组分别生成相同的合成负载、未清空操作系统缓存；这点差异不能解释为中段查询已有稳定收益。
+
+[统计专项](evaluations/t09/visibility-stats-text-edges-100k.json) 确认继续使用 `query_visibility`，十并发首次统计 P95 为 0.0530 秒，上轮为 0.0545 秒，未把原统计优化让给更大的搜索索引。
+
+最初按每条记录维护首尾索引的 [HTTP 未命中矩阵](evaluations/t09/search-text-edges-100k.json) 中，90 次请求全部确认未命中且通过 oracle：十并发新查询 P95 为 1.4757 秒（上轮 1.8084），八词轮换为 0.0120 秒（上轮 0.0160），逐次撤下为 0.1372 秒（上轮 0.3755）。该轮尚未解决新导入库首次索引读取成本；不能用迁移库上的直接调用数字替代这一 HTTP 结果。
+
+四类扩展负载的 840 次预热后请求及 28 次首次请求全部通过正文、顺序、连接、数量、定位和图谱证据 oracle。十万长文本首次高命中为 1.0234 秒（上轮 1.6597），预热后搜索 P95 为 0.0507–0.0942 秒；密集连接 / 深分页 / 组合负载的首次高命中分别为 0.9694 / 0.3001 / 0.4040 秒。报告为 `boundary-{long,linked,deep,combined}-text-edges-*.json`，全部保留在同目录。
+
+新增中段 / 跨边缘 / 长查询 / Unicode / NUL 差分检查、只在片段确认时跳过全文的运行时探针，以及 v3 迁移与失败回滚。v1/v2 升级、撤下 / 用途收紧、旧快照和 DELETE/WAL 回归继续通过；统计执行计划仍验证小覆盖索引。迁移只补表达式索引，已验证正文和 posting 不重建，旧版读请求不隐式迁移。
+
+### 空库批量建索引后的复测
+
+初版首尾索引随每行记录插入而维护。最终实现对空库先写入记录，再在同一事务中一次性创建索引；如果还保留其他快照，就继续维护已有索引，避免重建所有历史数据。已有 v3 库迁移时也是一次性建索引。事务失败回滚索引与数据，就绪状态最后发布。
+
+[最终 HTTP 未命中矩阵](evaluations/t09/search-text-edges-bulk-100k.json) 的 90 次请求全部确认未命中且通过 oracle：
+
+| HTTP 场景 | 并发 | 上轮可见性索引 P95 | 首尾索引逐行维护 P95 | 空库批量构建 P95 |
+| --- | ---: | ---: | ---: | ---: |
+| 全新查询 | 10 | 1.8084 s | 1.4757 s | 0.4830 s |
+| 八词轮换 | 1 | 0.0160 s | 0.0120 s | 0.0116 s |
+| 逐次撤下 | 1 | 0.3755 s | 0.1372 s | 0.1274 s |
+
+本组十并发新查询达到一秒目标，较上轮约下降 73%；只代表当前首尾词覆盖的本机合成矩阵。没有清空操作系统缓存，不是冷磁盘或生产保证。中段回退、多快照增量导入后的物理布局仍须单独衡量。
+
+同一 HTTP 生成器中，v3 库大小约 868.95 MiB，首尾索引逐行维护约 918.55 MiB，空库批量构建约 916.19 MiB；新增存储约 47.24 MiB。三轮导入耗时分别为 81.13 / 82.02 / 81.59 秒，单次观测不证明导入速度的稳定变化。
+
 ## 复现与下一步
 
 在仓库根目录依次运行，避免并行压测互相干扰。输出文件必须不存在，复测请另选路径，保留原始结果：
@@ -233,6 +276,9 @@ python3 scripts/benchmark_boundaries.py --profile combined --output /tmp/t09-com
 python3 scripts/benchmark_search_misses.py --output /tmp/t09-search-misses-new.json
 python3 scripts/benchmark_search_plans.py --count 100000 --output /tmp/t09-search-plans-new.json
 python3 scripts/benchmark_search_concurrency.py --count 100000 --output /tmp/t09-search-concurrency-new.json
+python3 scripts/benchmark_search_reads.py --count 100000 --mode edges --output /tmp/t09-text-edges-new.json
+python3 scripts/benchmark_search_reads.py --count 100000 --middle --mode baseline --output /tmp/t09-middle-baseline-new.json
+python3 scripts/benchmark_search_reads.py --count 100000 --middle --mode edges --output /tmp/t09-middle-edges-new.json
 # 已由当前版本显式准备的合成长文本诊断库：
 python3 scripts/benchmark_visibility_stats.py --database /tmp/yuanshen-search-profile/archive.sqlite3 --output /tmp/t09-visibility-new.json
 python3 scripts/check_live_restrictions.py --output /tmp/t09-restrictions-new.json

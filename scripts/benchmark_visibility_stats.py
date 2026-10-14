@@ -80,7 +80,8 @@ def run(database, repetitions=5):
                 return original(sql, parameters)
             return read
         with patch.object(archive, 'rows', observe(archive.rows, archive.cte)), \
-                patch.object(archive, 'passage_rows', observe(archive.passage_rows, archive.passages_cte)):
+                patch.object(archive, 'passage_rows', observe(archive.passage_rows, archive.passages_cte)), \
+                patch.object(archive, 'visibility_rows', observe(archive.visibility_rows, archive.visibility_cte)):
             assert archive.search_facets() == expected_facets
     report['all_correct'] = True
     return report

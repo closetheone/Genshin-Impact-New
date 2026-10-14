@@ -148,7 +148,7 @@ def run(database, mmap_bytes=None):
             (json, 'loads', observed_loads),
         ):
             stack.enter_context(patch.object(target, name, replacement))
-        for name in ('rows', 'passage_rows', 'candidate_plan', 'order_search_positions'):
+        for name in ('rows', 'passage_rows', 'search_rows', 'visibility_rows', 'candidate_plan', 'order_search_positions'):
             if hasattr(indexed_archive.IndexedArchive, name):
                 stack.enter_context(patch.object(indexed_archive.IndexedArchive, name, observe_method(name)))
         for name, group in cases.items():

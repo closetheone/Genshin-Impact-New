@@ -27,7 +27,7 @@ def timed(call):
 def profile_search(archive, query):
     phases = defaultdict(float)
     originals = {}
-    for name in ('rows', 'passage_rows', 'candidate_plan'):
+    for name in ('rows', 'passage_rows', 'search_rows', 'visibility_rows', 'candidate_plan'):
         original = getattr(archive, name)
         originals[name] = original
 
