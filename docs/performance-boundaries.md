@@ -264,6 +264,19 @@ query index version 3 增加仅含可见性字段的覆盖索引，首次筛选�
 
 同一 HTTP 生成器中，v3 库大小约 868.95 MiB，首尾索引逐行维护约 918.55 MiB，空库批量构建约 916.19 MiB；新增存储约 47.24 MiB。三轮导入耗时分别为 81.13 / 82.02 / 81.59 秒，单次观测不证明导入速度的稳定变化。
 
+## 当前部署环境复测（2026-10-14）
+
+在当前本机部署环境重新运行四类扩展边界矩阵和缓存未命中矩阵。每个场景仍使用十万或两万段原创合成数据、独立预热和 30 次请求；结果包含完整响应读取与 oracle 校验。四类边界矩阵均为 0 错误，缓存未命中矩阵的 90 次请求也全部确认未命中并通过校验。
+
+| 报告 | 代表场景 | P95 | 结果 |
+| --- | --- | ---: | --- |
+| [长文本](evaluations/t09/boundary-long-current-20261014.json) | broad_first / reader_deep_target | 0.0748 / 0.3783 s | 通过 |
+| [密集连接](evaluations/t09/boundary-linked-current-20261014.json) | broad_first / reader_deep_target | 0.0705 / 0.0321 s | 通过 |
+| [深分页](evaluations/t09/boundary-deep-current-20261014.json) | broad_first / reader_deep_target | 0.0936 / 0.4565 s | 通过 |
+| [组合负载](evaluations/t09/boundary-combined-current-20261014.json) | broad_first / reader_deep_target | 0.0905 / 0.0271 s | 通过 |
+
+[缓存未命中报告](evaluations/t09/search-misses-current-20261014.json) 的十并发新查询 P95 为 0.4455 秒，八条查询轮换为 0.0129 秒，逐次撤下后的查询为 0.1278 秒；三组各 30 次请求均为未命中缓存且无错误。当前环境复测仍使用本机 Apple M1、8 GiB 内存和操作系统已有磁盘缓存，不能替代目标线上设备、冷磁盘或真实来源批次验收。
+
 ## 复现与下一步
 
 在仓库根目录依次运行，避免并行压测互相干扰。输出文件必须不存在，复测请另选路径，保留原始结果：

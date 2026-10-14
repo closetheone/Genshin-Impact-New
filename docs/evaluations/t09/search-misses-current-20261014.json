@@ -1,0 +1,1265 @@
+{
+  "dataset_kind": "synthetic",
+  "workload": {
+    "passages": 100000,
+    "characters": 1024,
+    "fanout": 0
+  },
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "python": "3.13.3",
+    "sqlite": "3.49.2",
+    "logical_cpus": 8,
+    "cpu": "Apple M1",
+    "memory_bytes": "8589934592"
+  },
+  "generated_at_utc": "2026-10-14T02:04:34Z",
+  "implementation_sha256": "013e983640c49b18be9e27a3705eadc512a6b01bc1d73e6730176526ed12647b",
+  "query_index_sha256": "3bb8821d3e2ffdf30cf7cab4ffe80b97762dff17e6c07f3e979f1fc518d3d0a9",
+  "network": "Loopback HTTP; client and server share one Python process",
+  "latency_definition": "Full HTTP body read, JSON parse and oracle assertions; setup and writes excluded",
+  "limitations": [
+    "Synthetic data only; not production or real-story acceptance",
+    "OS disk cache is not flushed; topology caches may be warm",
+    "Only new_queries is concurrent; eviction and withdrawal are sequential to guarantee misses",
+    "Withdrawal timing excludes writer latency; concurrent policy changes have separate regression tests"
+  ],
+  "scenarios": {
+    "new_queries": {
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.1538,
+      "p95_seconds": 0.4455,
+      "max_seconds": 0.4508,
+      "response_bytes_max": 169222,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.4192,
+          "bytes": 169136,
+          "query": "原创负"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4455,
+          "bytes": 169222,
+          "query": "组号00"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1716,
+          "bytes": 1503,
+          "query": "不存在的负载词02"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4188,
+          "bytes": 169139,
+          "query": "原创负载"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4508,
+          "bytes": 169222,
+          "query": "组号01"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1712,
+          "bytes": 1503,
+          "query": "不存在的负载词05"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4138,
+          "bytes": 169142,
+          "query": "原创负载正"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4409,
+          "bytes": 169222,
+          "query": "组号02"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1719,
+          "bytes": 1503,
+          "query": "不存在的负载词08"
+        },
+        {
+          "ok": true,
+          "seconds": 0.4192,
+          "bytes": 169145,
+          "query": "原创负载正文"
+        },
+        {
+          "ok": true,
+          "seconds": 0.2714,
+          "bytes": 169222,
+          "query": "组号03"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0094,
+          "bytes": 1503,
+          "query": "不存在的负载词11"
+        },
+        {
+          "ok": true,
+          "seconds": 0.245,
+          "bytes": 169148,
+          "query": "原创负载正文只"
+        },
+        {
+          "ok": true,
+          "seconds": 0.2608,
+          "bytes": 169222,
+          "query": "组号04"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0391,
+          "bytes": 1503,
+          "query": "不存在的负载词14"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1271,
+          "bytes": 169151,
+          "query": "原创负载正文只供"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1646,
+          "bytes": 169222,
+          "query": "组号05"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0342,
+          "bytes": 1503,
+          "query": "不存在的负载词17"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1089,
+          "bytes": 169154,
+          "query": "原创负载正文只供检"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1539,
+          "bytes": 169222,
+          "query": "组号06"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0256,
+          "bytes": 1503,
+          "query": "不存在的负载词20"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1047,
+          "bytes": 169157,
+          "query": "原创负载正文只供检索"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1537,
+          "bytes": 169222,
+          "query": "组号07"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0163,
+          "bytes": 1503,
+          "query": "不存在的负载词23"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1005,
+          "bytes": 169160,
+          "query": "原创负载正文只供检索边"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1462,
+          "bytes": 169222,
+          "query": "组号08"
+        },
+        {
+          "ok": true,
+          "seconds": 0.027,
+          "bytes": 1503,
+          "query": "不存在的负载词26"
+        },
+        {
+          "ok": true,
+          "seconds": 0.083,
+          "bytes": 169163,
+          "query": "原创负载正文只供检索边界"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1119,
+          "bytes": 169222,
+          "query": "组号09"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0114,
+          "bytes": 1503,
+          "query": "不存在的负载词29"
+        }
+      ],
+      "concurrency": 10,
+      "cache_hits": 0,
+      "cache_misses": 30,
+      "all_missed": true,
+      "within_one_second": true,
+      "candidate_plans": [
+        {
+          "terms": [
+            "原创负载"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "不存在的负载词02"
+          ],
+          "kind": "empty",
+          "candidates": 0
+        },
+        {
+          "terms": [
+            "组号01"
+          ],
+          "kind": "index",
+          "candidates": 9990
+        },
+        {
+          "terms": [
+            "原创负"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "组号02"
+          ],
+          "kind": "index",
+          "candidates": 9990
+        },
+        {
+          "terms": [
+            "不存在的负载词08"
+          ],
+          "kind": "empty",
+          "candidates": 0
+        },
+        {
+          "terms": [
+            "原创负载正"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "不存在的负载词05"
+          ],
+          "kind": "empty",
+          "candidates": 0
+        },
+        {
+          "terms": [
+            "原创负载正文"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "组号00"
+          ],
+          "kind": "index",
+          "candidates": 9990
+        },
+        {
+          "terms": [
+            "组号03"
+          ],
+          "kind": "index",
+          "candidates": 9990
+        },
+        {
+          "terms": [
+            "不存在的负载词11"
+          ],
+          "kind": "empty",
+          "candidates": 0
+        },
+        {
+          "terms": [
+            "原创负载正文只"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "组号04"
+          ],
+          "kind": "index",
+          "candidates": 9990
+        },
+        {
+          "terms": [
+            "组号05"
+          ],
+          "kind": "index",
+          "candidates": 9990
+        },
+        {
+          "terms": [
+            "不存在的负载词17"
+          ],
+          "kind": "empty",
+          "candidates": 0
+        },
+        {
+          "terms": [
+            "不存在的负载词14"
+          ],
+          "kind": "empty",
+          "candidates": 0
+        },
+        {
+          "terms": [
+            "原创负载正文只供"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "原创负载正文只供检"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "不存在的负载词20"
+          ],
+          "kind": "empty",
+          "candidates": 0
+        },
+        {
+          "terms": [
+            "组号07"
+          ],
+          "kind": "index",
+          "candidates": 9990
+        },
+        {
+          "terms": [
+            "原创负载正文只供检索"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "组号06"
+          ],
+          "kind": "index",
+          "candidates": 9990
+        },
+        {
+          "terms": [
+            "不存在的负载词23"
+          ],
+          "kind": "empty",
+          "candidates": 0
+        },
+        {
+          "terms": [
+            "组号08"
+          ],
+          "kind": "index",
+          "candidates": 9990
+        },
+        {
+          "terms": [
+            "原创负载正文只供检索边"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "不存在的负载词26"
+          ],
+          "kind": "empty",
+          "candidates": 0
+        },
+        {
+          "terms": [
+            "原创负载正文只供检索边界"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "组号09"
+          ],
+          "kind": "index",
+          "candidates": 9990
+        },
+        {
+          "terms": [
+            "不存在的负载词29"
+          ],
+          "kind": "empty",
+          "candidates": 0
+        }
+      ]
+    },
+    "rotating_eight_queries": {
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.0095,
+      "p95_seconds": 0.0129,
+      "max_seconds": 0.0182,
+      "response_bytes_max": 169221,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.0182,
+          "bytes": 169221,
+          "query": "组号80"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0113,
+          "bytes": 169221,
+          "query": "组号81"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0108,
+          "bytes": 169221,
+          "query": "组号82"
+        },
+        {
+          "ok": true,
+          "seconds": 0.011,
+          "bytes": 169221,
+          "query": "组号83"
+        },
+        {
+          "ok": true,
+          "seconds": 0.012,
+          "bytes": 169221,
+          "query": "组号84"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0129,
+          "bytes": 169221,
+          "query": "组号85"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0119,
+          "bytes": 169221,
+          "query": "组号86"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0099,
+          "bytes": 169221,
+          "query": "组号87"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0093,
+          "bytes": 169221,
+          "query": "组号80"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0095,
+          "bytes": 169221,
+          "query": "组号81"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0087,
+          "bytes": 169221,
+          "query": "组号82"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0097,
+          "bytes": 169221,
+          "query": "组号83"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0094,
+          "bytes": 169221,
+          "query": "组号84"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0093,
+          "bytes": 169221,
+          "query": "组号85"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0096,
+          "bytes": 169221,
+          "query": "组号86"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0099,
+          "bytes": 169221,
+          "query": "组号87"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0098,
+          "bytes": 169221,
+          "query": "组号80"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0088,
+          "bytes": 169221,
+          "query": "组号81"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0088,
+          "bytes": 169221,
+          "query": "组号82"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0094,
+          "bytes": 169221,
+          "query": "组号83"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0095,
+          "bytes": 169221,
+          "query": "组号84"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0094,
+          "bytes": 169221,
+          "query": "组号85"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0095,
+          "bytes": 169221,
+          "query": "组号86"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0093,
+          "bytes": 169221,
+          "query": "组号87"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0094,
+          "bytes": 169221,
+          "query": "组号80"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0097,
+          "bytes": 169221,
+          "query": "组号81"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0097,
+          "bytes": 169221,
+          "query": "组号82"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0096,
+          "bytes": 169221,
+          "query": "组号83"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0089,
+          "bytes": 169221,
+          "query": "组号84"
+        },
+        {
+          "ok": true,
+          "seconds": 0.0089,
+          "bytes": 169221,
+          "query": "组号85"
+        }
+      ],
+      "concurrency": 1,
+      "cache_hits": 0,
+      "cache_misses": 30,
+      "all_missed": true,
+      "within_one_second": true,
+      "candidate_plans": [
+        {
+          "terms": [
+            "组号80"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号81"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号82"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号83"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号84"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号85"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号86"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号87"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号80"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号81"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号82"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号83"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号84"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号85"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号86"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号87"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号80"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号81"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号82"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号83"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号84"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号85"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号86"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号87"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号80"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号81"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号82"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号83"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号84"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        },
+        {
+          "terms": [
+            "组号85"
+          ],
+          "kind": "index",
+          "candidates": 1000
+        }
+      ]
+    },
+    "after_withdrawal": {
+      "requests": 30,
+      "errors": 0,
+      "p50_seconds": 0.1265,
+      "p95_seconds": 0.1278,
+      "max_seconds": 0.1298,
+      "response_bytes_max": 169151,
+      "samples": [
+        {
+          "ok": true,
+          "seconds": 0.1242,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1235,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.124,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1252,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.125,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1246,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1238,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1265,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1266,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1256,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1273,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.125,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1252,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1253,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1263,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1298,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1277,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1273,
+          "bytes": 169139,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1272,
+          "bytes": 169140,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1265,
+          "bytes": 169141,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1271,
+          "bytes": 169142,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1265,
+          "bytes": 169143,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1265,
+          "bytes": 169144,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1265,
+          "bytes": 169145,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1277,
+          "bytes": 169146,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1266,
+          "bytes": 169147,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1274,
+          "bytes": 169148,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1278,
+          "bytes": 169149,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1271,
+          "bytes": 169150,
+          "query": "物资核对"
+        },
+        {
+          "ok": true,
+          "seconds": 0.1261,
+          "bytes": 169151,
+          "query": "物资核对"
+        }
+      ],
+      "concurrency": 1,
+      "cache_hits": 0,
+      "cache_misses": 30,
+      "all_missed": true,
+      "within_one_second": true,
+      "candidate_plans": [
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        },
+        {
+          "terms": [
+            "物资核对"
+          ],
+          "kind": "scan",
+          "candidates": null
+        }
+      ]
+    }
+  },
+  "import_seconds": 81.4956,
+  "database_bytes": 960696320,
+  "candidate_index": {
+    "grams": 1573,
+    "indexed_grams": 1528,
+    "postings": 789568
+  },
+  "before_withdrawal": {
+    "ok": true,
+    "seconds": 0.0766,
+    "bytes": 169139,
+    "query": "物资核对"
+  },
+  "all_correct": true
+}
