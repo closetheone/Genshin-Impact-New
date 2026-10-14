@@ -4,6 +4,8 @@
 
 需要向来源方取得确认时，可先参考[三项来源授权请求草稿](source-authorization-request-drafts.md)，再按 [真实来源授权记录模板](source-authorization-request.md) 逐项记录对象、授权人、用途、条件和期限。草稿本身不是授权。
 
+可用 `python3 scripts/report_source_admission.py` 生成三项来源的当前缺口报告；该命令只读取台账元信息，不读取来源正文。使用 `--require` 可对所有来源统一检查指定用途。
+
 来源台账中的政策页和公开仓库许可证复核也只允许保存链接、标题、更新时间、摘要和范围判断。准入检查会拒绝保存政策原文或许可证文件原文的记录，并拒绝把 CC、MIT 或 MulanPSL 等许可证线索直接转换为某项来源用途的 `allowed`；仍需单独记录明确的授权人和用途范围。
 
 准入必须同时满足：页面的 `admission_status` 为 `allowed` 或 `limited`，有非空的 `authorization_confirmed_by`、`authorization_reference`、`authorization_checked_on`、`authorization_scope` 和 `authorization_valid_until`，其中核验日期和有效期使用 ISO `YYYY-MM-DD`（永久有效时填写 `no_expiry`），并且命令请求的每一项用途都明确为 `allowed`。`unknown`、缺少核验人、缺少可复核记录或只有站内编辑规则时都会拒绝。`limited` 表示仍需按台账中的条件限制用途，命令会按请求用途逐项检查。
