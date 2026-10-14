@@ -1,0 +1,47 @@
+{
+  "dataset_kind": "synthetic",
+  "generated_at_utc": "2026-10-14T06:22:44Z",
+  "environment": {
+    "base_url": "http://127.0.0.1:4175",
+    "binding": "loopback",
+    "snapshot_id": "fixture-2026-10-10-v1",
+    "source_text_read": false,
+    "external_network_used": false
+  },
+  "checks": [
+    {
+      "name": "status",
+      "path": "/api/status",
+      "purpose": "display",
+      "http_status": 200,
+      "assertions": [
+        "synthetic dataset notice present",
+        "snapshot_id is fixture-2026-10-10-v1"
+      ]
+    },
+    {
+      "name": "literal search",
+      "path": "/api/search",
+      "purpose": "display",
+      "query": "一起",
+      "http_status": 200,
+      "assertions": [
+        "pagination.total == 1",
+        "results[0].id == passage:06"
+      ]
+    },
+    {
+      "name": "AI connection gate",
+      "path": "/api/ai-tools",
+      "purpose": "external_ai",
+      "tool": "search_texts",
+      "http_status": 503,
+      "assertions": [
+        "error says AI read-only connection is not enabled",
+        "no fallback source text returned"
+      ]
+    }
+  ],
+  "result": "passed",
+  "notice": "本机合成原型冒烟，不代表真实来源准入、生产部署或外部 AI 连接验收。"
+}
