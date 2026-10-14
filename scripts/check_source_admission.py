@@ -43,15 +43,26 @@ def load_audit(path):
             require(isinstance(page.get("authorization_confirmed_by"), str)
                     and page["authorization_confirmed_by"],
                     f"{identifier}: admitted page needs authorization_confirmed_by")
-            for field in ("authorization_reference", "authorization_checked_on", "authorization_scope"):
+            for field in ("authorization_reference", "authorization_checked_on",
+                          "authorization_scope", "authorization_valid_until"):
                 require(isinstance(page.get(field), str) and page[field],
                         f"{identifier}: admitted page needs {field}")
             try:
-                date.fromisoformat(page["authorization_checked_on"])
+                checked_on = date.fromisoformat(page["authorization_checked_on"])
             except ValueError:
                 raise AdmissionError(
                     f"{identifier}: authorization_checked_on must be ISO YYYY-MM-DD"
                 )
+            valid_until = page["authorization_valid_until"]
+            if valid_until != "no_expiry":
+                try:
+                    expiry = date.fromisoformat(valid_until)
+                except ValueError:
+                    raise AdmissionError(
+                        f"{identifier}: authorization_valid_until must be ISO YYYY-MM-DD or no_expiry"
+                    )
+                require(expiry >= checked_on,
+                        f"{identifier}: authorization_valid_until precedes authorization_checked_on")
     validate_policy_probe(data.get("follow_up_probe"))
     return data
 
