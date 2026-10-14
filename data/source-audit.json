@@ -292,6 +292,32 @@
         }
       ],
       "authorization_note": "MediaWiki API metadata and empty rightsinfo do not establish permission to collect, store, display, export, or send content to external AI."
+    },
+    "policy_metadata_probe": {
+      "checked_on": "2026-10-14",
+      "method": "MediaWiki parse sections/categories only; no page content requested",
+      "pages": [
+        {
+          "title": "WIKI编辑FAQ",
+          "pageid": 778,
+          "sections": [
+            "Q：为什么我的编辑被撤销？",
+            "Q：为什么我上传的图片未通过/被删除？",
+            "存在版权问题",
+            "Q：考据/游戏设定之类的内容收录在哪里？",
+            "Q：我要如何补充WIKI的词条？",
+            "Q：WIKI的图鉴要如何填充呀？"
+          ],
+          "finding": "站内编辑帮助页存在版权问题相关章节；章节标题不是具体许可条款。"
+        },
+        {
+          "title": "WIKI建设反馈区",
+          "pageid": 4663,
+          "sections": [],
+          "finding": "页面无可见章节元信息。"
+        }
+      ],
+      "authorization_note": "FAQ 章节结构只能作为人工政策核验入口，不能视为本项目获得转载或外部 AI 使用许可。"
     }
   }
 }
