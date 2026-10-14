@@ -317,7 +317,24 @@
           "finding": "页面无可见章节元信息。"
         }
       ],
-      "authorization_note": "FAQ 章节结构只能作为人工政策核验入口，不能视为本项目获得转载或外部 AI 使用许可。"
+      "authorization_note": "FAQ 章节结构只能作为人工政策核验入口，不能视为本项目获得转载或外部 AI 使用许可。",
+      "faq_revision": {
+        "title": "WIKI编辑FAQ",
+        "pageid": 778,
+        "lastrevid": 593933,
+        "touched": "2025-08-27T21:12:23Z",
+        "revision_timestamp": "2025-02-28T02:40:29Z",
+        "contentmodel": "wikitext"
+      },
+      "faq_findings": {
+        "site_editing_rules": [
+          "FAQ says unpublished or unpacked/test-server material should not be added unless officially introduced.",
+          "FAQ warns against fan art, unpacked images, and images carrying another site logo; it recommends personal game screenshots or officially provided images.",
+          "FAQ says contributors should comply with applicable law and the Genshin user agreement.",
+          "FAQ describes an in-wiki area for game-internal official setting material; this describes editorial scope inside BWIKI, not downstream redistribution permission."
+        ],
+        "project_admission_effect": "These are site editing rules and content-scope notes. They do not grant this project permission to collect, store, publicly display, export, or send BWIKI text to external AI. All corresponding uses remain unknown."
+      }
     }
   }
 }
