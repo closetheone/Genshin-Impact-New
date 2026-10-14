@@ -4,7 +4,7 @@ from pathlib import Path
 import sqlite3
 import sys
 
-from archive_store import DEFAULT_DATABASE, ROOT, StoreError, import_snapshot
+from archive_store import DEFAULT_DATABASE, ROOT, StoreError, ensure_synthetic_dataset, import_snapshot
 
 
 def unique_object(pairs):
@@ -26,20 +26,7 @@ def read_sample(path):
 
 def guard_import_boundary(data, path):
     """Reject source-audit metadata and non-synthetic datasets at the CLI edge."""
-    if not isinstance(data, dict):
-        raise ValueError("Synthetic importer accepts a JSON object only.")
-    if path.name == "source-audit.json" or data.get("schema_version") == "source-audit-0.1" \
-            or data.get("record_kind") == "source_metadata" or "pages" in data and "dataset_kind" not in data:
-        raise ValueError(
-            "Refusing to import source-audit metadata; run report_source_admission.py first, "
-            "then provide an admitted synthetic fixture to import_sample.py."
-        )
-    if data.get("dataset_kind") != "synthetic":
-        raise ValueError(
-            "Synthetic importer accepts dataset_kind: synthetic only; real sources must first "
-            "pass report_source_admission.py and a separate authorized import workflow."
-        )
-    return data
+    return ensure_synthetic_dataset(data, path.name)
 
 
 def read_synthetic_sample(path):

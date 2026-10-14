@@ -29,6 +29,26 @@ class SnapshotNotFound(StoreError):
     pass
 
 
+def ensure_synthetic_dataset(data, source_name=None):
+    """Reject source-audit metadata and non-synthetic payloads before opening storage."""
+    if not isinstance(data, dict):
+        raise ValueError("Synthetic importer accepts a JSON object only.")
+    if (source_name == "source-audit.json"
+            or data.get("schema_version") == "source-audit-0.1"
+            or data.get("record_kind") == "source_metadata"
+            or ("pages" in data and "dataset_kind" not in data)):
+        raise ValueError(
+            "Refusing to import source-audit metadata; run report_source_admission.py first, "
+            "then provide an admitted synthetic fixture to import_sample.py."
+        )
+    if data.get("dataset_kind") != "synthetic":
+        raise ValueError(
+            "Synthetic importer accepts dataset_kind: synthetic only; real sources must first "
+            "pass report_source_admission.py and a separate authorized import workflow."
+        )
+    return data
+
+
 def canonical_json(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
 
@@ -61,6 +81,7 @@ def ensure_schema(connection, initialize=False):
 
 
 def import_snapshot(data, database=DEFAULT_DATABASE, activate=False):
+    ensure_synthetic_dataset(data)
     indexes = validate(data)
     digest = content_hash(data)
     snapshot_id = data["snapshot_id"]

@@ -55,7 +55,7 @@ python3 scripts/import_sample.py /path/to/synthetic-v2.json --activate
 
 撤下与来源用途收紧在成功导入后对旧快照也生效，不能通过切旧版本绕过；目前没有限制解除操作，测试请使用独立数据库。导入参数、存储结构和操作边界见 `docs/storage-pipeline.md`。
 
-导入器和原型首次启动的自动初始化只接受 `dataset_kind: synthetic`。它们会在写入数据库前拒绝 `data/source-audit.json` 或其他来源审计 / 非合成结构；真实来源需先通过 `scripts/report_source_admission.py`，并另行完成授权后的数据契约与导入流程。
+导入器、存储 API 和原型首次启动的自动初始化只接受 `dataset_kind: synthetic`。它们会在写入数据库前拒绝 `data/source-audit.json` 或其他来源审计 / 非合成结构；真实来源需先通过 `scripts/report_source_admission.py`，并另行完成授权后的数据契约与导入流程。
 
 ## 备份与回滚
 
