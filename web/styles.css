@@ -296,6 +296,10 @@ textarea { font: inherit; color: inherit; resize: vertical; }
 .feedback-form { display: grid; gap: 17px; max-width: 670px; margin: 22px 0; }
 .feedback-form label { display: grid; gap: 7px; }
 .feedback-form [role="status"] { overflow-wrap: anywhere; }
+.source-admission-list { list-style: none; padding: 0; margin: 16px 0 24px; }
+.source-admission-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; padding: 13px 15px; margin: 9px 0; background: var(--panel); border: 1px solid var(--line); border-radius: 5px; }
+.source-admission-list li p { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+.source-admission-list .small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
 .result-bottom, .passage-actions { flex-wrap: wrap; }
 @media (max-width: 720px) {
   .primary-nav { gap: 0; } .primary-nav a { padding: 5px 3px; font-size: 9px; min-width: 0; }

@@ -647,10 +647,13 @@ async function renderAbout() {
     if (!feedbackDraft.snapshot) feedbackDraft.snapshot = status.snapshot_id;
   } else document.querySelector("#archive-snapshot").textContent = "收录快照暂不可用；仍可提交本地问题反馈。";
   const kinds = { text: "文本错误", attribution: "归属错误", branch: "分支问题", relationship: "人物关系错误", missing: "内容缺漏", usage: "内容使用问题" };
+  const admission = status?.source_admission;
+  const admissionRows = admission?.sources?.map((source) => `<li><div><strong>${escapeHtml(source.source_id)}</strong><span class="small">申请：${escapeHtml(source.requested_uses.join("、"))}</span></div><span class="tag ${source.ready ? "tag-blue" : "tag-warm"}">${source.ready ? "已准入" : "待确认"}</span><p>${source.ready ? "授权字段已满足当前申请用途。" : `缺口：${escapeHtml(source.missing_requirements.join("、") || source.unapproved_uses.join("、") || "需复核")}`}</p></li>`).join("") || "";
   replacePage(`<section class="about-page"><div class="eyebrow">SOURCES & CORRECTIONS</div><h1>知道收录了什么，也能指出问题。</h1>
     <div class="callout">当前全部内容为原创合成样本，不是原神剧情。真实来源准入与剧情准确性尚未验收。</div>
     <h2>收录与已知缺口</h2><p>当前读取：<code>${escapeHtml(status?.snapshot_id || params.get("snapshot") || "暂不可用")}</code>。页面只展示顶部范围与用途允许的内容。</p>
     <p>当前收录的是用于验证对白、分支和关系证据的原创结构样本；只展示当前允许且已审核的内容。BWIKI、观测枢和空荧酒馆目前仅有候选来源记录，尚未接入真实正文。</p>
+    <h2>真实来源准入状态</h2><p>以下仅显示来源元数据和用途缺口，不读取或展示真实正文。来源获准后仍需单独完成批次、出处和数据契约核验。</p><ul class="source-admission-list">${admissionRows || "<li>准入状态暂不可用。</li>"}</ul>
     <p>没有公开部署、语义检索或实时撤下通知。AI 只读连接需维护者显式启用，网站不会自动调用外部模型。下载文件不会自动更新；使用前请重新核验。反馈提交仅进入本机维护收件箱，不对外公开。</p>
     <h2>更新摘要 · 2026-10-12</h2><p>已完成固定快照存储、搜索、局部关系图及素材清单。本轮新增可下载的剧情创作 Skill，支持本地只读取材和离线素材校验，已完成合成资料创作试用。</p>
     <h2>剧情创作 Skill</h2><p>下载可移植工作流，使用本地只读连接或经用途检查的 JSON 素材包。当前只验证原创合成资料，安装技能包不会自动开启连接或调用模型。</p>

@@ -17,6 +17,8 @@ from skill_package import skill_zip
 from graph_archive import GraphUnavailable, graph_options
 from search_archive import StaleCursor, search_options
 from validate_sample import SampleError, project
+from check_source_admission import load_audit
+from report_source_admission import build_report
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -117,6 +119,9 @@ class PrototypeHandler(BaseHTTPRequestHandler):
                         view = archive.graph(graph_query, self.server.cursor_secret)
                     elif parsed.path == '/api/status':
                         view = dict(archive.meta)
+                        view["source_admission"] = build_report(
+                            load_audit(ROOT / "data/source-audit.json")
+                        )
                     elif parsed.path == '/api/read':
                         values = arguments.get('id', [''])
                         cursors = arguments.get('cursor', [''])

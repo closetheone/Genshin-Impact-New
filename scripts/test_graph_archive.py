@@ -223,6 +223,15 @@ class GraphHTTPTests(unittest.TestCase):
         self.assertEqual(self.get('/api/graph', snapshot='missing')[0], 404)
         self.assertEqual(self.get('/api/graph', center='missing')[1]['code'], 'graph_unavailable')
 
+    def test_status_exposes_source_admission_metadata_only(self):
+        status, payload = self.get('/api/status')
+        self.assertEqual(status, 200)
+        admission = payload['source_admission']
+        self.assertFalse(admission['ready'])
+        self.assertFalse(admission['source_text_read'])
+        self.assertEqual({item['source_id'] for item in admission['sources']},
+                         {'bwiki_genshin', 'miyoushe_obc', 'kongying_tavern'})
+
     def test_old_snapshot_enforces_new_withdrawal_and_rights(self):
         before = self.get('/api/graph')[1]
         data = next_snapshot(SAMPLE, 'withdrawn-v2'); data['withdrawn_ids'] = ['passage:06']
