@@ -679,7 +679,8 @@ class IndexedArchive:
             raise GraphUnavailable('该关系或完整证据在当前范围、用途或快照中不可用。')
         return relation_view(self.graph_bundle(relationships, self.selected('characters', {i for r in relationships for i in (r['from_id'], r['to_id'])})), identifier)
 
-    def characters(self, query):
+    def characters(self, query, limit=20):
         require(len(query) <= 160, 'character query too long')
-        characters = self.records('characters', 'instr(v.name,:q)>0 OR instr(v.id,:q)>0', {'q': query}, limit=(21, 0))
-        return {**self.meta, 'characters': characters[:20], 'truncated': len(characters) > 20}
+        require(isinstance(limit, int) and 1 <= limit <= 200, 'character limit out of range')
+        characters = self.records('characters', 'instr(v.name,:q)>0 OR instr(v.id,:q)>0', {'q': query}, limit=(limit + 1, 0))
+        return {**self.meta, 'characters': characters[:limit], 'truncated': len(characters) > limit}

@@ -4,7 +4,7 @@ import { SCOPES, PREDICATES, orderPassages, characterLabels, safeLayout, scopeLa
 const main = document.querySelector("#main");
 const scopeSelect = document.querySelector("#scope-select");
 const purposeSelect = document.querySelector("#purpose-select");
-const pageNames = { search: "文本检索", read: "原文阅读", graph: "人物关系图", materials: "素材清单", about: "收录与纠错" };
+const pageNames = { search: "文本检索", read: "原文阅读", graph: "人物关系图", characters: "角色目录", materials: "素材清单", about: "收录与纠错" };
 const state = { view: null, query: "", searchQuery: "", searchMode: "literal", category: "all", speaker: "all", pageSize: 8, center: "person:student", hops: 1, predicate: "all", condition: "all", graphPage: 1, graphMode: "graph", relation: null };
 let requestController;
 let requestVersion = 0;
@@ -103,11 +103,14 @@ async function loadView(cursor = null) {
     const parameters = { q: state.searchQuery, mode: state.searchMode, category: state.category, speaker: state.speaker, limit: String(state.pageSize) };
     if (cursor) parameters.cursor = cursor;
     const isGraph = route().page === "graph";
+    const isCharacters = route().page === "characters";
     const view = isSearch
       ? await fetchArchive("/api/search", purposeSelect.value, requestController.signal, route().params.get("snapshot"), parameters)
       : isGraph
         ? await fetchGraph(purposeSelect.value, requestController.signal, route().params.get("snapshot"), cursor)
-      : await fetchReader(purposeSelect.value, requestController.signal, route().params.get("snapshot"), cursor);
+        : isCharacters
+          ? await fetchArchive("/api/characters", purposeSelect.value, requestController.signal, route().params.get("snapshot"), { q: "", limit: "200" })
+          : await fetchReader(purposeSelect.value, requestController.signal, route().params.get("snapshot"), cursor);
     if (version !== requestVersion) return;
     state.view = view;
     if (isGraph) state.graphPage = view.query.page;
@@ -151,6 +154,7 @@ function render() {
     if (current.page === "search") renderSearch();
     else if (current.page === "read") renderReader(state.view.target_id);
     else if (current.page === "graph") renderGraph(current.params.get("center"));
+    else if (current.page === "characters") renderCharacters();
     else replacePage('<div class="empty-state"><h2>未找到这个页面</h2><a class="button" href="#/search">返回文本检索</a></div>');
   } catch (error) {
     replacePage(`<div class="empty-state" role="alert"><h2>无法展示当前样本</h2><p>${escapeHtml(error.message)}</p><a class="button" href="#/search">返回文本检索</a></div>`);
@@ -246,6 +250,20 @@ function renderSearch() {
       section?.scrollIntoView({ block: "start" });
     });
   }
+}
+
+function renderCharacters() {
+  const view = state.view;
+  const labels = characterLabels(view.characters);
+  const cards = view.characters.map((character) => {
+    const initial = escapeHtml((character.name || "?").slice(0, 1));
+    const hasProfile = ["element", "weapon", "faction", "rarity", "story"].some((field) => character[field]);
+    const profile = hasProfile
+      ? `<dl class="character-facts">${["element", "weapon", "faction", "rarity"].filter((field) => character[field]).map((field) => `<div><dt>${({ element: "元素", weapon: "武器", faction: "阵营", rarity: "稀有度" })[field]}</dt><dd>${escapeHtml(character[field])}</dd></div>`).join("")}</dl><p>${escapeHtml(character.story || "角色故事待完成来源与授权核验。")}</p>`
+      : `<p>当前只有稳定人物标识，未接入真实角色基本信息、立绘或角色故事。</p>`;
+    return `<article class="character-card"><div class="character-portrait" aria-label="${escapeHtml(labels.get(character.id))}立绘占位"><span>${initial}</span><small>${hasProfile ? "资料已接入" : "立绘待授权"}</small></div><div class="character-card-body"><div class="eyebrow">${hasProfile ? "CHARACTER PROFILE" : "SYNTHETIC SAMPLE"}</div><h2>${escapeHtml(labels.get(character.id))}</h2><p class="character-id"><code>${escapeHtml(character.id)}</code></p>${profile}<a class="text-button" href="${graphLink(character.id)}">查看关系证据 →</a></div></article>`;
+  }).join("");
+  replacePage(`<section class="characters-page"><div class="page-title-row"><div><div class="eyebrow">CHARACTER DIRECTORY</div><h1>先把人物放在一起。</h1></div><span class="tag tag-warm">${view.characters.length} 个当前可见人物</span></div><div class="callout">这里展示的是当前快照中可见的角色记录。当前仓库只有原创合成样本；真实原神角色的基本信息、立绘和角色故事需要来源准入与批次核验后再接入。</div><div class="character-grid">${cards || '<div class="empty-state">当前范围没有可见人物。</div>'}</div><p class="small muted">快照：${escapeHtml(view.snapshot_id)} · 角色目录最多读取 200 条。</p>${view.truncated ? '<div class="callout">角色数量超过当前读取上限，请缩小范围或继续完善分页接口。</div>' : ""}</section>`);
 }
 
 function renderReader(targetId) {

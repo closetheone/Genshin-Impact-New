@@ -217,9 +217,14 @@ class GraphHTTPTests(unittest.TestCase):
         self.assertEqual(self.get('/api/relationship', id='relation:mentor')[0], 200)
         self.assertEqual(self.get('/api/relationship', id='relation:parent')[0], 404)
         self.assertEqual(self.get('/api/characters', q='青禾')[1]['characters'][0]['name'], '青禾')
+        status, roster = self.get('/api/characters', q='', limit='100')
+        self.assertEqual(status, 200)
+        self.assertEqual(len(roster['characters']), 4)
+        self.assertFalse(roster['truncated'])
         for path, params in [('/api/graph', {'unknown': 'x'}), ('/api/graph', {'hops': ['1', '2']}), ('/api/graph', {'scope': []}), ('/api/relationship', {'id': ['a', 'b']}), ('/api/relationship', {}), ('/api/characters', {'q': ['a', 'b']})]:
             with self.subTest(path=path, params=params):
                 self.assertEqual(self.get(path, **params)[0], 400)
+        self.assertEqual(self.get('/api/characters', limit='201')[0], 400)
         self.assertEqual(self.get('/api/graph', snapshot='missing')[0], 404)
         self.assertEqual(self.get('/api/graph', center='missing')[1]['code'], 'graph_unavailable')
 

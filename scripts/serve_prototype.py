@@ -92,7 +92,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             elif parsed.path == "/api/relationship":
                 allowed |= {"id"}
             elif parsed.path == "/api/characters":
-                allowed |= {"q"}
+                allowed |= {"q", "limit"}
             elif parsed.path == '/api/read':
                 allowed |= {'id', 'cursor'}
             if set(arguments) - allowed:
@@ -133,7 +133,13 @@ class PrototypeHandler(BaseHTTPRequestHandler):
                         values = arguments.get(field, [''])
                         if len(values) != 1 or len(values[0]) > 160 or (field == 'id' and not values[0]):
                             raise SampleError('invalid lookup parameter')
-                        view = archive.relationship(values[0]) if field == 'id' else archive.characters(values[0])
+                        if field == 'id':
+                            view = archive.relationship(values[0])
+                        else:
+                            limits = arguments.get('limit', ['20'])
+                            if len(limits) != 1 or not limits[0].isdigit():
+                                raise SampleError('invalid character limit')
+                            view = archive.characters(values[0], int(limits[0]))
             view["storage"] = "sqlite"
             self.respond(200, view)
         except StaleCursor:

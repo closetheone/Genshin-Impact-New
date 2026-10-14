@@ -282,6 +282,20 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 @media (max-width: 720px) { .character-search input { flex: 1; width: 130px; } .character-search label { flex-basis: 100%; } .graph-actions { justify-content: flex-start; } .graph-toolbar select { max-width: 150px; } .graph-topline { flex-wrap: wrap; gap: 5px; } }
 
 .materials-page, .about-page { max-width: 960px; margin: 0 auto; }
+.characters-page { max-width: 1100px; margin: 0 auto; }
+.character-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin: 24px 0; }
+.character-card { overflow: hidden; background: var(--panel); border: 1px solid var(--line); border-radius: 7px; }
+.character-portrait { height: 180px; display: grid; place-items: center; align-content: center; gap: 8px; background: linear-gradient(145deg, #e9eee4, #f4efdf); color: var(--accent); }
+.character-portrait span { font-family: var(--serif); font-size: 64px; }
+.character-portrait small { color: var(--muted); font-size: 10px; }
+.character-card-body { padding: 17px; }
+.character-card-body h2 { margin: 4px 0; font-family: var(--serif); font-size: 23px; font-weight: 500; }
+.character-id { margin: 0 0 13px; }
+.character-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+.character-facts div { padding: 7px 9px; background: var(--paper); border-radius: 4px; }
+.character-facts dt { color: var(--muted); font-size: 10px; }
+.character-facts dd { margin: 3px 0 0; font-size: 12px; }
+.characters-page .callout { margin-top: 12px; }
 .materials-page h1, .about-page h1 { font-family: var(--serif); font-size: 30px; font-weight: 500; }
 .materials-page h2, .about-page h2 { font-size: 18px; margin-top: 26px; }
 .topic-label { display: block; margin: 22px 0 8px; }
@@ -305,6 +319,7 @@ textarea { font: inherit; color: inherit; resize: vertical; }
 @media (max-width: 720px) {
   .primary-nav { gap: 0; } .primary-nav a { padding: 5px 3px; font-size: 9px; min-width: 0; }
   .materials-page h1, .about-page h1 { font-size: 25px; }
+  .character-grid { grid-template-columns: 1fr; }
   .material-list li { padding: 14px; flex-wrap: wrap; }
   .material-actions { gap: 8px; }
   .feedback-form input, .feedback-form textarea, #material-topic { font-size: 16px; }
