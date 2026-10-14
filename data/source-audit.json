@@ -333,7 +333,20 @@
           "FAQ says contributors should comply with applicable law and the Genshin user agreement.",
           "FAQ describes an in-wiki area for game-internal official setting material; this describes editorial scope inside BWIKI, not downstream redistribution permission."
         ],
-        "project_admission_effect": "These are site editing rules and content-scope notes. They do not grant this project permission to collect, store, publicly display, export, or send BWIKI text to external AI. All corresponding uses remain unknown."
+        "project_admission_effect": "These are site editing rules and content-scope notes. They do not grant this project permission to collect, store, publicly display, export, or send BWIKI text to external AI. All corresponding uses remain unknown.",
+        "downstream_license_status": "未发现公开的、针对本项目所需收集/存储/展示/导出/外部 AI 处理的明确许可条款；准入状态继续为 pending/unknown。"
+      },
+      "policy_entry_search": {
+        "checked_on": "2026-10-14",
+        "method": "MediaWiki search/allpages metadata; no candidate正文 requested",
+        "results": {
+          "user_agreement_pages": [],
+          "copyright_pages": [],
+          "disclaimer_pages": [],
+          "privacy_pages": [],
+          "search_user_agreement_hits": 8
+        },
+        "finding": "未发现以用户协议、版权、免责声明或隐私为标题的独立站内政策页；搜索命中主要是游戏内容中的协议提示和 WIKI编辑FAQ。不能据此推定存在或不存在外部授权。"
       }
     }
   }
