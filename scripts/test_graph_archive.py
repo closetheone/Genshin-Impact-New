@@ -225,6 +225,8 @@ class GraphHTTPTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(detail['character']['name'], '阿砚')
         self.assertTrue(detail['passages'])
+        self.assertEqual({relation['id'] for relation in detail['relationships']}, {'relation:mentor', 'relation:bridge-partners'})
+        self.assertTrue(all(relation['evidence_groups'] for relation in detail['relationships']))
         self.assertEqual([entry['id'] for entry in detail['entries']], ['entry:bridge'])
         self.assertEqual([source['id'] for source in detail['sources']], ['source:fixture'])
         self.assertEqual(self.get('/api/character', id='missing')[0], 404)

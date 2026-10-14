@@ -302,9 +302,16 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .character-detail-page h2 { margin-top: 30px; font-size: 19px; }
 .character-detail-hero { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: center; margin: 24px 0; }
 .character-portrait.large { height: 250px; border-radius: 6px; }
+.character-detail-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
 .character-passages blockquote { margin: 12px 0; padding: 14px 18px; border-left: 3px solid var(--accent); background: var(--panel); }
 .character-passages blockquote p { margin: 0 0 8px; }
 .character-passages footer { color: var(--muted); font-size: 11px; }
+.character-relations { display: grid; gap: 10px; }
+.character-relation { padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+.character-relation-top, .character-relation-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.character-relation p { margin: 9px 0; }
+.character-relation-meta { color: var(--muted); font-size: 11px; }
+.character-relation-meta a { margin-left: auto; }
 .character-provenance { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
 .character-provenance > div { padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
 .character-provenance h2 { margin: 0 0 10px; font-size: 16px; }

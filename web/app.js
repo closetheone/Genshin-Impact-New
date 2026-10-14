@@ -300,6 +300,17 @@ function renderCharacterDetail() {
   const relationships = view.relationships || [];
   const entries = view.entries || [];
   const sources = view.sources || [];
+  const scopeNames = { opening: "开篇", east: "东路", west: "西路", later: "后续" };
+  const predicateNames = { mentor_of: "师徒", parent_of: "亲属", opposes: "对立", cooperates_with: "合作" };
+  const scopeSummary = (view.scope_ids || []).map((scope) => scopeNames[scope] || scope).join(" / ");
+  const relationMarkup = relationships.length
+    ? relationships.map((relation) => {
+      const counterpart = relation.from_id === character.id ? relation.to_id : relation.from_id;
+      const reviewLabel = relation.review_status === "approved" ? "已审核" : "待复核";
+      const evidenceCount = (relation.evidence_groups || []).length;
+      return `<article class="character-relation"><div class="character-relation-top"><strong>${escapeHtml(predicateNames[relation.predicate] || relation.predicate)}</strong><span class="tag ${relation.review_status === "approved" ? "tag-blue" : "tag-warm"}">${reviewLabel}</span></div><p>${escapeHtml(relation.description || "关系描述待补充。")}</p><div class="character-relation-meta"><code>${escapeHtml(relation.id)}</code><span>${evidenceCount} 组可见证据</span><a class="text-button" href="${graphLink(counterpart)}">查看关系图 ↗</a></div></article>`;
+    }).join("")
+    : '<div class="empty-state">当前范围没有已审核关系。</div>';
   const entryMarkup = entries.length
     ? entries.map((entry) => `<li><strong>${escapeHtml(entry.title || entry.id)}</strong><code>${escapeHtml(entry.id)}</code></li>`).join("")
     : '<li class="muted">当前范围没有可见条目元数据。</li>';
@@ -309,7 +320,7 @@ function renderCharacterDetail() {
       return `<li><div><strong>${escapeHtml(source.id)}</strong><span class="tag ${allowed ? "tag-blue" : "tag-warm"}">${allowed ? "允许展示" : "展示受限"}</span></div><code>${escapeHtml(source.locator || "未提供定位")}</code></li>`;
     }).join("")
     : '<li class="muted">当前范围没有可见来源元数据。</li>';
-  replacePage(`<section class="character-detail-page"><a class="text-button" href="#/characters">← 返回角色目录</a><div class="character-detail-hero"><div class="character-portrait large"><span>${escapeHtml((character.name || "?").slice(0, 1))}</span><small>立绘待授权</small></div><div><div class="eyebrow">CHARACTER DETAIL · SYNTHETIC SAMPLE</div><h1>${escapeHtml(character.name)}</h1><code>${escapeHtml(character.id)}</code><p>当前只有稳定人物标识；真实角色基本信息、立绘和角色故事需要来源准入与批次核验后接入。</p></div></div><h2>当前可见对白</h2><p class="small muted">${passages.length} 段 · 仅显示当前范围、用途和快照允许的内容</p><div class="character-passages">${passages.length ? passages.map((passage) => `<blockquote><p>${escapeHtml(passage.text)}</p><footer>${escapeHtml(passage.id)} · <a class="text-button" href="${readLink(passage.id)}">回到原文 ↗</a></footer></blockquote>`).join("") : '<div class="empty-state">当前范围没有可见对白。</div>'}</div><h2>人物关系</h2><p>${relationships.length ? relationships.map((relation) => `<a class="text-button" href="${graphLink(relation.from_id === character.id ? relation.to_id : relation.from_id)}">${escapeHtml(relation.id)} · ${escapeHtml(relation.predicate)} →</a>`).join(" · ") : "当前范围没有已审核关系。"}</p><div class="character-provenance"><div><h2>关联条目</h2><ul>${entryMarkup}</ul></div><div><h2>来源与用途</h2><ul>${sourceMarkup}</ul></div></div><div class="callout">角色故事、立绘和完整资料仍需授权来源与正文证据；当前页面只展示原创合成样本。</div></section>`);
+  replacePage(`<section class="character-detail-page"><a class="text-button" href="#/characters">← 返回角色目录</a><div class="character-detail-hero"><div class="character-portrait large"><span>${escapeHtml((character.name || "?").slice(0, 1))}</span><small>立绘待授权</small></div><div><div class="eyebrow">CHARACTER DETAIL · SYNTHETIC SAMPLE</div><h1>${escapeHtml(character.name)}</h1><code>${escapeHtml(character.id)}</code><p>当前只有稳定人物标识；真实角色基本信息、立绘和角色故事需要来源准入与批次核验后接入。</p><div class="character-detail-tags">${tag(`范围：${scopeSummary || "未标注"}`)}${tag(`快照：${view.snapshot_id}`)}</div></div></div><h2>当前可见对白</h2><p class="small muted">${passages.length} 段 · 仅显示当前范围、用途和快照允许的内容</p><div class="character-passages">${passages.length ? passages.map((passage) => `<blockquote><p>${escapeHtml(passage.text)}</p><footer>${escapeHtml(passage.id)} · <a class="text-button" href="${readLink(passage.id)}">回到原文 ↗</a></footer></blockquote>`).join("") : '<div class="empty-state">当前范围没有可见对白。</div>'}</div><h2>人物关系</h2><div class="character-relations">${relationMarkup}</div><div class="character-provenance"><div><h2>关联条目</h2><ul>${entryMarkup}</ul></div><div><h2>来源与用途</h2><ul>${sourceMarkup}</ul></div></div>${view.truncated ? '<div class="callout">关系或对白达到详情接口上限，当前页面未展示全部记录。请缩小范围或进入关系图继续查看。</div>' : ""}<div class="callout">角色故事、立绘和完整资料仍需授权来源与正文证据；当前页面只展示原创合成样本。</div></section>`);
 }
 
 function renderReader(targetId) {
