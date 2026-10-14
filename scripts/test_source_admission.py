@@ -46,6 +46,50 @@ class SourceAdmissionTests(unittest.TestCase):
             path.write_text(json.dumps({'schema_version': 'source-audit-0.1', 'pages': [page]}), encoding='utf-8')
             self.assertTrue(evaluate(load_audit(path), ['collect', 'store', 'external_ai'], 'test')[0]['ready'])
 
+    def test_policy_metadata_cannot_grant_source_uses(self):
+        data = load_audit(ROOT / 'data/source-audit.json')
+        policy = data['follow_up_probe']['policy_pages_probe']
+        self.assertTrue(policy['pages'])
+        self.assertTrue(all(page['raw_body_saved'] is False for page in policy['pages']))
+        self.assertTrue(all(value in ('unknown', 'denied')
+                            for value in policy['admission_effect']['allowed_uses'].values()))
+
+    def test_policy_metadata_rejects_saved_body_or_allowed_use(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'audit.json'
+            page = {
+                'url': 'https://example.invalid/policy', 'title': 'Policy',
+                'summary': 'metadata only', 'license_scope_finding': 'unresolved',
+                'raw_body_saved': True,
+            }
+            audit = {
+                'schema_version': 'source-audit-0.1',
+                'pages': [{
+                    'id': 'audit:test', 'source_id': 'test', 'admission_status': 'pending',
+                    'authorization_confirmed_by': None,
+                    'allowed_uses': {use: 'unknown' for use in
+                                     ('collect', 'store', 'display', 'export', 'ai_retrieval', 'external_ai')},
+                }],
+                'follow_up_probe': {
+                    'policy_pages_probe': {
+                        'pages': [page],
+                        'admission_effect': {'allowed_uses': {
+                            use: 'unknown' for use in
+                            ('collect', 'store', 'display', 'export', 'ai_retrieval', 'external_ai')
+                        }},
+                    }
+                },
+            }
+            path.write_text(json.dumps(audit), encoding='utf-8')
+            with self.assertRaises(ValueError):
+                load_audit(path)
+
+            page['raw_body_saved'] = False
+            audit['follow_up_probe']['policy_pages_probe']['admission_effect']['allowed_uses']['display'] = 'allowed'
+            path.write_text(json.dumps(audit), encoding='utf-8')
+            with self.assertRaises(ValueError):
+                load_audit(path)
+
 
 if __name__ == '__main__':
     unittest.main()
