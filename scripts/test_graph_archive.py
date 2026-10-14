@@ -221,12 +221,35 @@ class GraphHTTPTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(len(roster['characters']), 4)
         self.assertFalse(roster['truncated'])
+        status, detail = self.get('/api/character', id='person:student')
+        self.assertEqual(status, 200)
+        self.assertEqual(detail['character']['name'], '阿砚')
+        self.assertTrue(detail['passages'])
+        self.assertEqual(self.get('/api/character', id='missing')[0], 404)
         for path, params in [('/api/graph', {'unknown': 'x'}), ('/api/graph', {'hops': ['1', '2']}), ('/api/graph', {'scope': []}), ('/api/relationship', {'id': ['a', 'b']}), ('/api/relationship', {}), ('/api/characters', {'q': ['a', 'b']})]:
             with self.subTest(path=path, params=params):
                 self.assertEqual(self.get(path, **params)[0], 400)
         self.assertEqual(self.get('/api/characters', limit='201')[0], 400)
         self.assertEqual(self.get('/api/graph', snapshot='missing')[0], 404)
         self.assertEqual(self.get('/api/graph', center='missing')[1]['code'], 'graph_unavailable')
+
+    def test_character_detail_projection_and_withdrawal(self):
+        status, opening = self.get('/api/character', id='person:student')
+        self.assertEqual(status, 200)
+        self.assertEqual(len(opening['passages']), 5)
+        full_scope = {'scope': ['opening', 'east', 'west', 'later'], 'id': 'person:student'}
+        status, full = self.get('/api/character', **full_scope)
+        self.assertEqual(status, 200)
+        self.assertEqual(len(full['passages']), 9)
+        data = next_snapshot(SAMPLE, 'character-withdrawn-v2')
+        data['withdrawn_ids'] = ['passage:04']
+        import_snapshot(data, self.database, activate=True)
+        status, withdrawn = self.get('/api/character', snapshot=data['snapshot_id'], id='person:student')
+        self.assertEqual(status, 200)
+        self.assertNotIn('passage:04', {passage['id'] for passage in withdrawn['passages']})
+        self.assertEqual(self.get('/api/character', id='person:student', purpose='export')[0], 200)
+        self.assertEqual(self.get('/api/character', id=['person:student', 'person:helper'])[0], 400)
+        self.assertEqual(self.get('/api/character', id='')[0], 400)
 
     def test_status_exposes_source_admission_metadata_only(self):
         status, payload = self.get('/api/status')

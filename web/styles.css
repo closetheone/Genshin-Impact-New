@@ -285,6 +285,7 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .characters-page { max-width: 1100px; margin: 0 auto; }
 .character-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin: 24px 0; }
 .character-card { overflow: hidden; background: var(--panel); border: 1px solid var(--line); border-radius: 7px; }
+.character-card-link { display: block; color: inherit; text-decoration: none; }
 .character-portrait { height: 180px; display: grid; place-items: center; align-content: center; gap: 8px; background: linear-gradient(145deg, #e9eee4, #f4efdf); color: var(--accent); }
 .character-portrait span { font-family: var(--serif); font-size: 64px; }
 .character-portrait small { color: var(--muted); font-size: 10px; }
@@ -296,6 +297,14 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .character-facts dt { color: var(--muted); font-size: 10px; }
 .character-facts dd { margin: 3px 0 0; font-size: 12px; }
 .characters-page .callout { margin-top: 12px; }
+.character-detail-page { max-width: 900px; margin: 0 auto; }
+.character-detail-page h1 { margin: 5px 0 10px; font-family: var(--serif); font-size: 36px; font-weight: 500; }
+.character-detail-page h2 { margin-top: 30px; font-size: 19px; }
+.character-detail-hero { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: center; margin: 24px 0; }
+.character-portrait.large { height: 250px; border-radius: 6px; }
+.character-passages blockquote { margin: 12px 0; padding: 14px 18px; border-left: 3px solid var(--accent); background: var(--panel); }
+.character-passages blockquote p { margin: 0 0 8px; }
+.character-passages footer { color: var(--muted); font-size: 11px; }
 .character-toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0; }
 .character-toolbar label { display: grid; gap: 6px; min-width: 220px; color: var(--muted); font-size: 11px; }
 .character-toolbar input, .character-toolbar select { padding: 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); color: inherit; font: inherit; }
@@ -323,6 +332,7 @@ textarea { font: inherit; color: inherit; resize: vertical; }
   .primary-nav { gap: 0; } .primary-nav a { padding: 5px 3px; font-size: 9px; min-width: 0; }
   .materials-page h1, .about-page h1 { font-size: 25px; }
   .character-grid { grid-template-columns: 1fr; }
+  .character-detail-hero { grid-template-columns: 1fr; }
   .material-list li { padding: 14px; flex-wrap: wrap; }
   .material-actions { gap: 8px; }
   .feedback-form input, .feedback-form textarea, #material-topic { font-size: 16px; }

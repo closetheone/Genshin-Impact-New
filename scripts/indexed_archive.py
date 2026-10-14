@@ -684,3 +684,18 @@ class IndexedArchive:
         require(isinstance(limit, int) and 1 <= limit <= 200, 'character limit out of range')
         characters = self.records('characters', 'instr(v.name,:q)>0 OR instr(v.id,:q)>0', {'q': query}, limit=(limit + 1, 0))
         return {**self.meta, 'characters': characters[:limit], 'truncated': len(characters) > limit}
+
+    def character_detail(self, identifier):
+        characters = self.selected('characters', {identifier})
+        if not characters:
+            raise GraphUnavailable('该角色在当前范围、用途或快照中不可用。')
+        passages = self.records('passages', 'v.speaker_id=:character', {'character': identifier}, order='v.sort_rank', limit=(51, 0))
+        relationships = self.records('relationships', 'v.from_id=:character OR v.to_id=:character', {'character': identifier}, limit=(101, 0))
+        visible_passages = passages[:50]
+        visible_relationships = relationships[:100]
+        entries = self.selected('entries', {passage['entry_id'] for passage in visible_passages})
+        sources = self.sources({'characters': [characters[0]], 'passages': visible_passages,
+                                'relationships': visible_relationships})
+        return {**self.meta, 'character': characters[0], 'sources': sources, 'entries': entries,
+                'passages': visible_passages, 'relationships': visible_relationships,
+                'truncated': len(passages) > 50 or len(relationships) > 100}

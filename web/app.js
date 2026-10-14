@@ -4,7 +4,7 @@ import { SCOPES, PREDICATES, orderPassages, characterLabels, safeLayout, scopeLa
 const main = document.querySelector("#main");
 const scopeSelect = document.querySelector("#scope-select");
 const purposeSelect = document.querySelector("#purpose-select");
-const pageNames = { search: "文本检索", read: "原文阅读", graph: "人物关系图", characters: "角色目录", materials: "素材清单", about: "收录与纠错" };
+const pageNames = { search: "文本检索", read: "原文阅读", graph: "人物关系图", characters: "角色目录", character: "角色详情", materials: "素材清单", about: "收录与纠错" };
 const state = { view: null, query: "", searchQuery: "", searchMode: "literal", category: "all", speaker: "all", pageSize: 8, characterQuery: "", characterFilter: "all", center: "person:student", hops: 1, predicate: "all", condition: "all", graphPage: 1, graphMode: "graph", relation: null };
 let requestController;
 let requestVersion = 0;
@@ -99,6 +99,17 @@ async function loadView(cursor = null) {
     updateNavigation();
     if (route().page === "materials") { await materialUI.render(); return; }
     if (route().page === "about") { await renderAbout(); return; }
+    if (route().page === "character") {
+      const id = route().params.get("id") || "";
+      const view = await fetchArchive("/api/character", purposeSelect.value, requestController.signal, route().params.get("snapshot"), { id });
+      if (version !== requestVersion) return;
+      state.view = view;
+      history.replaceState(null, "", snapshotLink(location.hash));
+      document.querySelector("#archive-snapshot").textContent = `SQLite 本地存储 · 已固定快照 ${view.snapshot_id}`;
+      document.querySelectorAll(".primary-nav a, .brand").forEach((anchor) => { anchor.href = snapshotLink(anchor.getAttribute("href")); });
+      render();
+      return;
+    }
     const isSearch = route().page === "search";
     const parameters = { q: state.searchQuery, mode: state.searchMode, category: state.category, speaker: state.speaker, limit: String(state.pageSize) };
     if (cursor) parameters.cursor = cursor;
@@ -155,6 +166,7 @@ function render() {
     else if (current.page === "read") renderReader(state.view.target_id);
     else if (current.page === "graph") renderGraph(current.params.get("center"));
     else if (current.page === "characters") renderCharacters();
+    else if (current.page === "character") renderCharacterDetail();
     else replacePage('<div class="empty-state"><h2>未找到这个页面</h2><a class="button" href="#/search">返回文本检索</a></div>');
   } catch (error) {
     replacePage(`<div class="empty-state" role="alert"><h2>无法展示当前样本</h2><p>${escapeHtml(error.message)}</p><a class="button" href="#/search">返回文本检索</a></div>`);
@@ -267,11 +279,19 @@ function renderCharacters() {
     const profile = hasProfile
       ? `<dl class="character-facts">${["element", "weapon", "faction", "rarity"].filter((field) => character[field]).map((field) => `<div><dt>${({ element: "元素", weapon: "武器", faction: "阵营", rarity: "稀有度" })[field]}</dt><dd>${escapeHtml(character[field])}</dd></div>`).join("")}</dl><p>${escapeHtml(character.story || "角色故事待完成来源与授权核验。")}</p>`
       : `<p>当前只有稳定人物标识，未接入真实角色基本信息、立绘或角色故事。</p>`;
-    return `<article class="character-card"><div class="character-portrait" aria-label="${escapeHtml(labels.get(character.id))}立绘占位"><span>${initial}</span><small>${hasProfile ? "资料已接入" : "立绘待授权"}</small></div><div class="character-card-body"><div class="eyebrow">${hasProfile ? "CHARACTER PROFILE" : "SYNTHETIC SAMPLE"}</div><h2>${escapeHtml(labels.get(character.id))}</h2><p class="character-id"><code>${escapeHtml(character.id)}</code></p>${profile}<a class="text-button" href="${graphLink(character.id)}">查看关系证据 →</a></div></article>`;
+    return `<article class="character-card"><a class="character-card-link" href="#/character?id=${encodeURIComponent(character.id)}"><div class="character-portrait" aria-label="${escapeHtml(labels.get(character.id))}立绘占位"><span>${initial}</span><small>${hasProfile ? "资料已接入" : "立绘待授权"}</small></div></a><div class="character-card-body"><div class="eyebrow">${hasProfile ? "CHARACTER PROFILE" : "SYNTHETIC SAMPLE"}</div><h2>${escapeHtml(labels.get(character.id))}</h2><p class="character-id"><code>${escapeHtml(character.id)}</code></p>${profile}<a class="text-button" href="#/character?id=${encodeURIComponent(character.id)}">查看角色详情 →</a> <a class="text-button" href="${graphLink(character.id)}">查看关系证据 →</a></div></article>`;
   }).join("");
   replacePage(`<section class="characters-page"><div class="page-title-row"><div><div class="eyebrow">CHARACTER DIRECTORY</div><h1>先把人物放在一起。</h1></div><span class="tag tag-warm">${filtered.length} / ${view.characters.length} 个当前可见人物</span></div><div class="callout">这里展示的是当前快照中可见的角色记录。当前仓库只有原创合成样本；真实原神角色的基本信息、立绘和角色故事需要来源准入与批次核验后再接入。</div><div class="character-toolbar"><label>查找角色<input id="character-directory-query" maxlength="160" placeholder="姓名或角色 ID" value="${escapeHtml(state.characterQuery)}"></label><label>资料状态<select id="character-directory-filter"><option value="all" ${state.characterFilter === "all" ? "selected" : ""}>全部</option><option value="ready" ${state.characterFilter === "ready" ? "selected" : ""}>已有资料</option><option value="pending" ${state.characterFilter === "pending" ? "selected" : ""}>待接入</option></select></label></div><div class="character-grid">${cards || '<div class="empty-state">没有符合筛选条件的人物。</div>'}</div><p class="small muted">快照：${escapeHtml(view.snapshot_id)} · 角色目录最多读取 200 条。</p>${view.truncated ? '<div class="callout">角色数量超过当前读取上限，请缩小范围或继续完善分页接口。</div>' : ""}</section>`);
   document.querySelector("#character-directory-query").addEventListener("input", (event) => { state.characterQuery = event.target.value; renderCharacters(); });
   document.querySelector("#character-directory-filter").addEventListener("change", (event) => { state.characterFilter = event.target.value; renderCharacters(); });
+}
+
+function renderCharacterDetail() {
+  const view = state.view;
+  const character = view.character;
+  const passages = view.passages || [];
+  const relationships = view.relationships || [];
+  replacePage(`<section class="character-detail-page"><a class="text-button" href="#/characters">← 返回角色目录</a><div class="character-detail-hero"><div class="character-portrait large"><span>${escapeHtml((character.name || "?").slice(0, 1))}</span><small>立绘待授权</small></div><div><div class="eyebrow">CHARACTER DETAIL · SYNTHETIC SAMPLE</div><h1>${escapeHtml(character.name)}</h1><code>${escapeHtml(character.id)}</code><p>当前只有稳定人物标识；真实角色基本信息、立绘和角色故事需要来源准入与批次核验后接入。</p></div></div><h2>当前可见对白</h2><p class="small muted">${passages.length} 段 · 仅显示当前范围、用途和快照允许的内容</p><div class="character-passages">${passages.length ? passages.map((passage) => `<blockquote><p>${escapeHtml(passage.text)}</p><footer>${escapeHtml(passage.id)} · <a class="text-button" href="${readLink(passage.id)}">回到原文 ↗</a></footer></blockquote>`).join("") : '<div class="empty-state">当前范围没有可见对白。</div>'}</div><h2>人物关系</h2><p>${relationships.length ? relationships.map((relation) => `<a class="text-button" href="${graphLink(relation.from_id === character.id ? relation.to_id : relation.from_id)}">${escapeHtml(relation.id)} · ${escapeHtml(relation.predicate)} →</a>`).join(" · ") : "当前范围没有已审核关系。"}</p><div class="callout">角色故事、立绘和完整资料仍需授权来源与正文证据；当前页面只展示原创合成样本。</div></section>`);
 }
 
 function renderReader(targetId) {

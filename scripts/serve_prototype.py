@@ -79,7 +79,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             except OSError:
                 self.respond(503, {"error": "原型资源暂不可用。"})
             return
-        if parsed.path not in ("/api/view", "/api/read", "/api/search", "/api/graph", "/api/relationship", "/api/characters", "/api/status"):
+        if parsed.path not in ("/api/view", "/api/read", "/api/search", "/api/graph", "/api/relationship", "/api/characters", "/api/character", "/api/status"):
             self.respond(404, {"error": "原型中没有这个入口。"})
             return
         try:
@@ -93,6 +93,8 @@ class PrototypeHandler(BaseHTTPRequestHandler):
                 allowed |= {"id"}
             elif parsed.path == "/api/characters":
                 allowed |= {"q", "limit"}
+            elif parsed.path == "/api/character":
+                allowed |= {"id"}
             elif parsed.path == '/api/read':
                 allowed |= {'id', 'cursor'}
             if set(arguments) - allowed:
@@ -128,6 +130,11 @@ class PrototypeHandler(BaseHTTPRequestHandler):
                         if len(values) != 1 or len(values[0]) > 160 or len(cursors) != 1 or len(cursors[0]) > 1024 or ('cursor' in arguments and not cursors[0]) or (cursors[0] and not snapshot):
                             raise SampleError('invalid reader parameters')
                         view = archive.reader(values[0] or None, cursors[0], self.server.cursor_secret)
+                    elif parsed.path == '/api/character':
+                        values = arguments.get('id', [''])
+                        if len(values) != 1 or not values[0] or len(values[0]) > 160:
+                            raise SampleError('invalid character id')
+                        view = archive.character_detail(values[0])
                     else:
                         field = 'id' if parsed.path == '/api/relationship' else 'q'
                         values = arguments.get(field, [''])
