@@ -135,5 +135,77 @@
         "external_ai": "unknown"
       }
     }
-  ]
+  ],
+  "follow_up_probe": {
+    "checked_on": "2026-10-14",
+    "method": "direct_http_metadata_probe",
+    "notice": "仅记录 HTTP、标题、页面壳和公开政策线索；未保存正文，不调用隐藏接口，不改变任何用途授权结论。",
+    "pages": [
+      {
+        "audit_id": "audit:bwiki-chapter",
+        "http_status": 200,
+        "content_type": "text/html; charset=UTF-8",
+        "title": "捕风的异乡人 - 原神WIKI_BWIKI_哔哩哔哩",
+        "revision_id": null,
+        "body_extractable": true,
+        "body_saved": false
+      },
+      {
+        "audit_id": "audit:bwiki-task",
+        "http_status": 200,
+        "content_type": "text/html; charset=UTF-8",
+        "title": "随风而来的骑士 - 原神WIKI_BWIKI_哔哩哔哩",
+        "revision_id": null,
+        "body_extractable": true,
+        "body_saved": false
+      },
+      {
+        "audit_id": "audit:bwiki-character",
+        "http_status": 200,
+        "content_type": "text/html; charset=UTF-8",
+        "title": "安柏 - 原神WIKI_BWIKI_哔哩哔哩",
+        "revision_id": null,
+        "body_extractable": true,
+        "body_saved": false
+      },
+      {
+        "audit_id": "audit:obc-guide",
+        "http_status": 200,
+        "content_type": "text/html;charset=utf-8",
+        "title": "旅行者创作平台-观测枢-原神wiki旅行者创作平台-观测枢-原神wiki",
+        "article_body_extractable": false,
+        "body_saved": false,
+        "note": "返回应用壳，未取得指南正文；既有 robots 限制记录仍保留。"
+      },
+      {
+        "audit_id": "audit:tavern-download",
+        "http_status": 200,
+        "content_type": "text/html",
+        "title": "下载客户端 | 空荧酒馆",
+        "body_extractable": true,
+        "body_saved": false,
+        "note": "页脚显示项目 MIT Licensed；这只说明项目代码或项目许可线索，不推出地图数据、游戏文本或贡献者内容可再分发。"
+      }
+    ],
+    "robots_probes": [
+      {
+        "source_id": "bwiki_genshin",
+        "url": "https://wiki.biligame.com/ys/robots.txt",
+        "result": "unknown_http_567",
+        "note": "未绕过或重试。"
+      },
+      {
+        "source_id": "miyoushe_obc",
+        "url": "https://baike.mihoyo.com/robots.txt",
+        "result": "http_404",
+        "note": "不据此推导内容许可。"
+      },
+      {
+        "source_id": "kongying_tavern",
+        "url": "https://yuanshen.site/robots.txt",
+        "result": "http_200_disallow_empty",
+        "note": "仅说明 robots 未禁止；不等于获得内容使用授权。"
+      }
+    ]
+  }
 }
