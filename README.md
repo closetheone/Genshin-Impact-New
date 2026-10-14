@@ -94,6 +94,7 @@ python3 scripts/manage_feedback.py --resolve <反馈编号>
 | [资料来源与接入台账](DATA_SOURCES.md) | BWIKI、观测枢、空荧酒馆的入口、核对记录、具体使用范围与样本状态 |
 | [真实来源准入门槛](docs/source-admission.md) | 逐项用途授权检查、拒绝规则与只读准入命令 |
 | [真实来源授权记录模板](docs/source-authorization-request.md) | 记录授权人、数据对象、分项用途、条件和期限 |
+| [三项来源授权请求草稿](docs/source-authorization-request-drafts.md) | 按 BWIKI、观测枢、空荧酒馆分别准备最小请求范围 |
 | [数据契约](docs/data-contract.md) | 已实现的 v0.1 样本字段、证据组、方向、范围与用途规则 |
 | [首次验证报告](docs/sample-validation.md) | 五页技术观察、24 项检查、实际结果与未通过的真实数据门槛 |
 | [原型技术方案](docs/technical-prototype.md) | 已实现的技术选择、页面、原型接口、边界和 T04 迁移方案 |
