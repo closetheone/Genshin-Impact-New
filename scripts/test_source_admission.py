@@ -50,7 +50,10 @@ class SourceAdmissionTests(unittest.TestCase):
         data = load_audit(ROOT / 'data/source-audit.json')
         policy = data['follow_up_probe']['policy_pages_probe']
         self.assertTrue(policy['pages'])
+        self.assertTrue(policy['repository_license_probe'])
         self.assertTrue(all(page['raw_body_saved'] is False for page in policy['pages']))
+        self.assertTrue(all(repo['raw_content_saved'] is False
+                            for repo in policy['repository_license_probe']))
         self.assertTrue(all(value in ('unknown', 'denied')
                             for value in policy['admission_effect']['allowed_uses'].values()))
 
@@ -80,6 +83,16 @@ class SourceAdmissionTests(unittest.TestCase):
                     }
                 },
             }
+            path.write_text(json.dumps(audit), encoding='utf-8')
+            with self.assertRaises(ValueError):
+                load_audit(path)
+
+            page['raw_body_saved'] = False
+            audit['follow_up_probe']['policy_pages_probe']['repository_license_probe'] = [{
+                'repository': 'example/repo', 'license_url': 'https://example.invalid/LICENSE',
+                'license_id': 'MIT', 'license_scope_finding': 'software only',
+                'raw_content_saved': True,
+            }]
             path.write_text(json.dumps(audit), encoding='utf-8')
             with self.assertRaises(ValueError):
                 load_audit(path)

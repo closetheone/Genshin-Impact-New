@@ -64,6 +64,18 @@ def validate_policy_probe(probe):
                     f"policy page {index} is missing {field}")
         require(page.get("raw_body_saved") is False,
                 f"policy page {index} must not save raw body")
+    repositories = policy.get("repository_license_probe")
+    if repositories is not None:
+        require(isinstance(repositories, list) and repositories,
+                "repository_license_probe has no repositories")
+        for index, repository in enumerate(repositories):
+            require(isinstance(repository, dict),
+                    f"repository license probe {index} must be an object")
+            for field in ("repository", "license_url", "license_id", "license_scope_finding"):
+                require(isinstance(repository.get(field), str) and repository[field],
+                        f"repository license probe {index} is missing {field}")
+            require(repository.get("raw_content_saved") is False,
+                    f"repository license probe {index} must not save raw content")
     effect = policy.get("admission_effect")
     if effect is None:
         return

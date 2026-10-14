@@ -411,7 +411,55 @@
           "external_ai": "unknown"
         },
         "finding": "公开政策页提供网站、软件、第三方版权和隐私处理线索，但未逐项授权本项目拟用的数据对象与用途；继续拒绝收集、存储、展示、导出和发送给外部 AI。"
-      }
+      },
+      "repository_license_probe": [
+        {
+          "repository": "kongying-tavern/docs",
+          "ref": "main",
+          "license_url": "https://github.com/kongying-tavern/docs/blob/main/LICENSE",
+          "license_file_sha": "7b1f8773a6f3b95337d215df0a5cfbaed6ec3339",
+          "license_file_size": 1083,
+          "license_id": "MIT",
+          "copying_guidelines_url": "https://github.com/kongying-tavern/docs/blob/main/COPYING.md",
+          "copying_guidelines_sha": "ce8ca0bfe5977ad73283ae9c1a65b02e6b04fab5",
+          "summary": "公开 COPYING.md 明确区分代码采用 MIT、文章采用 CC BY-NC-SA 4.0；同时说明空荧酒馆品牌元素未经书面许可不得使用。",
+          "license_scope_finding": "该仓库许可线索区分软件代码、文章和品牌对象，未逐项授权地图数据、游戏文本或贡献者内容供本项目收集、存储、展示、导出或外部 AI 使用。",
+          "raw_content_saved": false
+        },
+        {
+          "repository": "kongying-tavern/yuan-shen-map",
+          "ref": "master",
+          "license_url": "https://github.com/kongying-tavern/yuan-shen-map/blob/master/LICENSE",
+          "license_file_sha": "2e51531a71f149e4a1f99842722350b307ce03ee",
+          "license_file_size": 9228,
+          "license_id": "MulanPSL-1.0",
+          "summary": "仓库 LICENSE 文件识别为木兰宽松许可证第 1 版，文件定义对象为软件及相关文档。",
+          "license_scope_finding": "软件许可证本身不说明地图数据、游戏文本或贡献者内容的独立授权范围。",
+          "raw_content_saved": false
+        },
+        {
+          "repository": "kongying-tavern/map_front_v3",
+          "ref": "master",
+          "license_url": "https://github.com/kongying-tavern/map_front_v3/blob/master/LICENSE",
+          "license_file_sha": "ee5839968a2bf86c93283efc09d40fd050b7cfa2",
+          "license_file_size": 9719,
+          "license_id": "MulanPSL-2.0",
+          "summary": "仓库 LICENSE 文件识别为木兰宽松许可证第 2 版，文件定义对象为软件及贡献。",
+          "license_scope_finding": "软件许可证本身不说明地图数据、游戏文本或贡献者内容的独立授权范围。",
+          "raw_content_saved": false
+        },
+        {
+          "repository": "kongying-tavern/map_akashic_v4",
+          "ref": "main",
+          "license_url": "https://github.com/kongying-tavern/map_akashic_v4/blob/main/LICENSE",
+          "license_file_sha": "d7d399cadaa6ff13279e9feaaae93af39cdb002b",
+          "license_file_size": 1072,
+          "license_id": "MIT",
+          "summary": "仓库 LICENSE 文件识别为 MIT，许可文本针对软件及其副本。",
+          "license_scope_finding": "MIT 软件许可证不说明地图数据、游戏文本或贡献者内容的独立授权范围。",
+          "raw_content_saved": false
+        }
+      ]
     }
   }
 }
