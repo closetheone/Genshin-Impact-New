@@ -324,6 +324,27 @@ class IndexedTests(unittest.TestCase):
             for query in ('', '物资核对', '组号07'):
                 self.assert_search_pages(snapshot, query, ['opening'], limit=17)
 
+    def test_retained_snapshot_import_keeps_v4_search_index_incremental(self):
+        updated = next_snapshot(SAMPLE, 'retained-v4-incremental')
+        updated['passages'][0]['text'] = '新快照正文，旧快照的首尾索引仍需保留。'
+        with patch('query_index.install_search_text', side_effect=AssertionError('retained snapshot must not rebuild the shared search index')):
+            import_snapshot(updated, self.database, activate=True)
+
+        with closing(connect(self.database)) as connection:
+            self.assertIsNotNone(connection.execute(
+                "SELECT name FROM sqlite_master WHERE type='index' AND name='query_search_text'"
+            ).fetchone())
+            self.assertEqual(connection.execute(
+                'SELECT count(*) FROM query_snapshots WHERE ready=1'
+            ).fetchone()[0], 2)
+        for snapshot in (SAMPLE['snapshot_id'], updated['snapshot_id']):
+            expected = search_view(project(load_snapshot(self.database, snapshot), ['opening']),
+                                    search_options({'q': ['快照']}), SECRET)
+            with indexed_view(self.database, snapshot, ['opening'], 'display') as archive:
+                actual = archive.search(search_options({'q': ['快照']}), SECRET)
+            self.assertEqual(actual['results'], expected['results'])
+            self.assertEqual(actual['pagination']['total'], expected['pagination']['total'])
+
     def test_dense_search_positions_follow_visible_order_after_withdrawal(self):
         data, _ = workload('linked', 6200)
         import_snapshot(data, self.database, activate=True)
