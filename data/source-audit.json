@@ -206,6 +206,92 @@
         "result": "http_200_disallow_empty",
         "note": "仅说明 robots 未禁止；不等于获得内容使用授权。"
       }
-    ]
+    ],
+    "mediawiki_api_probe": {
+      "checked_on": "2026-10-14",
+      "endpoint": "https://wiki.biligame.com/ys/api.php",
+      "method": "query info/revisions and parse sections/categories; no wikitext content requested or saved",
+      "siteinfo": {
+        "generator": "MediaWiki 1.37.0",
+        "rightsinfo_text": "",
+        "rightsinfo_url": ""
+      },
+      "pages": [
+        {
+          "audit_id": "audit:bwiki-task",
+          "pageid": 145447,
+          "contentmodel": "wikitext",
+          "lastrevid": 674009,
+          "touched": "2026-10-12T13:53:35Z",
+          "length": 4240,
+          "revision_timestamp": "2026-07-29T09:45:59Z",
+          "categories": [
+            "任务",
+            "魔神任务"
+          ],
+          "sections": [
+            "任务相关",
+            "任务条件",
+            "系列任务",
+            "前置任务",
+            "后续任务",
+            "任务流程",
+            "任务剧情",
+            "继续前往蒙德城",
+            "与轻盈的少女对话",
+            "使用安柏消灭空中的史莱姆",
+            "前往安柏指示的地点"
+          ],
+          "status": "candidate_for_manual_review"
+        },
+        {
+          "audit_id": "audit:bwiki-character",
+          "pageid": 56,
+          "contentmodel": "wikitext",
+          "lastrevid": 669946,
+          "touched": "2026-10-13T05:01:20Z",
+          "length": 19510,
+          "revision_timestamp": "2026-06-30T08:12:48Z",
+          "categories": [
+            "角色"
+          ],
+          "sections": [
+            "角色故事",
+            "剧情相关",
+            "官方介绍",
+            "人物考据"
+          ],
+          "status": "candidate_for_manual_review"
+        },
+        {
+          "audit_id": "audit:bwiki-chapter",
+          "pageid": 8578,
+          "contentmodel": "wikitext",
+          "lastrevid": 673271,
+          "touched": "2026-10-12T12:59:17Z",
+          "length": 463,
+          "revision_timestamp": "2026-07-19T18:54:54Z",
+          "categories": [
+            "系列任务",
+            "魔神任务"
+          ],
+          "sections": [
+            "鸟瞰风物",
+            "异常的权柄",
+            "林间相会",
+            "随风而来的骑士",
+            "与轻风同行",
+            "自由之都",
+            "龙灾",
+            "西风骑士团",
+            "昔日的风",
+            "骑士的现场教习",
+            "书页里的电火花"
+          ],
+          "status": "index_only"
+        }
+      ],
+      "authorization_note": "MediaWiki API metadata and empty rightsinfo do not establish permission to collect, store, display, export, or send content to external AI."
+    }
   }
 }
