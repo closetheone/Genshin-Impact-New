@@ -296,6 +296,9 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .character-facts dt { color: var(--muted); font-size: 10px; }
 .character-facts dd { margin: 3px 0 0; font-size: 12px; }
 .characters-page .callout { margin-top: 12px; }
+.character-toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0; }
+.character-toolbar label { display: grid; gap: 6px; min-width: 220px; color: var(--muted); font-size: 11px; }
+.character-toolbar input, .character-toolbar select { padding: 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); color: inherit; font: inherit; }
 .materials-page h1, .about-page h1 { font-family: var(--serif); font-size: 30px; font-weight: 500; }
 .materials-page h2, .about-page h2 { font-size: 18px; margin-top: 26px; }
 .topic-label { display: block; margin: 22px 0 8px; }
