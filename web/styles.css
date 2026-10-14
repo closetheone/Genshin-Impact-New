@@ -305,6 +305,13 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .character-passages blockquote { margin: 12px 0; padding: 14px 18px; border-left: 3px solid var(--accent); background: var(--panel); }
 .character-passages blockquote p { margin: 0 0 8px; }
 .character-passages footer { color: var(--muted); font-size: 11px; }
+.character-provenance { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
+.character-provenance > div { padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+.character-provenance h2 { margin: 0 0 10px; font-size: 16px; }
+.character-provenance ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.character-provenance li { display: grid; gap: 4px; }
+.character-provenance li > div { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.character-provenance code { color: var(--muted); font-size: 10px; overflow-wrap: anywhere; }
 .character-toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0; }
 .character-toolbar label { display: grid; gap: 6px; min-width: 220px; color: var(--muted); font-size: 11px; }
 .character-toolbar input, .character-toolbar select { padding: 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); color: inherit; font: inherit; }
@@ -333,6 +340,7 @@ textarea { font: inherit; color: inherit; resize: vertical; }
   .materials-page h1, .about-page h1 { font-size: 25px; }
   .character-grid { grid-template-columns: 1fr; }
   .character-detail-hero { grid-template-columns: 1fr; }
+  .character-provenance { grid-template-columns: 1fr; }
   .material-list li { padding: 14px; flex-wrap: wrap; }
   .material-actions { gap: 8px; }
   .feedback-form input, .feedback-form textarea, #material-topic { font-size: 16px; }

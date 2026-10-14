@@ -282,7 +282,14 @@ function renderCharacters() {
     return `<article class="character-card"><a class="character-card-link" href="#/character?id=${encodeURIComponent(character.id)}"><div class="character-portrait" aria-label="${escapeHtml(labels.get(character.id))}立绘占位"><span>${initial}</span><small>${hasProfile ? "资料已接入" : "立绘待授权"}</small></div></a><div class="character-card-body"><div class="eyebrow">${hasProfile ? "CHARACTER PROFILE" : "SYNTHETIC SAMPLE"}</div><h2>${escapeHtml(labels.get(character.id))}</h2><p class="character-id"><code>${escapeHtml(character.id)}</code></p>${profile}<a class="text-button" href="#/character?id=${encodeURIComponent(character.id)}">查看角色详情 →</a> <a class="text-button" href="${graphLink(character.id)}">查看关系证据 →</a></div></article>`;
   }).join("");
   replacePage(`<section class="characters-page"><div class="page-title-row"><div><div class="eyebrow">CHARACTER DIRECTORY</div><h1>先把人物放在一起。</h1></div><span class="tag tag-warm">${filtered.length} / ${view.characters.length} 个当前可见人物</span></div><div class="callout">这里展示的是当前快照中可见的角色记录。当前仓库只有原创合成样本；真实原神角色的基本信息、立绘和角色故事需要来源准入与批次核验后再接入。</div><div class="character-toolbar"><label>查找角色<input id="character-directory-query" maxlength="160" placeholder="姓名或角色 ID" value="${escapeHtml(state.characterQuery)}"></label><label>资料状态<select id="character-directory-filter"><option value="all" ${state.characterFilter === "all" ? "selected" : ""}>全部</option><option value="ready" ${state.characterFilter === "ready" ? "selected" : ""}>已有资料</option><option value="pending" ${state.characterFilter === "pending" ? "selected" : ""}>待接入</option></select></label></div><div class="character-grid">${cards || '<div class="empty-state">没有符合筛选条件的人物。</div>'}</div><p class="small muted">快照：${escapeHtml(view.snapshot_id)} · 角色目录最多读取 200 条。</p>${view.truncated ? '<div class="callout">角色数量超过当前读取上限，请缩小范围或继续完善分页接口。</div>' : ""}</section>`);
-  document.querySelector("#character-directory-query").addEventListener("input", (event) => { state.characterQuery = event.target.value; renderCharacters(); });
+  document.querySelector("#character-directory-query").addEventListener("input", (event) => {
+    state.characterQuery = event.target.value;
+    const caret = event.target.selectionStart;
+    renderCharacters();
+    const input = document.querySelector("#character-directory-query");
+    input.focus();
+    input.setSelectionRange(caret, caret);
+  });
   document.querySelector("#character-directory-filter").addEventListener("change", (event) => { state.characterFilter = event.target.value; renderCharacters(); });
 }
 
@@ -291,7 +298,18 @@ function renderCharacterDetail() {
   const character = view.character;
   const passages = view.passages || [];
   const relationships = view.relationships || [];
-  replacePage(`<section class="character-detail-page"><a class="text-button" href="#/characters">← 返回角色目录</a><div class="character-detail-hero"><div class="character-portrait large"><span>${escapeHtml((character.name || "?").slice(0, 1))}</span><small>立绘待授权</small></div><div><div class="eyebrow">CHARACTER DETAIL · SYNTHETIC SAMPLE</div><h1>${escapeHtml(character.name)}</h1><code>${escapeHtml(character.id)}</code><p>当前只有稳定人物标识；真实角色基本信息、立绘和角色故事需要来源准入与批次核验后接入。</p></div></div><h2>当前可见对白</h2><p class="small muted">${passages.length} 段 · 仅显示当前范围、用途和快照允许的内容</p><div class="character-passages">${passages.length ? passages.map((passage) => `<blockquote><p>${escapeHtml(passage.text)}</p><footer>${escapeHtml(passage.id)} · <a class="text-button" href="${readLink(passage.id)}">回到原文 ↗</a></footer></blockquote>`).join("") : '<div class="empty-state">当前范围没有可见对白。</div>'}</div><h2>人物关系</h2><p>${relationships.length ? relationships.map((relation) => `<a class="text-button" href="${graphLink(relation.from_id === character.id ? relation.to_id : relation.from_id)}">${escapeHtml(relation.id)} · ${escapeHtml(relation.predicate)} →</a>`).join(" · ") : "当前范围没有已审核关系。"}</p><div class="callout">角色故事、立绘和完整资料仍需授权来源与正文证据；当前页面只展示原创合成样本。</div></section>`);
+  const entries = view.entries || [];
+  const sources = view.sources || [];
+  const entryMarkup = entries.length
+    ? entries.map((entry) => `<li><strong>${escapeHtml(entry.title || entry.id)}</strong><code>${escapeHtml(entry.id)}</code></li>`).join("")
+    : '<li class="muted">当前范围没有可见条目元数据。</li>';
+  const sourceMarkup = sources.length
+    ? sources.map((source) => {
+      const allowed = source.rights?.display === "allowed";
+      return `<li><div><strong>${escapeHtml(source.id)}</strong><span class="tag ${allowed ? "tag-blue" : "tag-warm"}">${allowed ? "允许展示" : "展示受限"}</span></div><code>${escapeHtml(source.locator || "未提供定位")}</code></li>`;
+    }).join("")
+    : '<li class="muted">当前范围没有可见来源元数据。</li>';
+  replacePage(`<section class="character-detail-page"><a class="text-button" href="#/characters">← 返回角色目录</a><div class="character-detail-hero"><div class="character-portrait large"><span>${escapeHtml((character.name || "?").slice(0, 1))}</span><small>立绘待授权</small></div><div><div class="eyebrow">CHARACTER DETAIL · SYNTHETIC SAMPLE</div><h1>${escapeHtml(character.name)}</h1><code>${escapeHtml(character.id)}</code><p>当前只有稳定人物标识；真实角色基本信息、立绘和角色故事需要来源准入与批次核验后接入。</p></div></div><h2>当前可见对白</h2><p class="small muted">${passages.length} 段 · 仅显示当前范围、用途和快照允许的内容</p><div class="character-passages">${passages.length ? passages.map((passage) => `<blockquote><p>${escapeHtml(passage.text)}</p><footer>${escapeHtml(passage.id)} · <a class="text-button" href="${readLink(passage.id)}">回到原文 ↗</a></footer></blockquote>`).join("") : '<div class="empty-state">当前范围没有可见对白。</div>'}</div><h2>人物关系</h2><p>${relationships.length ? relationships.map((relation) => `<a class="text-button" href="${graphLink(relation.from_id === character.id ? relation.to_id : relation.from_id)}">${escapeHtml(relation.id)} · ${escapeHtml(relation.predicate)} →</a>`).join(" · ") : "当前范围没有已审核关系。"}</p><div class="character-provenance"><div><h2>关联条目</h2><ul>${entryMarkup}</ul></div><div><h2>来源与用途</h2><ul>${sourceMarkup}</ul></div></div><div class="callout">角色故事、立绘和完整资料仍需授权来源与正文证据；当前页面只展示原创合成样本。</div></section>`);
 }
 
 function renderReader(targetId) {
