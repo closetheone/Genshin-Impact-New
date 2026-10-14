@@ -46,7 +46,7 @@
 
 ## 查询期间撤下与权限收紧
 
-[原始结果](evaluations/t09/live-restrictions.json) 包含 16 个通过的场景，各使用独立 300 段库和十个同时固定读事务的 HTTP 请求。12 个提交场景覆盖 DELETE/WAL × 撤下/权限收紧 × display/export/external_ai；另有两种日志模式、两种变更的 display 回滚场景。测试门闩暂停在读事务已读取快照和限制版本之后，连接与请求均为真实 SQLite / HTTP。
+[原始结果](evaluations/t09/live-restrictions.json) 包含 16 个通过的场景，各使用独立 300 段库和十个同时固定读事务的 HTTP 请求。2026-10-14 按当前版本重跑的 [复测报告](evaluations/t09/live-restrictions-rerun-20261014.json) 同样包含 16 个场景，全部 `all_checks_passed=true`；该复测仍使用合成库。12 个提交场景覆盖 DELETE/WAL × 撤下/权限收紧 × display/export/external_ai；另有两种日志模式、两种变更的 display 回滚场景。测试门闩暂停在读事务已读取快照和限制版本之后，连接与请求均为真实 SQLite / HTTP。
 
 - 提交前，搜索可见 285 段。撤下两段后新请求可见 283 段；收紧来源对指定用途的权限后为 0。受限关系的两组证据均不可用，详情返回 404，旧搜索游标返回 409。
 - 默认 DELETE 模式下，固定读事务使写提交等待；测试在 0.1 秒内确认提交未完成，释放读者后提交成功。此测试不代表无限等待承诺，连接仍有原有锁等待超时。
