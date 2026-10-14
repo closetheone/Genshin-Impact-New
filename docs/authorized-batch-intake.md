@@ -28,3 +28,13 @@ python3 scripts/validate_authorized_batch.py /path/to/authorized-batch.json \
 ```
 
 命令成功只表示元数据和来源准入字段满足第一道门槛。之后仍需在授权范围内准备独立 fixture，运行 `scripts/validate_sample.py` 和完整回归测试，再由导入流程写入数据库。当前三项来源仍处于待确认状态，仓库没有可通过的真实批次文件。
+
+正式准备开放真实页面前，可运行发布门禁：
+
+```bash
+python3 scripts/check_release_readiness.py --fail-if-not-ready
+python3 scripts/check_release_readiness.py \
+  --manifest /path/to/authorized-batch.json --fail-if-not-ready
+```
+
+门禁只检查来源准入和批次元数据，不读取正文。当前仓库预期会失败，原因是三项来源仍待确认且没有真实授权批次清单。

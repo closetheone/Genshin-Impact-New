@@ -100,6 +100,7 @@ python3 scripts/manage_feedback.py --resolve <反馈编号>
 | [来源准入报告命令](scripts/report_source_admission.py) | 汇总三项来源的准入缺口，不读取真实正文 |
 | [获授权批次接入清单](docs/authorized-batch-intake.md) | 授权后只校验批次元数据，不读取或保存真实正文 |
 | [授权批次模板命令](scripts/create_authorized_batch.py) | 从来源台账生成空白授权批次元数据模板 |
+| [真实页面发布门禁](scripts/check_release_readiness.py) | 汇总授权批次和来源准入状态，未就绪时可失败退出 |
 | [数据契约](docs/data-contract.md) | 已实现的 v0.1 样本字段、证据组、方向、范围与用途规则 |
 | [首次验证报告](docs/sample-validation.md) | 五页技术观察、24 项检查、实际结果与未通过的真实数据门槛 |
 | [原型技术方案](docs/technical-prototype.md) | 已实现的技术选择、页面、原型接口、边界和 T04 迁移方案 |
