@@ -34,6 +34,17 @@ class SourceAdmissionReportTests(unittest.TestCase):
         self.assertTrue(all('external_ai' in item['unapproved_uses']
                             for item in report['sources']))
 
+    def test_report_can_filter_one_source(self):
+        data = load_audit(ROOT / 'data/source-audit.json')
+        report = build_report(data, source_filter=['kongying_tavern'])
+        self.assertFalse(report['ready'])
+        self.assertEqual([item['source_id'] for item in report['sources']], ['kongying_tavern'])
+
+    def test_report_rejects_unknown_source_filter(self):
+        data = load_audit(ROOT / 'data/source-audit.json')
+        with self.assertRaises(ValueError):
+            build_report(data, source_filter=['unknown_source'])
+
 
 if __name__ == '__main__':
     unittest.main()
