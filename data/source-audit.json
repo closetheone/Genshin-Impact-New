@@ -348,6 +348,70 @@
         },
         "finding": "未发现以用户协议、版权、免责声明或隐私为标题的独立站内政策页；搜索命中主要是游戏内容中的协议提示和 WIKI编辑FAQ。不能据此推定存在或不存在外部授权。"
       }
+    },
+    "policy_pages_probe": {
+      "source_id": "kongying_tavern",
+      "checked_on": "2026-10-14",
+      "method": "direct_http_policy_metadata_and_manual_summary",
+      "notice": "仅保存标题、链接、更新时间和政策范围摘要；未保存完整正文、地图数据或游戏文本。",
+      "pages": [
+        {
+          "url": "https://yuanshen.site/docs/disclaimer",
+          "title": "免责声明 | 空荧酒馆",
+          "http_status": 200,
+          "content_type": "text/html",
+          "last_modified_http": "2026-10-13T08:04:28Z",
+          "page_updated_at": "2025-01-20T04:47:55Z",
+          "summary": "页面称部分静态资源（含文字、图片、音频、视频、图表、界面设计、版面框架、有关数据或电子文档等）的版权属于上海米哈游影铁科技有限公司及关联公司，并称相关文件用于表现游戏资料和游戏交流；页面另称网站采用 CC BY-NC-SA 4.0。未说明该许可覆盖哪些地图数据、游戏文本或贡献者内容。",
+          "license_scope_finding": "页面同时出现第三方版权归属与 CC BY-NC-SA 4.0 线索，对象范围和授权链未逐项明确。",
+          "raw_body_saved": false
+        },
+        {
+          "url": "https://yuanshen.site/docs/privacy",
+          "title": "隐私政策 | 空荧酒馆",
+          "http_status": 200,
+          "content_type": "text/html",
+          "last_modified_http": "2026-10-13T08:04:28Z",
+          "page_updated_at": "2025-01-20T04:47:55Z",
+          "summary": "页面说明项目采用 MulanPSL-1.0，服务器不存储用户隐私数据；登录及登录后相关数据由 Gitee 存储，并使用 Microsoft Clarity、Google Analytics 或百度统计等服务改进产品。",
+          "license_scope_finding": "MulanPSL-1.0 线索对应项目 / 软件说明；隐私政策不授予地图数据、游戏文本或贡献者内容的再利用权。",
+          "raw_body_saved": false
+        },
+        {
+          "url": "https://yuanshen.site/docs/agreement",
+          "title": "空荧酒馆原神地图用户服务协议 | 空荧酒馆",
+          "http_status": 200,
+          "content_type": "text/html",
+          "last_modified_http": "2026-10-13T08:04:28Z",
+          "page_updated_at": "2026-08-31T08:25:37Z",
+          "summary": "用户协议是软件与服务使用条款，授予个人、非商业、不可转让且不可转授权的使用许可；限制复制、翻录、传播、陈列地图软件资料、出租销售地图、建立镜像或网页快照，以及其他未经书面授权的使用。协议还称软件和网站部分静态资源版权属于上海米哈游影铁科技有限公司及关联公司。",
+          "license_scope_finding": "协议管理网站 / 软件使用，不构成本项目收集、存储、公开展示、导出或外部 AI 处理地图数据、游戏文本或贡献者内容的授权。",
+          "raw_body_saved": false
+        }
+      ],
+      "footer_license_clues": [
+        {
+          "text": "MIT Licensed",
+          "finding": "页脚项目许可线索，未指明覆盖地图数据、游戏文本或贡献者内容。"
+        },
+        {
+          "text": "Made with ❤ by Kongying Tavern",
+          "finding": "署名 / 页脚信息，不构成下游数据授权。"
+        }
+      ],
+      "admission_effect": {
+        "authorization_confirmed_by": null,
+        "admission_status": "pending",
+        "allowed_uses": {
+          "collect": "unknown",
+          "store": "unknown",
+          "display": "unknown",
+          "export": "unknown",
+          "ai_retrieval": "unknown",
+          "external_ai": "unknown"
+        },
+        "finding": "公开政策页提供网站、软件、第三方版权和隐私处理线索，但未逐项授权本项目拟用的数据对象与用途；继续拒绝收集、存储、展示、导出和发送给外部 AI。"
+      }
     }
   }
 }
