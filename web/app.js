@@ -302,13 +302,14 @@ function renderCharacterDetail() {
   const sources = view.sources || [];
   const scopeNames = { opening: "开篇", east: "东路", west: "西路", later: "后续" };
   const predicateNames = { mentor_of: "师徒", parent_of: "亲属", opposes: "对立", cooperates_with: "合作" };
-  const scopeSummary = (view.scope_ids || []).map((scope) => scopeNames[scope] || scope).join(" / ");
+  const scopeSummary = ["opening", "east", "west", "later"].filter((scope) => (view.scope_ids || []).includes(scope)).map((scope) => scopeNames[scope]).join(" / ");
   const relationMarkup = relationships.length
     ? relationships.map((relation) => {
       const counterpart = relation.from_id === character.id ? relation.to_id : relation.from_id;
       const reviewLabel = relation.review_status === "approved" ? "已审核" : "待复核";
       const evidenceCount = (relation.evidence_groups || []).length;
-      return `<article class="character-relation"><div class="character-relation-top"><strong>${escapeHtml(predicateNames[relation.predicate] || relation.predicate)}</strong><span class="tag ${relation.review_status === "approved" ? "tag-blue" : "tag-warm"}">${reviewLabel}</span></div><p>${escapeHtml(relation.description || "关系描述待补充。")}</p><div class="character-relation-meta"><code>${escapeHtml(relation.id)}</code><span>${evidenceCount} 组可见证据</span><a class="text-button" href="${graphLink(counterpart)}">查看关系图 ↗</a></div></article>`;
+      const relationScopeText = relation.branch_id ? `${scopeNames[relation.branch_id] || relation.branch_id}分支` : (relation.required_scope_ids || []).map((scope) => scopeNames[scope] || scope).join(" / ");
+      return `<article class="character-relation"><div class="character-relation-top"><strong>${escapeHtml(predicateNames[relation.predicate] || relation.predicate)}</strong><span class="tag ${relation.review_status === "approved" ? "tag-blue" : "tag-warm"}">${reviewLabel}</span></div><p>${escapeHtml(relation.description || "关系描述待补充。")}</p><div class="character-relation-meta"><code>${escapeHtml(relation.id)}</code><span>范围：${escapeHtml(relationScopeText || "未标注")}</span><span>${evidenceCount} 组可见证据</span><a class="text-button" href="${graphLink(counterpart)}">查看关系图 ↗</a></div></article>`;
     }).join("")
     : '<div class="empty-state">当前范围没有已审核关系。</div>';
   const entryMarkup = entries.length

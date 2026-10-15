@@ -245,6 +245,13 @@ class GraphHTTPTests(unittest.TestCase):
         status, full = self.get('/api/character', **full_scope)
         self.assertEqual(status, 200)
         self.assertEqual(len(full['passages']), 9)
+        self.assertEqual({relation['id'] for relation in full['relationships']}, {
+            'relation:mentor', 'relation:bridge-partners', 'relation:east-opposition', 'relation:west-partners'})
+        self.assertEqual({relation['branch_id'] for relation in full['relationships']}, {None, 'east', 'west'})
+        status, east = self.get('/api/character', scope=['opening', 'east'], id='person:student')
+        self.assertEqual(status, 200)
+        self.assertEqual({relation['id'] for relation in east['relationships']}, {
+            'relation:mentor', 'relation:bridge-partners', 'relation:east-opposition'})
         data = next_snapshot(SAMPLE, 'character-withdrawn-v2')
         data['withdrawn_ids'] = ['passage:04']
         import_snapshot(data, self.database, activate=True)
