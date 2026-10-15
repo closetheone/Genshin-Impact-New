@@ -471,7 +471,7 @@ function renderEvidence(relation, view = state.view) {
     return;
   }
   const labels = characterLabels(view.characters);
-  const person = (identifier) => `<span>${escapeHtml(view.characters.find((character) => character.id === identifier)?.name)}<small>${escapeHtml(identifier)}</small></span>`;
+  const person = (identifier) => `<a class="relation-person" href="#/character?id=${encodeURIComponent(identifier)}">${escapeHtml(view.characters.find((character) => character.id === identifier)?.name)}<small>${escapeHtml(identifier)}</small></a>`;
   panel.innerHTML = `<div class="eyebrow">FOLLOW THE EVIDENCE</div><h2>关系与原文证据</h2><div class="relation-people">${person(relation.from_id)}<span class="relation-arrow">${relation.direction === "directed" ? "→" : "—"}</span>${person(relation.to_id)}</div>
     ${tag(PREDICATES[relation.predicate].label)} ${tag("已审核 · 明确断言", "tag-blue")}<p class="relation-description">${escapeHtml(relation.description)}</p><p class="small muted">${escapeHtml(relationScope(relation, view.passages))}</p>
     ${relation.evidence_groups.map((group, index) => `<div class="evidence-group-label">证据组 ${index + 1} · ${group.length > 1 ? `${group.length} 段须联合阅读` : "单段支持"}</div>${group.map((identifier) => {

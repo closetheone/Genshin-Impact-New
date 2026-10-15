@@ -154,6 +154,8 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .passage-source .text-button { font-size: 10px; }
 .relationship-row[aria-pressed="true"] { background: var(--green-soft); }
 .relation-people span { overflow-wrap: anywhere; min-width: 0; }
+.relation-people .relation-person { color: inherit; text-decoration: none; overflow-wrap: anywhere; min-width: 0; border-bottom: 1px solid transparent; }
+.relation-people .relation-person:hover, .relation-people .relation-person:focus-visible { border-bottom-color: var(--accent); }
 .relation-people small { display: block; font: 9px/1.8 var(--sans); color: var(--muted); }
 .passage.selected { background: #f6f0d9; margin: 0 -12px; padding-left: 42px; padding-right: 12px; box-shadow: inset 2px 0 #b59c57; }
 .passage.selected .passage-number { left: 12px; }
