@@ -382,6 +382,7 @@ function restoreGraphQuery() {
   state.condition = params.get("condition") || "all";
   state.graphPage = params.get("page") || "1";
   state.graphMode = params.get("mode") === "list" ? "list" : "graph";
+  state.relation = params.get("relation") || null;
   graphLayout = null;
   try {
     const encoded = params.get("layout") || "null";
@@ -391,6 +392,7 @@ function restoreGraphQuery() {
 
 function graphAddress({ shared = false, layout = null } = {}) {
   const params = new URLSearchParams({ center: state.center, hops: String(state.hops), predicate: state.predicate, condition: state.condition, page: String(state.graphPage), mode: state.graphMode });
+  if (state.relation) params.set("relation", state.relation);
   if (shared) params.set("shared", "1");
   if (layout) params.set("layout", JSON.stringify(layout));
   return snapshotLink(`#/graph?${params}`);
@@ -399,6 +401,7 @@ function graphAddress({ shared = false, layout = null } = {}) {
 function changeGraph(field, value) {
   const layout = field === "hops" ? captureLayout() || graphLayout : null;
   state[field] = value;
+  state.relation = null;
   state.graphPage = 1;
   location.hash = graphAddress({ layout });
 }
@@ -456,6 +459,7 @@ function renderGraph(requestedCenter) {
 
 async function selectRelation(identifier) {
   state.relation = identifier;
+  history.replaceState(null, "", graphAddress());
   const version = ++evidenceVersion;
   const original = state.view;
   document.querySelectorAll(".graph-edge, .relationship-row").forEach((element) => {
