@@ -491,7 +491,7 @@ function renderEvidence(relation, view = state.view) {
     ${tag(PREDICATES[relation.predicate].label)} ${tag("已审核 · 明确断言", "tag-blue")}<p class="relation-description">${escapeHtml(relation.description)}</p><p class="small muted">${escapeHtml(relationScope(relation, view.passages))}</p>
     ${relation.evidence_groups.map((group, index) => `<div class="evidence-group-label">证据组 ${index + 1} · ${group.length > 1 ? `${group.length} 段须联合阅读` : "单段支持"}</div>${group.map((identifier) => {
       const passage = view.passages.find((candidate) => candidate.id === identifier);
-      return `<blockquote class="evidence-quote"><p>${escapeHtml(passage.text)}</p><footer>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · ${escapeHtml(scopeLabel(passage))}<a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)} · 回到原文 ↗</a></footer></blockquote>`;
+      return `<blockquote class="evidence-quote"><p>${escapeHtml(passage.text)}</p><footer><span>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · ${escapeHtml(scopeLabel(passage))}</span><a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)} · 回到原文 ↗</a><code>${escapeHtml(passage.source_id)} · ${escapeHtml(passage.source_locator)}</code></footer></blockquote>`;
     }).join("")}`).join("")}
     <button class="button button-soft" id="add-relation-material">关系与证据加入素材 ＋</button><a class="text-button" href="${snapshotLink(`#/about?reference=${encodeURIComponent(relation.id)}&kind=relationship`)}">纠正这条关系</a>
     <div class="evidence-note">组内段落须共同成立；不同完整证据组可独立支持同一断言。样本断言不等于原神设定。</div><div class="evidence-footer"><code>${escapeHtml(relation.id)}<br>${escapeHtml(view.snapshot_id)}</code></div>`;

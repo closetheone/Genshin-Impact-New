@@ -209,7 +209,9 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .evidence-group-label { font-size: 9px; color: #969e89; margin: 17px 0 9px; letter-spacing: .8px; }
 .evidence-quote { margin: 0 0 9px; background: #f5f5ed; border-left: 2px solid #c9d2b9; padding: 10px 12px; }
 .evidence-quote p { font: 13px/1.9 var(--serif); margin: 0 0 5px; }
+.evidence-quote footer { display: grid; gap: 4px; }
 .evidence-quote a { font-size: 9px; color: #8a9a79; }
+.evidence-quote code { color: #9aa38e; font-size: 9px; overflow-wrap: anywhere; }
 .evidence-quote a:hover { color: var(--green); }
 .evidence-footer { margin-top: 21px; padding-top: 16px; border-top: 1px solid var(--line); }
 .evidence-footer .button { width: 100%; }
