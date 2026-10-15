@@ -1,5 +1,7 @@
 # 真实来源准入门槛
 
+2026-10-15：首批真实角色的简短基础字段通过独立的、限定字段的目录流程接入，依据与范围见 [真实角色接入记录](real-character-intake.md)。下面的门槛继续适用于三项候选站点的正文接入，不代表所有公开基础资料都必须另取邮件授权，也未被用于声称游戏素材获得全面授权。
+
 `data/source-audit.json` 只保存页面和政策元信息，不保存第三方正文。`scripts/check_source_admission.py` 根据这份台账检查某个来源是否可以进入指定用途；它不会下载、解析或导入正文。
 
 需要向来源方取得确认时，可先参考[三项来源授权请求草稿](source-authorization-request-drafts.md)，再按 [真实来源授权记录模板](source-authorization-request.md) 逐项记录对象、授权人、用途、条件和期限。草稿本身不是授权。

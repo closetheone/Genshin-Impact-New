@@ -19,6 +19,7 @@ from search_archive import StaleCursor, search_options
 from validate_sample import SampleError, project
 from check_source_admission import load_audit
 from report_source_admission import build_report
+from character_catalog import BATCH as CHARACTER_BATCH, DEFAULT_CATALOG, CatalogUnavailable, import_catalog, read_catalog
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,6 +32,7 @@ ASSETS = {
     "/materials.mjs": ("materials.mjs", "text/javascript; charset=utf-8"),
     "/styles.css": ("styles.css", "text/css; charset=utf-8"),
     "/favicon.svg": ("favicon.svg", "image/svg+xml"),
+    "/real-characters.mjs": ("real-characters.mjs", "text/javascript; charset=utf-8"),
 }
 
 
@@ -66,6 +68,21 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             self.respond(414, {"error": "请求过长。"})
             return
         parsed = urlsplit(self.path)
+        if parsed.path == '/api/character-catalog':
+            try:
+                arguments = parse_qs(parsed.query, keep_blank_values=True, max_num_fields=4)
+                if set(arguments) - {'catalog', 'character'} or any(len(v) != 1 or not v[0] or len(v[0]) > 160 for v in arguments.values()):
+                    raise SampleError('invalid character catalog parameters')
+                result = read_catalog(self.server.database.parent / 'character-catalog.sqlite3',
+                                      arguments.get('catalog', [DEFAULT_CATALOG])[0], arguments.get('character', [None])[0])
+                self.respond(200, result)
+            except CatalogUnavailable as error:
+                self.respond(404, {'error': str(error)})
+            except SampleError:
+                self.respond(400, {'error': '角色资料请求或数据校验失败。'})
+            except (OSError, ValueError, TypeError, KeyError, sqlite3.Error):
+                self.respond(503, {'error': '真实角色资料暂不可用，请检查批次导入。'})
+            return
         if parsed.path == "/downloads/genshin-story-writer.zip":
             try:
                 self.respond(200, skill_zip(), "application/zip")
@@ -223,7 +240,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Local-only synthetic archive prototype. Not a production server.")
+    parser = argparse.ArgumentParser(description="Local character facts catalog and synthetic story prototype. Not a production server.")
     parser.add_argument("--port", type=int, default=4173)
     parser.add_argument("--database", type=Path, help="Use an existing imported SQLite database; default bootstraps the synthetic fixture once")
     parser.add_argument("--ai-scope", action="append", choices=("opening", "east", "west", "later"), help="Enable read-only AI tools with this maximum scope; repeat for more scopes")
@@ -239,6 +256,7 @@ def main():
             import_snapshot(read_synthetic_sample(SAMPLE_PATH), database)
         prepare_indexes(database)
         load_snapshot(database)
+        import_catalog(json.loads(CHARACTER_BATCH.read_text()), database.parent / 'character-catalog.sqlite3')
         server = ThreadingHTTPServer(("127.0.0.1", args.port), PrototypeHandler)
         server.database = database
         server.cursor_secret = secrets.token_bytes(32)
@@ -247,7 +265,7 @@ def main():
         parser.exit(1, f"Cannot start prototype: {error}\n")
     print(f"Archive prototype: http://127.0.0.1:{server.server_port}", flush=True)
     print(f"SQLite archive: {database}", flush=True)
-    print("Synthetic data only. Bound to loopback; not for public deployment. Ctrl+C to stop.", flush=True)
+    print("Real character basics + synthetic story archive. Bound to loopback; not for public deployment. Ctrl+C to stop.", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

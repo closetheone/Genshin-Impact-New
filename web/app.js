@@ -1,10 +1,11 @@
 import { createMaterialUI, postJson } from "/materials.mjs";
+import { loadRealCharacters, renderRealCharacters } from "/real-characters.mjs";
 import { SCOPES, PREDICATES, orderPassages, characterLabels, safeLayout, scopeLabel, relationScope, relationshipUsage } from "/model.mjs";
 
 const main = document.querySelector("#main");
 const scopeSelect = document.querySelector("#scope-select");
 const purposeSelect = document.querySelector("#purpose-select");
-const pageNames = { search: "文本检索", read: "原文阅读", graph: "人物关系图", characters: "角色目录", character: "角色详情", materials: "素材清单", about: "收录与纠错" };
+const pageNames = { "real-characters": "真实角色目录", "real-character": "真实角色详情", search: "文本检索", read: "原文阅读", graph: "人物关系图", characters: "样本角色目录", character: "样本角色详情", materials: "素材清单", about: "收录与纠错" };
 const state = { view: null, query: "", searchQuery: "", searchMode: "literal", category: "all", speaker: "all", pageSize: 8, characterQuery: "", characterFilter: "all", center: "person:student", hops: 1, predicate: "all", condition: "all", graphPage: 1, graphMode: "graph", relation: null };
 let requestController;
 let requestVersion = 0;
@@ -45,10 +46,11 @@ function notify(message) {
 
 function route() {
   const [path, query = ""] = location.hash.slice(1).split("?");
-  return { page: path?.replace(/^\//u, "") || "search", params: new URLSearchParams(query) };
+  return { page: path?.replace(/^\//u, "") || "real-characters", params: new URLSearchParams(query) };
 }
 
 function snapshotLink(address) {
+  if (address.startsWith("#/real-")) return address;
   if (!state.view) return address;
   const [path, query = ""] = address.split("?");
   const parameters = new URLSearchParams(query);
@@ -109,6 +111,15 @@ async function loadView(cursor = null) {
   replacePage('<div class="loading-state" role="status">正在按当前范围与用途打开档案…</div>');
   try {
     updateNavigation();
+    if (route().page === "real-characters" || route().page === "real-character") {
+      const detail = route().page === "real-character";
+      const data = await loadRealCharacters(route().params, detail, requestController.signal);
+      if (version !== requestVersion) return;
+      history.replaceState(null, "", `#/real-${detail ? "character" : "characters"}?${new URLSearchParams({ catalog: data.catalog_id, ...(detail ? { id: data.character.id } : {}) })}`);
+      document.querySelector("#archive-snapshot").textContent = `真实角色资料 · ${data.catalog_id} · 核对于 ${data.checked_on}`;
+      renderRealCharacters(data, detail, replacePage);
+      return;
+    }
     if (route().page === "materials") { await materialUI.render(); return; }
     if (route().page === "about") { await renderAbout(); return; }
     if (route().page === "character") {
@@ -161,10 +172,16 @@ async function loadView(cursor = null) {
 
 function updateNavigation() {
   const current = route();
+  const real = current.page === "real-characters" || current.page === "real-character";
+  document.querySelector(".global-controls").hidden = real;
+  document.querySelector("#open-active").hidden = real;
+  document.querySelector(".prototype-notice").innerHTML = real
+    ? '<span aria-hidden="true">◇</span><strong>真实角色基础资料</strong><span>已接入首批角色信息；立绘、故事和真实人物关系尚未收录。</span>'
+    : '<span aria-hidden="true">◇</span><strong>原创样本演示</strong><span>当前剧情页面中的人物、对白与关系为虚构测试内容，不是原神剧情。</span>';
   document.querySelector("#page-name").textContent = pageNames[current.page] || "未找到页面";
-  document.title = `${pageNames[current.page] || "未找到页面"} · 原神文本档案 · 原创样本`;
+  document.title = `${pageNames[current.page] || "未找到页面"} · 原神文本档案${real ? "" : " · 原创样本"}`;
   document.querySelectorAll("[data-page]").forEach((anchor) => {
-    if (anchor.dataset.page === current.page) anchor.setAttribute("aria-current", "page");
+    if (anchor.dataset.page === current.page || (real && anchor.dataset.page === "real-characters")) anchor.setAttribute("aria-current", "page");
     else anchor.removeAttribute("aria-current");
   });
 }
@@ -765,9 +782,9 @@ async function renderAbout() {
   const admission = status?.source_admission;
   const admissionRows = admission?.sources?.map((source) => `<li><div><strong>${escapeHtml(source.source_id)}</strong><span class="small">申请：${escapeHtml(source.requested_uses.join("、"))}</span></div><span class="tag ${source.ready ? "tag-blue" : "tag-warm"}">${source.ready ? "已准入" : "待确认"}</span><p>${source.ready ? "授权字段已满足当前申请用途。" : `缺口：${escapeHtml(source.missing_requirements.join("、") || source.unapproved_uses.join("、") || "需复核")}`}</p><ol class="source-next-actions">${(source.next_actions || []).map((action) => `<li>${escapeHtml(action)}</li>`).join("")}</ol></li>`).join("") || "";
   replacePage(`<section class="about-page"><div class="eyebrow">SOURCES & CORRECTIONS</div><h1>知道收录了什么，也能指出问题。</h1>
-    <div class="callout">当前全部内容为原创合成样本，不是原神剧情。真实来源准入与剧情准确性尚未验收。</div>
+    <div class="callout">剧情检索与关系图使用原创合成样本；真实角色目录已收录首批基础资料。真实剧情与立绘尚未接入。</div><p><a class="button button-soft" href="#/real-characters">查看首批真实角色 →</a></p>
     <h2>收录与已知缺口</h2><p>当前读取：<code>${escapeHtml(status?.snapshot_id || params.get("snapshot") || "暂不可用")}</code>。页面只展示顶部范围与用途允许的内容。</p>
-    <p>当前收录的是用于验证对白、分支和关系证据的原创结构样本；只展示当前允许且已审核的内容。BWIKI、观测枢和空荧酒馆目前仅有候选来源记录，尚未接入真实正文。</p>
+    <p>当前剧情快照收录用于验证对白、分支和关系证据的原创结构样本。独立的真实角色资料库已收录安柏、凯亚、丽莎、琴的基础字段，来自 genshin-db 固定版本，提供字段出处及许可链接。BWIKI、观测枢和空荧酒馆目前仅有候选来源记录，尚未接入真实正文。</p>
     <h2>真实来源准入状态</h2><p>以下仅显示来源元数据和用途缺口，不读取或展示真实正文。来源获准后仍需单独完成批次、出处和数据契约核验。</p><ul class="source-admission-list">${admissionRows || "<li>准入状态暂不可用。</li>"}</ul>
     <p>没有公开部署、语义检索或实时撤下通知。AI 只读连接需维护者显式启用，网站不会自动调用外部模型。下载文件不会自动更新；使用前请重新核验。反馈提交仅进入本机维护收件箱，不对外公开。</p>
     <h2>更新摘要 · 2026-10-12</h2><p>已完成固定快照存储、搜索、局部关系图及素材清单。本轮新增可下载的剧情创作 Skill，支持本地只读取材和离线素材校验，已完成合成资料创作试用。</p>

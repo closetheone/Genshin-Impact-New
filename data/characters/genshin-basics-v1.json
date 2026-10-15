@@ -1,0 +1,122 @@
+{
+  "schema_version": "character-catalog-1",
+  "dataset_kind": "real_character_facts",
+  "catalog_id": "genshin-basics-2026-10-15-v1",
+  "checked_on": "2026-10-15",
+  "source": {
+    "name": "genshin-db · theBowja 与贡献者",
+    "repository": "https://github.com/theBowja/genshin-db",
+    "revision": "49a6544a6c6ae36089cb42fa591fc46f01de8bcf",
+    "license": "MIT",
+    "license_url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/LICENSE",
+    "license_file": "data/licenses/genshin-db-MIT.txt",
+    "license_sha256": "9b4edf56612dd31a97ade0d2d408154eb2e3dcf620f5b832fefec036ba9b50e1",
+    "scope": "只摘取角色名称与简短基础字段；不包含简介、故事、对白、图片或推断关系。仓库许可不代表取得游戏素材的完整授权。"
+  },
+  "characters": [
+    {
+      "id": "genshin:10000021",
+      "slug": "amber",
+      "name": "安柏",
+      "element": "火",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "8月10日",
+      "constellation": "小兔座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/amber.json",
+        "sha256": "adfecd608f32b281782f0a738e5b7af5a4d9fb470e2865acd62e5a60dbacb3a2",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000015",
+      "slug": "kaeya",
+      "name": "凯亚",
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "11月30日",
+      "constellation": "孔雀羽座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kaeya.json",
+        "sha256": "2fe5873969dfe168e77da9a25b7a4123ee8d2049cbff5f797ab6507decc45bf1",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000006",
+      "slug": "lisa",
+      "name": "丽莎",
+      "element": "雷",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "6月9日",
+      "constellation": "沙漏座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/lisa.json",
+        "sha256": "6fb807c89fad0b4bd5f23e588cd1f53951490e24c72743202d852c63cd165847",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000003",
+      "slug": "jean",
+      "name": "琴",
+      "element": "风",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "3月14日",
+      "constellation": "幼狮座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/jean.json",
+        "sha256": "c802bec6dddded55549ab399428fc66bb2376b3c6a77e2605121210944fadd5d",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    }
+  ]
+}

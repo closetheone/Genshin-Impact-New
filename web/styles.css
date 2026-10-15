@@ -217,6 +217,15 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .evidence-footer code { overflow-wrap: anywhere; }
 .evidence-source { margin-top: 8px; color: var(--muted); font-size: 11px; }
 .evidence-source summary { cursor: pointer; color: var(--green); }
+.real-character-page .real-portrait { background: linear-gradient(135deg, #e5ece0, #f1eee1); }
+.real-character-page .real-portrait[data-element="火"] { background: linear-gradient(135deg, #f0dcd0, #f5eee1); color: #97513e; }
+.real-character-page .real-portrait[data-element="冰"] { background: linear-gradient(135deg, #dcebea, #edf2ed); color: #497774; }
+.real-character-page .real-portrait[data-element="雷"] { background: linear-gradient(135deg, #e7dfef, #f4edf0); color: #77618a; }
+.real-character-page .real-portrait[data-element="风"] { background: linear-gradient(135deg, #dcece0, #eff1dd); color: #417663; }
+.real-provenance { margin: 16px 0; color: var(--muted); }
+.real-provenance summary { cursor: pointer; }
+.real-provenance dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; }
+.real-provenance dd { margin: 0; }
 .evidence-source summary:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 .evidence-source dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 7px 9px; margin: 12px 0; }
 .evidence-source dt, .evidence-source dd { margin: 0; }
