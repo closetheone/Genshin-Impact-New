@@ -218,6 +218,10 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .evidence-source { margin-top: 8px; color: var(--muted); font-size: 11px; }
 .evidence-source summary { cursor: pointer; color: var(--green); }
 .real-character-page .real-portrait { background: linear-gradient(135deg, #e5ece0, #f1eee1); }
+.official-character-panel { margin: 24px 0; padding: 20px 24px; border: 1px solid var(--line); border-left: 3px solid var(--green); border-radius: 6px; background: var(--panel); }
+.official-character-panel h2 { margin-top: 0; }
+.official-character-panel p:last-child { margin-bottom: 0; }
+.real-character-actions { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
 .real-character-page .real-portrait[data-element="火"] { background: linear-gradient(135deg, #f0dcd0, #f5eee1); color: #97513e; }
 .real-character-page .real-portrait[data-element="冰"] { background: linear-gradient(135deg, #dcebea, #edf2ed); color: #497774; }
 .real-character-page .real-portrait[data-element="雷"] { background: linear-gradient(135deg, #e7dfef, #f4edf0); color: #77618a; }

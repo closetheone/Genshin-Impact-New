@@ -1,9 +1,44 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { catalogPage, catalogAddress } from '../web/real-characters.mjs';
+import { catalogPage, catalogAddress, renderRealCharacters } from '../web/real-characters.mjs';
 
 const data = JSON.parse(readFileSync(new URL('../data/characters/genshin-basics-v2.json', import.meta.url)));
+const references = JSON.parse(readFileSync(new URL('../data/characters/official-character-links-v1.json', import.meta.url)));
+
+function detailHTML(name, supplement) {
+  const originalHistory = globalThis.history;
+  globalThis.history = { replaceState() {} };
+  let html;
+  try {
+    renderRealCharacters({ ...data, character: data.characters.find(c => c.name === name), official_links: supplement }, true, value => { html = value; });
+  } finally {
+    if (originalHistory === undefined) delete globalThis.history;
+    else globalThis.history = originalHistory;
+  }
+  return html;
+}
+
+test('detail links point at the matched official character in a separate tab', () => {
+  const html = detailHTML('神里绫华', { ...references, status: 'available' });
+  assert.match(html, /href="https:\/\/ys\.mihoyo\.com\/main\/character\/inazuma\?char=0" target="_blank" rel="noopener noreferrer"/u);
+  assert.match(html, /前往官网查看神里绫华/u);
+  assert.match(html, /官网简介不等于完整角色故事/u);
+  assert.match(html, /入口核对于 2026-10-15/u);
+  assert.doesNotMatch(html, /<img\b/u);
+});
+
+test('missing matches and unavailable references keep facts without inventing links', () => {
+  const missing = detailHTML('空', { ...references, status: 'available' });
+  assert.match(missing, /尚未匹配到此角色的官网展示入口/u);
+  assert.doesNotMatch(missing, /href="https:\/\/ys\.mihoyo\.com/u);
+  for (const supplement of [undefined, { status: 'unavailable', records: [] }]) {
+    const unavailable = detailHTML('神里绫华', supplement);
+    assert.match(unavailable, /官网展示入口暂不可用/u);
+    assert.match(unavailable, /神里绫华/u);
+    assert.doesNotMatch(unavailable, /href="https:\/\/ys\.mihoyo\.com/u);
+  }
+});
 test('pagination covers all records once, including the last partial page', () => {
   const ids = [];
   for (let page = 1; page <= 6; page++) {

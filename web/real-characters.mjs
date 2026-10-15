@@ -3,6 +3,16 @@ const fields = { element: "元素", weapon: "武器", rarity: "稀有度", regio
 const valueLabel = (value) => value === null || value === "" || value === undefined ? "来源未提供" : String(value);
 const elementLabel = (value) => value === "无" ? "无固定元素（来源标注）" : value;
 const facts = (character, keys = Object.keys(fields)) => `<dl class="character-facts">${keys.map((key) => `<div><dt>${fields[key]}</dt><dd>${escape(key === "element" ? elementLabel(character[key]) : valueLabel(character[key]))}${key === "rarity" ? " 星" : ""}</dd></div>`).join("")}</dl>`;
+const officialReference = (data, character) => data.official_links?.status === "available"
+  ? data.official_links.records.find((record) => record.character_id === character.id && record.name === character.name) : null;
+const officialButton = (record, compact = false) => `<a class="${compact ? "text-button" : "button button-primary"}" href="${escape(record.url)}" target="_blank" rel="noopener noreferrer">${compact ? "官网立绘与简介" : `前往官网查看${escape(record.name)}`} ↗</a>`;
+
+function officialPanel(data, character) {
+  const record = officialReference(data, character);
+  return `<section class="official-character-panel" aria-label="官方角色展示"><h2>官方角色展示</h2>${record
+    ? `<p>前往《原神》官网查看${escape(character.name)}的立绘、官方简介和配音。</p>${officialButton(record)}<p class="small muted">将在新标签页打开官网 · ${escape(record.section)} · 入口核对于 ${escape(data.official_links.checked_on)}<br>官网可能调整角色顺序；若显示了其他角色，请在官网下方角色栏选择「${escape(character.name)}」。</p>`
+    : `<p>${data.official_links?.status === "available" ? "尚未匹配到此角色的官网展示入口。" : "官网展示入口暂不可用，基础资料仍可查看。"}</p>`}</section>`;
+}
 
 export function catalogPage(characters, { query = "", element = "all", region = "all", page = 1 } = {}) {
   const term = query.trim().toLocaleLowerCase();
@@ -44,7 +54,8 @@ export function renderRealCharacters(data, detail, replacePage, params = new URL
     history.replaceState(null, "", catalogAddress(catalog, character.id, selection));
     replacePage(`<section class="character-detail-page real-character-page"><a class="text-button" href="${catalogAddress(catalog, null, selection)}">← 返回真实角色目录</a> · <a class="text-button" href="#/real-characters">打开最新目录 →</a>
       <div class="character-detail-hero"><div class="character-portrait large real-portrait" data-element="${escape(character.element)}"><span>${escape(character.name.slice(0, 1))}</span><small>文字占位 · 非角色立绘</small></div><div><div class="eyebrow">GENSHIN IMPACT · CHARACTER PROFILE</div><h1>${escape(character.name)}</h1><p>${escape(valueLabel(character.region))} · ${escape(valueLabel(character.affiliation))}</p><span class="tag tag-blue">角色基础资料 · 社区来源</span>${facts(character)}</div></div>
-      <h2>角色故事与立绘</h2><p>本批次已接入基础资料，尚未收录角色故事、对白与立绘。当前没有已核验的人物关系记录。</p>
+      ${officialPanel(data, character)}
+      <h2>角色故事</h2><p>游戏内完整角色故事与对白尚未收录，官网简介不等于完整角色故事。当前没有已核验的人物关系记录。</p>
       <h2>资料出处</h2>${source}<p class="small muted">${coverage} 未提供的字段不做推测补齐；“无”元素按来源保留，不展开成多个角色。</p><p><a class="button button-soft" href="${escape(character.provenance.url)}" target="_blank" rel="noopener noreferrer">查看此角色的来源记录 ↗</a> <a class="text-button" href="${escape(data.source.license_url)}" target="_blank" rel="noopener noreferrer">仓库许可说明 ↗</a></p>
       <details class="real-provenance"><summary>字段定位与核对记录</summary><dl>${Object.entries(character.provenance.fields).map(([field, original]) => `<dt>${escape(fields[field] || "角色名")}</dt><dd><code>/${escape(original)}</code></dd>`).join("")}</dl><p>来源文件 SHA-256：<code>${escape(character.provenance.sha256)}</code></p></details><p class="small muted">${escape(data.source.scope)}</p></section>`);
     return;
@@ -57,13 +68,16 @@ export function renderRealCharacters(data, detail, replacePage, params = new URL
   replacePage(`<section class="characters-page real-character-page"><div class="page-title-row"><div><div class="eyebrow">GENSHIN IMPACT · CHARACTER DIRECTORY</div><h1>原神角色资料目录</h1><p>${coverage}</p></div><span id="real-character-count" class="tag tag-blue" role="status"></span></div>
     <div class="character-toolbar"><label>查找角色<input id="real-character-query" maxlength="160" placeholder="角色名、武器或地区" value="${escape(selection.query)}"></label><label>元素<select id="real-character-element" aria-label="元素"><option value="all">全部元素</option>${options(elements, selection.element, elementLabel)}</select></label><label>地区<select id="real-character-region" aria-label="地区"><option value="all">全部地区</option>${options(regions, selection.region)}<option value="missing" ${selection.region === "missing" ? "selected" : ""}>来源未提供</option></select></label><button id="real-character-reset" class="button">重置筛选</button></div>
     <div id="real-character-grid" class="character-grid"></div><div class="pagination" aria-label="角色目录分页"><button id="real-character-previous" class="button">上一页</button><span id="real-character-page"></span><button id="real-character-next" class="button">下一页</button></div>
-    <div class="callout">仅含角色基础资料，故事与立绘尚未收录。剧情检索和关系图仍使用原创样本。</div>${source}<a class="text-button" href="#/real-characters">打开最新目录 →</a> · <a class="text-button" href="#/characters">查看原创样本目录 →</a></section>`);
+    <div class="callout">${data.official_links?.status === "available" ? `已匹配 ${data.official_links.records.length} 个官网角色展示入口，可在官网查看立绘与简介。` : "官网展示入口暂不可用。"}本站尚未收录立绘和完整角色故事。剧情检索和关系图仍使用原创样本。</div>${source}<a class="text-button" href="#/real-characters">打开最新目录 →</a> · <a class="text-button" href="#/characters">查看原创样本目录 →</a></section>`);
   function draw() {
     const result = catalogPage(data.characters, selection);
     selection.page = result.page;
     history.replaceState(null, "", catalogAddress(catalog, null, selection));
     document.querySelector("#real-character-count").textContent = `${result.total} / ${data.characters.length} 条角色记录`;
-    document.querySelector("#real-character-grid").innerHTML = result.records.map((character) => `<article class="character-card"><a href="${catalogAddress(catalog, character.id, selection)}" aria-label="查看${escape(character.name)}详情"><div class="character-portrait real-portrait" data-element="${escape(character.element)}"><span>${escape(character.name.slice(0, 1))}</span><small>文字占位 · 非角色立绘</small></div></a><div class="character-card-body"><div class="eyebrow">${escape(valueLabel(character.region))} · ${character.rarity} 星</div><h2><a href="${catalogAddress(catalog, character.id, selection)}">${escape(character.name)}</a></h2>${facts(character, ["element", "weapon"])}<a class="text-button" href="${catalogAddress(catalog, character.id, selection)}">基本资料与出处 →</a></div></article>`).join("") || '<div class="empty-state">没有符合筛选条件的角色。</div>';
+    document.querySelector("#real-character-grid").innerHTML = result.records.map((character) => {
+      const official = officialReference(data, character);
+      return `<article class="character-card"><a href="${catalogAddress(catalog, character.id, selection)}" aria-label="查看${escape(character.name)}详情"><div class="character-portrait real-portrait" data-element="${escape(character.element)}"><span>${escape(character.name.slice(0, 1))}</span><small>文字占位 · 非角色立绘</small></div></a><div class="character-card-body"><div class="eyebrow">${escape(valueLabel(character.region))} · ${character.rarity} 星</div><h2><a href="${catalogAddress(catalog, character.id, selection)}">${escape(character.name)}</a></h2>${facts(character, ["element", "weapon"])}<div class="real-character-actions"><a class="text-button" href="${catalogAddress(catalog, character.id, selection)}">基本资料与出处 →</a>${official ? officialButton(official, true) : `<span class="small muted">${data.official_links?.status === "available" ? "官网入口未匹配" : "官网入口暂不可用"}</span>`}</div></div></article>`;
+    }).join("") || '<div class="empty-state">没有符合筛选条件的角色。</div>';
     document.querySelector("#real-character-page").textContent = `第 ${result.page} / ${result.pages} 页 · 每页最多 24 条`;
     document.querySelector("#real-character-previous").disabled = result.page === 1;
     document.querySelector("#real-character-next").disabled = result.page === result.pages;

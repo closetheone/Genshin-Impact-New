@@ -25,6 +25,18 @@ python3 scripts/serve_prototype.py --port 4175
 - 名称、武器检索和元素 / 地区筛选仅作用于当前批次，每页最多 24 条。查询、筛选和页码写入 URL，详情与返回目录保留这些条件。立绘用明确标注的文字占位，故事与真实关系显示未收录。
 - 原有剧情 SQLite、合成导入器、素材清单和 AI 只读接口保持原有内容边界；真实基础资料不会伪装为 `synthetic` 注入这些接口。
 
+## 官方角色展示入口
+
+2026-10-15 已核对《原神》官网七个地区角色选择栏，按完整中文名与 v2 基础目录逐项匹配，得到 120 条展示入口。入口记录保存在 `data/characters/official-character-links-v1.json`，包含角色 ID、核对时的角色名、官网分区、具体角色 URL，以及独立的记录版本和核对日期。空、荧、奇偶·男性、奇偶·女性未匹配到入口；不据此判断角色是否已实装。
+
+- 核对页面：[蒙德](https://ys.mihoyo.com/main/character/mondstadt)、[璃月](https://ys.mihoyo.com/main/character/liyue)、[稻妻](https://ys.mihoyo.com/main/character/inazuma)、[须弥](https://ys.mihoyo.com/main/character/sumeru)、[枫丹](https://ys.mihoyo.com/main/character/fontaine)、[纳塔](https://ys.mihoyo.com/main/character/natlan)、[至冬](https://ys.mihoyo.com/main/character/snezhnaya)。分区沿用官网栏目，不覆盖社区基础资料中的地区字段。
+- 点击官网角色选择栏会生成 `?char=N` 参数，N 是该栏从零开始的位置；已通过页面导航核对具体角色定位。官网没有提供固定修订链接，顺序可能变化，详情页提供核对日期及按角色名重新选择的提示。后续复核应读取全部选择栏、重新按姓名匹配并生成新的入口记录版本，不沿用旧索引猜测新角色。
+- API 在原有基本资料响应外附加 `official_links`，独立提供 `reference_id`、`checked_on` 和当前角色范围内的记录。基础资料的不可变批次、摘要和 SQLite 内容保持原样；旧 v1 目录只返回其四个角色的对应入口。读取时同时匹配 ID 和姓名，防止未来改名或错绑。
+- 这里只保存导航元信息；用户点击后在新标签页访问官网的立绘、简介和配音。没有抓取或存储美术、音频与故事正文，没有把官网简介当作完整角色故事，也不声称获得素材再分发许可。原有正文来源台账及用途门槛不变。
+- 官方链接必须通过 HTTPS、精确主机、分区和角色索引格式检查，拒绝额外参数和重复角色 / 地址。入口文件缺失或损坏时仍显示基本资料，并明确提示入口暂不可用。正常页面加载不会请求官网资源。
+
+验证：`PYTHONPATH=scripts python3 -m unittest scripts/test_character_references.py scripts/test_character_catalog.py` 与 `node --test scripts/test_character_catalog_ui.mjs`。
+
 校验器只接受已核对来源和固定字段集合，拒绝附加故事、图片或关系字段。校验只能确保结构和定位约束，SHA-256 是抓取时的核对记录，不证明上游本身无误。扩大来源或内容类型需要重新核对。
 
 ## 全目录构建与特殊字段

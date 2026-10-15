@@ -128,6 +128,9 @@ class CharacterCatalogTests(unittest.TestCase):
             status, data = get(urlencode({'catalog': DEFAULT_CATALOG, 'character': 'genshin:10000003'}))
             self.assertEqual(status, 200)
             self.assertEqual(data['character']['name'], '琴')
+            self.assertEqual([r['name'] for r in data['official_links']['records']], ['琴'])
+            self.assertEqual(len(get('')[1]['official_links']['records']), 120)
+            self.assertEqual(get('character=genshin%3A10000005')[1]['official_links']['records'], [])
             self.assertEqual(len(get('')[1]['characters']), 124)
             self.assertEqual(len(get(urlencode({'catalog': DATA['catalog_id']}))[1]['characters']), 4)
             for query in ('catalog=missing', 'character=person%3Astudent'):
