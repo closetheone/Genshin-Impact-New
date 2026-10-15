@@ -432,7 +432,9 @@ class IndexedTests(unittest.TestCase):
                     expected = graph_view(view, options(), SECRET)
                     for key in ('characters', 'relationships', 'passages', 'entries'):
                         self.assertEqual(actual[key], expected[key])
-                    self.assertEqual(archive.relationship('relation:mentor'), relation_view(view, 'relation:mentor'))
+                    expected_relation = relation_view(view, 'relation:mentor')
+                    expected_relation['sources'] = [SAMPLE['sources'][0]]
+                    self.assertEqual(archive.relationship('relation:mentor'), expected_relation)
 
     def test_grouped_search_restores_source_order_without_backlinks(self):
         data = next_snapshot(SAMPLE, 'unlinked-search')

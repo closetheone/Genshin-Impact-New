@@ -237,6 +237,23 @@ class GraphHTTPTests(unittest.TestCase):
         self.assertEqual(self.get('/api/graph', snapshot='missing')[0], 404)
         self.assertEqual(self.get('/api/graph', center='missing')[1]['code'], 'graph_unavailable')
 
+    def test_relationship_sources_follow_visible_evidence(self):
+        status, detail = self.get('/api/relationship', id='relation:mentor')
+        self.assertEqual(status, 200)
+        self.assertEqual(detail['sources'], [SAMPLE['sources'][0]])
+        # Give the assertion a different source from its supporting passages.
+        data = next_snapshot(SAMPLE, 'relationship-source-test')
+        next(r for r in data['relationships'] if r['id'] == 'relation:mentor')['source_id'] = 'source:internal'
+        import_snapshot(data, self.database)
+        status, detail = self.get('/api/relationship', id='relation:mentor', snapshot=data['snapshot_id'])
+        self.assertEqual(status, 200)
+        self.assertEqual(detail['sources'], data['sources'])
+        self.assertEqual(detail['relationships'][0]['source_id'], 'source:internal')
+        self.assertEqual({p['source_id'] for p in detail['passages']}, {'source:fixture'})
+        status, denied = self.get('/api/relationship', id='relation:mentor', snapshot=data['snapshot_id'], purpose='export')
+        self.assertEqual(status, 404)
+        self.assertNotIn('sources', denied)
+
     def test_character_detail_projection_and_withdrawal(self):
         status, opening = self.get('/api/character', id='person:student')
         self.assertEqual(status, 200)

@@ -486,6 +486,8 @@ function renderEvidence(relation, view = state.view) {
     return;
   }
   const labels = characterLabels(view.characters);
+  const relationSource = (view.sources || []).find((source) => source.id === relation.source_id);
+  const relationSourceLocator = relationSource?.locator || "来源定位未标注";
   const person = (identifier) => `<a class="relation-person" href="${characterDetailLink(identifier)}">${escapeHtml(view.characters.find((character) => character.id === identifier)?.name)}<small>${escapeHtml(identifier)}</small></a>`;
   const reviewLabel = relation.review_status === "approved" ? "已审核" : relation.review_status === "pending" ? "待复核" : "审核状态未标注";
   const reviewStyle = relation.review_status === "approved" ? "tag-blue" : "tag-warm";
@@ -497,7 +499,7 @@ function renderEvidence(relation, view = state.view) {
       return `<blockquote class="evidence-quote"><p>${escapeHtml(passage.text)}</p><footer><span>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · ${escapeHtml(scopeLabel(passage))}</span><a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)} · 回到原文 ↗</a><code>${escapeHtml(passage.source_id)} · ${escapeHtml(passage.source_locator)}</code></footer></blockquote>`;
     }).join("")}`).join("")}
     <button class="button button-soft" id="add-relation-material">关系与证据加入素材 ＋</button><a class="text-button" href="${snapshotLink(`#/about?reference=${encodeURIComponent(relation.id)}&kind=relationship`)}">纠正这条关系</a>
-    <div class="evidence-note">组内段落须共同成立；不同完整证据组可独立支持同一断言。样本断言不等于原神设定。</div><div class="evidence-footer"><code>${escapeHtml(relation.id)}<br>${escapeHtml(view.snapshot_id)}</code></div>`;
+    <div class="evidence-note">组内段落须共同成立；不同完整证据组可独立支持同一断言。样本断言不等于原神设定。</div><div class="evidence-footer"><code>关系 ID：${escapeHtml(relation.id)}<br>关系断言来源：${escapeHtml(relation.source_id || "来源 ID 未标注")}<br>关系来源定位：${escapeHtml(relationSourceLocator)}<br>快照：${escapeHtml(view.snapshot_id)}</code></div>`;
   document.querySelector("#add-relation-material").addEventListener("click", (event) => materialUI.add("relationship", relation.id, event.currentTarget));
 }
 

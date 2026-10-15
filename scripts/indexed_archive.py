@@ -677,7 +677,9 @@ class IndexedArchive:
         relationships = self.selected('relationships', {identifier})
         if not relationships:
             raise GraphUnavailable('该关系或完整证据在当前范围、用途或快照中不可用。')
-        return relation_view(self.graph_bundle(relationships, self.selected('characters', {i for r in relationships for i in (r['from_id'], r['to_id'])})), identifier)
+        result = relation_view(self.graph_bundle(relationships, self.selected('characters', {i for r in relationships for i in (r['from_id'], r['to_id'])})), identifier)
+        result['sources'] = self.sources(result)
+        return result
 
     def characters(self, query, limit=20):
         require(len(query) <= 160, 'character query too long')
