@@ -1,0 +1,3371 @@
+{
+  "schema_version": "character-catalog-2",
+  "dataset_kind": "real_character_facts",
+  "catalog_id": "genshin-basics-2026-10-15-v2",
+  "checked_on": "2026-10-15",
+  "source": {
+    "name": "genshin-db · theBowja 与贡献者",
+    "repository": "https://github.com/theBowja/genshin-db",
+    "revision": "49a6544a6c6ae36089cb42fa591fc46f01de8bcf",
+    "license": "MIT",
+    "license_url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/LICENSE",
+    "license_file": "data/licenses/genshin-db-MIT.txt",
+    "license_sha256": "9b4edf56612dd31a97ade0d2d408154eb2e3dcf620f5b832fefec036ba9b50e1",
+    "scope": "只摘取角色名称与简短基础字段；不包含简介、故事、对白、图片或推断关系。仓库许可不代表取得游戏素材的完整授权。"
+  },
+  "characters": [
+    {
+      "id": "genshin:10000002",
+      "slug": "kamisatoayaka",
+      "name": "神里绫华",
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "稻妻",
+      "affiliation": "社奉行",
+      "birthday": "9月28日",
+      "constellation": "雪鹤座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kamisatoayaka.json",
+        "sha256": "e7f46c77783c2d5401bd94a7783dbf3d1d806210886cc0eae284977652ee53f0",
+        "git_blob_sha1": "e48f84de41d5ef42d2ea14fee50b3b240f0524b8",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000003",
+      "slug": "jean",
+      "name": "琴",
+      "element": "风",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "3月14日",
+      "constellation": "幼狮座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/jean.json",
+        "sha256": "c802bec6dddded55549ab399428fc66bb2376b3c6a77e2605121210944fadd5d",
+        "git_blob_sha1": "c67c03e9e78cf31fed5d1cfb5f715dad2db3af21",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000005",
+      "slug": "aether",
+      "name": "空",
+      "element": "无",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": null,
+      "affiliation": null,
+      "birthday": null,
+      "constellation": "旅人座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/aether.json",
+        "sha256": "0b2907c1fc9b1c2746cc1fedefde7bdb94a176b9e6337507c51186f1acc33d52",
+        "git_blob_sha1": "0000e3c9daafb5caf5da3611d96a1f0cbfe1d6b8",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000006",
+      "slug": "lisa",
+      "name": "丽莎",
+      "element": "雷",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "6月9日",
+      "constellation": "沙漏座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/lisa.json",
+        "sha256": "6fb807c89fad0b4bd5f23e588cd1f53951490e24c72743202d852c63cd165847",
+        "git_blob_sha1": "7da3a84e6e1ef80ff283ee54c013663418e2e6b5",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000007",
+      "slug": "lumine",
+      "name": "荧",
+      "element": "无",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": null,
+      "affiliation": null,
+      "birthday": null,
+      "constellation": "旅人座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/lumine.json",
+        "sha256": "86120a1eba3aa3622d8e090a6d2c498a392af7b03bb1e6d2ac84f369d64600cc",
+        "git_blob_sha1": "5aa4effba5d7d91926fe6c041ca1bda39fae5875",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000014",
+      "slug": "barbara",
+      "name": "芭芭拉",
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风教会",
+      "birthday": "7月5日",
+      "constellation": "金杯座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/barbara.json",
+        "sha256": "e3b472f7baca18c848a85764452fe4051ea4c65dde0dceb9f771b6a4c898c934",
+        "git_blob_sha1": "a7ca301184a5bf2cd3bcb812987499209da321f8",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000015",
+      "slug": "kaeya",
+      "name": "凯亚",
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "11月30日",
+      "constellation": "孔雀羽座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kaeya.json",
+        "sha256": "2fe5873969dfe168e77da9a25b7a4123ee8d2049cbff5f797ab6507decc45bf1",
+        "git_blob_sha1": "87c23e65c20627976bc2b0d480495dda96c24647",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000016",
+      "slug": "diluc",
+      "name": "迪卢克",
+      "element": "火",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "晨曦酒庄",
+      "birthday": "4月30日",
+      "constellation": "夜枭座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/diluc.json",
+        "sha256": "437d236ed723adc660d86504a5a54ee35bd82b28ed0cac6d909565b4ca8f11fc",
+        "git_blob_sha1": "cfb63c4cd09c44eaa67838c1be22a6c69e06f174",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000020",
+      "slug": "razor",
+      "name": "雷泽",
+      "element": "雷",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "奔狼领",
+      "birthday": "9月9日",
+      "constellation": "小狼座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/razor.json",
+        "sha256": "9776fb0381d90625f28974499e0f49d63d349a74dc99f73b90083bf87ad319c5",
+        "git_blob_sha1": "904dfa6f00d3390e0b24e0b3fe0768fe52fb5e6c",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000021",
+      "slug": "amber",
+      "name": "安柏",
+      "element": "火",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "8月10日",
+      "constellation": "小兔座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/amber.json",
+        "sha256": "adfecd608f32b281782f0a738e5b7af5a4d9fb470e2865acd62e5a60dbacb3a2",
+        "git_blob_sha1": "169b2218f7066127b077b575d1382bb0a652b2fa",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000022",
+      "slug": "venti",
+      "name": "温迪",
+      "element": "风",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "蒙德城",
+      "birthday": "6月16日",
+      "constellation": "歌仙座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/venti.json",
+        "sha256": "3717f847451b5a1f03240a0fd5abf4a4425d81f926eb84e4ac52dbb747ca4e83",
+        "git_blob_sha1": "1e21b0f47f37b6e1ae81a27f2b24044bf3c76d0f",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000023",
+      "slug": "xiangling",
+      "name": "香菱",
+      "element": "火",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "万民堂",
+      "birthday": "11月2日",
+      "constellation": "长杓座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/xiangling.json",
+        "sha256": "4a59fedb3dcf6f2de8684cc3c4898a3e0a49575cb5f921be93fb1b416bd5eb55",
+        "git_blob_sha1": "96105a445aa741c367ac5cb6a95069183bb0058e",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000024",
+      "slug": "beidou",
+      "name": "北斗",
+      "element": "雷",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "南十字船队",
+      "birthday": "2月14日",
+      "constellation": "南天海山座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/beidou.json",
+        "sha256": "2d460d7b7111fcd5bcea6d7fce4b55bffdf4bd9d205be2599366ad94f4c72fdf",
+        "git_blob_sha1": "1adc3d8d399882f10ed167e7b48aa77ab1bcac55",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000025",
+      "slug": "xingqiu",
+      "name": "行秋",
+      "element": "水",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "飞云商会",
+      "birthday": "10月9日",
+      "constellation": "锦织座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/xingqiu.json",
+        "sha256": "78d43d732f5db611ab5e4a6f4544726ac661ea91e316d690451ac83aa1e76c00",
+        "git_blob_sha1": "8204e537800e9c243d897fe2d16523e05d4c2138",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000026",
+      "slug": "xiao",
+      "name": "魈",
+      "element": "风",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "璃月",
+      "affiliation": "璃月仙人",
+      "birthday": "4月17日",
+      "constellation": "金翅鹏王座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/xiao.json",
+        "sha256": "f4e9fd70ca32313902d84760a41bda9aefa23f7c8e89ad7548ecbb22b9dadeee",
+        "git_blob_sha1": "8f9b249240571b74836180bf1d159d9dfcc2b310",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000027",
+      "slug": "ningguang",
+      "name": "凝光",
+      "element": "岩",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "璃月七星",
+      "birthday": "8月26日",
+      "constellation": "玑衡仪座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/ningguang.json",
+        "sha256": "878306336361cb41880bc7d652862899e06b77113c43f57c3ec69d22f8a96a19",
+        "git_blob_sha1": "ba231448e603e25d30171b1f9da10415ff17b00d",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000029",
+      "slug": "klee",
+      "name": "可莉",
+      "element": "火",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "7月27日",
+      "constellation": "四叶草座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/klee.json",
+        "sha256": "d2933c220e0e8dc17b66bd3484472ea84b86ef3a08fcd117fa2545a5b98cad5d",
+        "git_blob_sha1": "0ec3e2d644a4931ab3b41c1b267b825d0b8b338a",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000030",
+      "slug": "zhongli",
+      "name": "钟离",
+      "element": "岩",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "璃月",
+      "affiliation": "璃月港",
+      "birthday": "12月31日",
+      "constellation": "岩王帝君座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/zhongli.json",
+        "sha256": "ccc72679fe8d786b3be3c68ac95e883aa7acef7f105b4da87568ffdd2ef28a61",
+        "git_blob_sha1": "c9f442872628cf291b225ca8cdbadb2cb606cbc7",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000031",
+      "slug": "fischl",
+      "name": "菲谢尔",
+      "element": "雷",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "冒险家协会",
+      "birthday": "5月27日",
+      "constellation": "幻鸦座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/fischl.json",
+        "sha256": "f97c532c146dbffa29ea66145f5552aeffd19685869c3b50134c0975c1bd9a73",
+        "git_blob_sha1": "b5130088a863a6225508a966bb5544fa13c1b7f8",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000032",
+      "slug": "bennett",
+      "name": "班尼特",
+      "element": "火",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "冒险家协会",
+      "birthday": "2月29日",
+      "constellation": "险路座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/bennett.json",
+        "sha256": "09a1966b2f77a614268d94ff70fa5ed28d77b9818f2e400666a215f9b7ec59df",
+        "git_blob_sha1": "56ba6edfcd69c735d211e6cd245f66c288d1274e",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000033",
+      "slug": "tartaglia",
+      "name": "达达利亚",
+      "element": "水",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": "至冬",
+      "affiliation": "愚人众",
+      "birthday": "7月20日",
+      "constellation": "鲸天座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/tartaglia.json",
+        "sha256": "f19c6f1d8a062a7543320ead429449e69cd844dca8d82e6f6f7505a7e4a5b37b",
+        "git_blob_sha1": "043b33dae58a2d5b50a426837269a85f66e70a35",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000034",
+      "slug": "noelle",
+      "name": "诺艾尔",
+      "element": "岩",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "3月21日",
+      "constellation": "心护座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/noelle.json",
+        "sha256": "e84e80ea32fbba329bb359c5d6cf2a0d04df7a395b4b7f981b2a10b37541228f",
+        "git_blob_sha1": "f090ad8a9be0dc6d7d6ae5481f7cd78851af5e86",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000035",
+      "slug": "qiqi",
+      "name": "七七",
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "璃月",
+      "affiliation": "不卜庐",
+      "birthday": "3月3日",
+      "constellation": "三清铃座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/qiqi.json",
+        "sha256": "029d48fc1149fc7238fc9306f5e35ff722eca7d007bf71f6b8b0f005c1b08982",
+        "git_blob_sha1": "54e00c039a09450dd1df4fbfb05cd30431983d05",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000036",
+      "slug": "chongyun",
+      "name": "重云",
+      "element": "冰",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "天衡方士",
+      "birthday": "9月7日",
+      "constellation": "乾坤锋座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/chongyun.json",
+        "sha256": "d38dfa5b85734a138f787b6eabd3bc4fb1b4f78da9f7a202ebbf43a75c15a939",
+        "git_blob_sha1": "a3ad24ef6bbd388a911b4b18ef359946724f02fe",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000037",
+      "slug": "ganyu",
+      "name": "甘雨",
+      "element": "冰",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": "璃月",
+      "affiliation": "月海亭",
+      "birthday": "12月2日",
+      "constellation": "仙麟座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/ganyu.json",
+        "sha256": "53bc59f1be3a4fac682aa3e15559b615d5fd63a2ebbf82d7accf6140b92fa630",
+        "git_blob_sha1": "b3735ca860295cf6b00c211a401a2fa183029451",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000038",
+      "slug": "albedo",
+      "name": "阿贝多",
+      "element": "岩",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "9月13日",
+      "constellation": "白垩之子座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/albedo.json",
+        "sha256": "17f2dfc78915f4acdcc4e932938e592744e605f0f849cec639a90133dc4baf15",
+        "git_blob_sha1": "34b83d26317178076bbe692405b5bbc8bb8a7f00",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000039",
+      "slug": "diona",
+      "name": "迪奥娜",
+      "element": "冰",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "猫尾酒馆",
+      "birthday": "1月18日",
+      "constellation": "小猫座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/diona.json",
+        "sha256": "3aa68aa8ab5bcc1480cd54355039fd5ffa6d97fc41099128b43b6c9dcf59cef6",
+        "git_blob_sha1": "4eedc2a2b39a80544d3c6190ee1f2f81beb0b30e",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000041",
+      "slug": "mona",
+      "name": "莫娜",
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "蒙德城",
+      "birthday": "8月31日",
+      "constellation": "映天座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/mona.json",
+        "sha256": "cd1aec89fd542fb899da48bc47b9c1e8e27b667070fea183ddfe86fff1a287a9",
+        "git_blob_sha1": "0d86e528f9827b9a2409fd37a76715432c50c84d",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000042",
+      "slug": "keqing",
+      "name": "刻晴",
+      "element": "雷",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "璃月",
+      "affiliation": "璃月七星",
+      "birthday": "11月20日",
+      "constellation": "金紫定垂座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/keqing.json",
+        "sha256": "0f35ff0090002844a976a0ba6a35c0eb755f35d223815f1f9ab6fcefd3d038bc",
+        "git_blob_sha1": "a1495370fbe13c3cf4ff26225f414a4a44df2240",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000043",
+      "slug": "sucrose",
+      "name": "砂糖",
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "11月26日",
+      "constellation": "烧瓶座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/sucrose.json",
+        "sha256": "920cc63d61aca721647c6c75a927e58b19cb0cc26d8dfdfd762a0d135c22cfbe",
+        "git_blob_sha1": "6785ab65ff995e50dd1fc9a7476f63ec1ac3f78a",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000044",
+      "slug": "xinyan",
+      "name": "辛焱",
+      "element": "火",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "「红弦」",
+      "birthday": "10月16日",
+      "constellation": "红檀四弦座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/xinyan.json",
+        "sha256": "7dec863089fac9f6aa78a441cff03de643a8b7f2ee49061ac77a7680ea44390a",
+        "git_blob_sha1": "5fb6e06bb7f04957b84019337c0d73bf7204d8c7",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000045",
+      "slug": "rosaria",
+      "name": "罗莎莉亚",
+      "element": "冰",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风教会",
+      "birthday": "1月24日",
+      "constellation": "荆冠座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/rosaria.json",
+        "sha256": "03de599001fe592f28fea08a87e066621e49a8c7e07988e266b89de49d7ec6b5",
+        "git_blob_sha1": "36ddd710db11d2f2b966d548ab1f04442d72920a",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000046",
+      "slug": "hutao",
+      "name": "胡桃",
+      "element": "火",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "璃月",
+      "affiliation": "往生堂",
+      "birthday": "7月15日",
+      "constellation": "引蝶座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/hutao.json",
+        "sha256": "7e8cc4572dddea6d5ec057823001e5eb4bc555cd08c2e43b2e48327f9bf941ba",
+        "git_blob_sha1": "aaf665bdb40f4dbf701102c80715f561eebb93dd",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000047",
+      "slug": "kaedeharakazuha",
+      "name": "枫原万叶",
+      "element": "风",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "稻妻",
+      "affiliation": "南十字船队",
+      "birthday": "10月29日",
+      "constellation": "枫红座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kaedeharakazuha.json",
+        "sha256": "e4f5586a7ced14ac28ac6d3f45d22cd7791215306ad9bc6f223e0adae535e6ce",
+        "git_blob_sha1": "fb0dfa1cadae147793c7e44d5afb4cf9d019faec",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000048",
+      "slug": "yanfei",
+      "name": "烟绯",
+      "element": "火",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "烟绯律法咨询事务所",
+      "birthday": "7月28日",
+      "constellation": "法兽座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/yanfei.json",
+        "sha256": "ed9bb07885cc66349e4cb4001a988df494966d1991581b4a973ef6a25bf81e90",
+        "git_blob_sha1": "d7fcb5a771d045f4418560ba578ee7d71de0371d",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000049",
+      "slug": "yoimiya",
+      "name": "宵宫",
+      "element": "火",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": "稻妻",
+      "affiliation": "长野原烟花店",
+      "birthday": "6月21日",
+      "constellation": "琉金座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/yoimiya.json",
+        "sha256": "e6f6a4b08ed0b2de6d118d1062255372f2eadee42f37b1e51cdd35a873edf8f2",
+        "git_blob_sha1": "6a958243ae7cdde1f0ee4bd4e4abfec7dd5f25aa",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000050",
+      "slug": "thoma",
+      "name": "托马",
+      "element": "火",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "稻妻",
+      "affiliation": "社奉行",
+      "birthday": "1月9日",
+      "constellation": "赤楯座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/thoma.json",
+        "sha256": "d29d4f1e7cf89269407314c71e62c7e0afd72b30c4370bbeceb7bc0f1c3fe915",
+        "git_blob_sha1": "36b0f679b2735e368621bd80788f1466979d1592",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000051",
+      "slug": "eula",
+      "name": "优菈",
+      "element": "冰",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "10月25日",
+      "constellation": "浪沫座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/eula.json",
+        "sha256": "e32c10455b618a7097c48768d287f8fe128a54d140a1bd83b615bd213889eb78",
+        "git_blob_sha1": "522b2913571c47929ba82520ffcd0886168d241a",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000052",
+      "slug": "raidenshogun",
+      "name": "雷电将军",
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "稻妻",
+      "affiliation": "稻妻城",
+      "birthday": "6月26日",
+      "constellation": "天下人座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/raidenshogun.json",
+        "sha256": "4c0528c8496e76471e4df5bdd0c736038f5b0d0ac1689ef8e4b3ebed21446048",
+        "git_blob_sha1": "7e19766f43792f1803f50a1eb9a4fc8603f8298b",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000053",
+      "slug": "sayu",
+      "name": "早柚",
+      "element": "风",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "稻妻",
+      "affiliation": "终末番",
+      "birthday": "10月19日",
+      "constellation": "小貉座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/sayu.json",
+        "sha256": "3e23809743e22a4900345f8fd411aa5199a78669c1abb53e448bdb593700fe4d",
+        "git_blob_sha1": "c4737cf983a22382c389bc353afc58c449bb432c",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000054",
+      "slug": "sangonomiyakokomi",
+      "name": "珊瑚宫心海",
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "稻妻",
+      "affiliation": "海祇岛",
+      "birthday": "2月22日",
+      "constellation": "眠龙座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/sangonomiyakokomi.json",
+        "sha256": "3be341b732d7131e5b1bb533de1d31f0b599b5ff1f3746002c5d3e3e0a4b5cef",
+        "git_blob_sha1": "b48279cec8fd324dfc22eace9f38f91de1748350",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000055",
+      "slug": "gorou",
+      "name": "五郎",
+      "element": "岩",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "稻妻",
+      "affiliation": "海祇岛",
+      "birthday": "5月18日",
+      "constellation": "柴犬座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/gorou.json",
+        "sha256": "d85bea8d1e0a7c2a6fc2469a1972408c57c02658d4751384d73e65eda8953317",
+        "git_blob_sha1": "ab7d5f825c92c6baba52564ed7b18527ba509d9f",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000056",
+      "slug": "kujousara",
+      "name": "九条裟罗",
+      "element": "雷",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "稻妻",
+      "affiliation": "天领奉行",
+      "birthday": "7月14日",
+      "constellation": "羽团扇座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kujousara.json",
+        "sha256": "8eff59d4e41b1d18988980c2d02314cf46426d85d6b31953f2e7a1b64dacb8ef",
+        "git_blob_sha1": "3d5d6d8fc708e292c72e460f71c26a4bb9beda16",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000057",
+      "slug": "aratakiitto",
+      "name": "荒泷一斗",
+      "element": "岩",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "region": "稻妻",
+      "affiliation": "荒泷派",
+      "birthday": "6月1日",
+      "constellation": "天牛座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/aratakiitto.json",
+        "sha256": "2144a895341467a1c8743fb6459e5dc2c4ff44147ea4e6483b087c3047d855fd",
+        "git_blob_sha1": "71f427500a49061d25a09dc38269f31e4e53bf96",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000058",
+      "slug": "yaemiko",
+      "name": "八重神子",
+      "element": "雷",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "稻妻",
+      "affiliation": "鸣神大社",
+      "birthday": "6月27日",
+      "constellation": "仙狐座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/yaemiko.json",
+        "sha256": "fb3c2026e288fb9264e3d09be0b6b15c6c20b2a829f187c29cd984d821d1784b",
+        "git_blob_sha1": "631e9d69ff0aa9431a66121af0416a97628c6d27",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000059",
+      "slug": "shikanoinheizou",
+      "name": "鹿野院平藏",
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "稻妻",
+      "affiliation": "天领奉行",
+      "birthday": "7月24日",
+      "constellation": "幼鹿座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/shikanoinheizou.json",
+        "sha256": "5630f7c052619359f0c4fe25a25db6bfc966346fb430a55bd04230c9a5bb69cf",
+        "git_blob_sha1": "a36952d60c0c34fc82aa9b20de211bc96e61c60c",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000060",
+      "slug": "yelan",
+      "name": "夜兰",
+      "element": "水",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": "璃月",
+      "affiliation": "岩上茶室",
+      "birthday": "4月20日",
+      "constellation": "幽客座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/yelan.json",
+        "sha256": "550322f0dce2a3dfc2f80e42eeaacce4dd56fc9c03249e96dc7021a2e9f7eb28",
+        "git_blob_sha1": "4259f9b16a79667470692a84904666ac4bbb32b0",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000061",
+      "slug": "kirara",
+      "name": "绮良良",
+      "element": "草",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "region": "稻妻",
+      "affiliation": "狛荷屋",
+      "birthday": "1月22日",
+      "constellation": "箱筥座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kirara.json",
+        "sha256": "7360fb84db9e6949ca0f1b044f7f5a7e7a3bbbaa1001beac7f0acff110b69dd3",
+        "git_blob_sha1": "d8bc20c780b8b62f6b19916a48e62d6cf261f7ad",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000062",
+      "slug": "aloy",
+      "name": "埃洛伊",
+      "element": "冰",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": null,
+      "affiliation": "游侠",
+      "birthday": "4月4日",
+      "constellation": "诺拉勇者座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/aloy.json",
+        "sha256": "316ae74e1a7407399472d1e854fadfd9b8e2dfca5e5cacc13ce180e76978cfb1",
+        "git_blob_sha1": "20b7461a791164d7cc3efe32d329eda4b7fce201",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000063",
+      "slug": "shenhe",
+      "name": "申鹤",
+      "element": "冰",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "璃月",
+      "affiliation": "留云借风真君洞天",
+      "birthday": "3月10日",
+      "constellation": "愁疏座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/shenhe.json",
+        "sha256": "6ac2946e90f9aa87c8cff27c81724c701562e1dd25dafebe2fe4c68352061a39",
+        "git_blob_sha1": "b02273e3e178e08b9eb760885016ac21640417c7",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000064",
+      "slug": "yunjin",
+      "name": "云堇",
+      "element": "岩",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "云翰社",
+      "birthday": "5月21日",
+      "constellation": "虹章座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/yunjin.json",
+        "sha256": "4a0db468e1fbd3f1c004bb31d188b8f4224db6cdd7ff9d6f5e09ac204318eb48",
+        "git_blob_sha1": "8ef1c8bd340e33142ce91a518c7136b76e890b75",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000065",
+      "slug": "kukishinobu",
+      "name": "久岐忍",
+      "element": "雷",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "region": "稻妻",
+      "affiliation": "荒泷派",
+      "birthday": "7月27日",
+      "constellation": "烦恼刈座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kukishinobu.json",
+        "sha256": "2cc03b3e98168002e3b693ef166ff7439afa4fb1bc4a40c1ff1f016cb755cb12",
+        "git_blob_sha1": "3f7032f217b61249c4f5090aa0b58769e420150a",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000066",
+      "slug": "kamisatoayato",
+      "name": "神里绫人",
+      "element": "水",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "稻妻",
+      "affiliation": "社奉行",
+      "birthday": "3月26日",
+      "constellation": "神守柏座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kamisatoayato.json",
+        "sha256": "56f9d7db8a8ba33f8c8c52083e4cf875c979a69a4ec469e5647d98ba4e40c448",
+        "git_blob_sha1": "974ffcf6be133ec8e8db5472cba725f74ea80cc4",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000067",
+      "slug": "collei",
+      "name": "柯莱",
+      "element": "草",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "须弥",
+      "affiliation": "化城郭",
+      "birthday": "5月8日",
+      "constellation": "薮猫座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/collei.json",
+        "sha256": "7730a7a18e1673924788838b13e1bfd08a188238ae94f032820e894d543d08f9",
+        "git_blob_sha1": "2d7ab0c44588a112eb31da10b4b14bf5aa8df38a",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000068",
+      "slug": "dori",
+      "name": "多莉",
+      "element": "雷",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "须弥",
+      "affiliation": "艾尔卡萨扎莱宫",
+      "birthday": "12月21日",
+      "constellation": "神灯座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/dori.json",
+        "sha256": "da78a575befc52ce57779301a1502e232e954a0071245b8fa72208e7b70ba617",
+        "git_blob_sha1": "7328592eef6ad2b333d8f8c14dacc044e4e88c1b",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000069",
+      "slug": "tighnari",
+      "name": "提纳里",
+      "element": "草",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": "须弥",
+      "affiliation": "化城郭",
+      "birthday": "12月29日",
+      "constellation": "郭狐座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/tighnari.json",
+        "sha256": "6d0d935f6e30606cbb0de7df0dedac90e5ede73e4701d4dc3fbf9204bab23b21",
+        "git_blob_sha1": "6958f4241087e0924f3de254db8a004f9ee5a056",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000070",
+      "slug": "nilou",
+      "name": "妮露",
+      "element": "水",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "须弥",
+      "affiliation": "祖拜尔剧场",
+      "birthday": "12月3日",
+      "constellation": "睡莲座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/nilou.json",
+        "sha256": "144017c2fe9142c43cf154222b81910077f015f01ea6cee42e0969cde6af3a3f",
+        "git_blob_sha1": "dc2962076d74037112ba7708da57d46402c0f694",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000071",
+      "slug": "cyno",
+      "name": "赛诺",
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "须弥",
+      "affiliation": "缄默之殿",
+      "birthday": "6月23日",
+      "constellation": "金狼座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/cyno.json",
+        "sha256": "72623ddc5e248d1360d167a088759e8b5d8b6339ea120c0438145af816b1cf6e",
+        "git_blob_sha1": "72f71f9c3ad812211eaad350ea71b518efe2a095",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000072",
+      "slug": "candace",
+      "name": "坎蒂丝",
+      "element": "水",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "须弥",
+      "affiliation": "阿如村",
+      "birthday": "5月3日",
+      "constellation": "箭盾座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/candace.json",
+        "sha256": "a0e6808d3c07c4251c63151accdfd805dba4939bcf7899bdf44cbdb7bc59a9dd",
+        "git_blob_sha1": "b1b620a85fe838bde0a6bfa29b7ef9a3c0b0164d",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000073",
+      "slug": "nahida",
+      "name": "纳西妲",
+      "element": "草",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "须弥",
+      "affiliation": "须弥城",
+      "birthday": "10月27日",
+      "constellation": "智慧主座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/nahida.json",
+        "sha256": "c170ea163df1a946954702939d748d93d3037d8c0d6ca2fa7aaab5c6f9b96d30",
+        "git_blob_sha1": "367a6ee69fd1f801eaf81ab68cd016ad5737a1cb",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000074",
+      "slug": "layla",
+      "name": "莱依拉",
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "region": "须弥",
+      "affiliation": "梨多梵谛学院",
+      "birthday": "12月19日",
+      "constellation": "夜莺座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/layla.json",
+        "sha256": "807342c7cc78a96ddf115a9be99dcad7c4478bf41396743000a5cc68500664de",
+        "git_blob_sha1": "d28f0e97aa5e48ead1e256313a94ae035d3bce1e",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000075",
+      "slug": "wanderer",
+      "name": "流浪者",
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "须弥",
+      "affiliation": "无",
+      "birthday": "1月3日",
+      "constellation": "浪客座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/wanderer.json",
+        "sha256": "95060b9e11fd02258a522aa5e9875f31df1a2f99d10aa22354502fd55f063a6b",
+        "git_blob_sha1": "1ea12871af409d3d51ab9fab3066f2312f1ca1e6",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000076",
+      "slug": "faruzan",
+      "name": "珐露珊",
+      "element": "风",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "须弥",
+      "affiliation": "室罗婆耽学院",
+      "birthday": "8月20日",
+      "constellation": "蔓藤花饰座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/faruzan.json",
+        "sha256": "681e381ab89110c99c43183a8daf38b00d73e64d0f2cb6b6e95a9744e4e31eb3",
+        "git_blob_sha1": "00327f9b04c00ccd1aba50d2fd86a1f58adb0808",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000077",
+      "slug": "yaoyao",
+      "name": "瑶瑶",
+      "element": "草",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "歌尘浪市真君洞天",
+      "birthday": "3月6日",
+      "constellation": "木樨座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/yaoyao.json",
+        "sha256": "1ff45f8b79c59ab3b21ed3894838096f28aff6ab3faa81e5de014a5fb5350db3",
+        "git_blob_sha1": "1db75e8936bfb0873b22659a9bb5ee80966ba83c",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000078",
+      "slug": "alhaitham",
+      "name": "艾尔海森",
+      "element": "草",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "须弥",
+      "affiliation": "须弥教令院",
+      "birthday": "2月11日",
+      "constellation": "天隼座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/alhaitham.json",
+        "sha256": "231b3b016f6a52a0d365b5df34bf321a7e3ab9dfdad2ec49c16e2e578cad54af",
+        "git_blob_sha1": "9f2d71129e1f05a1cf41b16dec2d2c65db86ea39",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000079",
+      "slug": "dehya",
+      "name": "迪希雅",
+      "element": "火",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "region": "须弥",
+      "affiliation": "镀金旅团",
+      "birthday": "4月7日",
+      "constellation": "蝎尾鬃狮座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/dehya.json",
+        "sha256": "76f8e835ac925991805f0eefe3f9b18f71fbbc6f798bb0dca1a9ba9c5d4dae5e",
+        "git_blob_sha1": "4d8d33677fcbed4996ed6bd00b35e96f6aa31220",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000080",
+      "slug": "mika",
+      "name": "米卡",
+      "element": "冰",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "8月11日",
+      "constellation": "林鸽座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/mika.json",
+        "sha256": "9473929ccff0f4163125c57b18a9d7260db5b49935098475d4d18757e3e81ed2",
+        "git_blob_sha1": "893a9bd036a2045d82cdcfbdffc3ffbea7f6e09e",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000081",
+      "slug": "kaveh",
+      "name": "卡维",
+      "element": "草",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "须弥",
+      "affiliation": "独立设计工作室",
+      "birthday": "7月9日",
+      "constellation": "天堂鸟座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kaveh.json",
+        "sha256": "bb177ccc7f61765fb466c87d273ce2f66c2b3411f765dee0431d594940f812ef",
+        "git_blob_sha1": "3b7698eae1ee8f79ab68269b09493f58d1bdd7e1",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000082",
+      "slug": "baizhu",
+      "name": "白术",
+      "element": "草",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "璃月",
+      "affiliation": "不卜庐",
+      "birthday": "4月25日",
+      "constellation": "悬壶座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/baizhu.json",
+        "sha256": "f7128a31af21acc4f80f96ea50561401cdc736431056c72f16585aaf8e8e8c4b",
+        "git_blob_sha1": "5a872b71d640d12a758bd0347ec23d17a01ec63e",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000083",
+      "slug": "lynette",
+      "name": "琳妮特",
+      "element": "风",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "region": "枫丹",
+      "affiliation": "布法蒂公馆",
+      "birthday": "2月2日",
+      "constellation": "白尾猫座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/lynette.json",
+        "sha256": "f44eb3f63d2e95b330ae0e88ee597c56903b86e2db3d77af6c09abd69458b1c2",
+        "git_blob_sha1": "e9cf3e6ee8c61ac1c61b8bf8a6541847f7f29fbd",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000084",
+      "slug": "lyney",
+      "name": "林尼",
+      "element": "火",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": "枫丹",
+      "affiliation": "布法蒂公馆",
+      "birthday": "2月2日",
+      "constellation": "黑斑猫座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/lyney.json",
+        "sha256": "0bed745b945de35d4c5139c91115925c4bf5554fd7a400804d7f2d3ed5145c3a",
+        "git_blob_sha1": "389e8d43d65b78103a3c5baba8cbc3aeb62e03ce",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000085",
+      "slug": "freminet",
+      "name": "菲米尼",
+      "element": "冰",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "枫丹",
+      "affiliation": "布法蒂公馆",
+      "birthday": "9月24日",
+      "constellation": "机巧座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/freminet.json",
+        "sha256": "bf17d81e6a7fd0ebd25c00912cf87a847065ab54fe905d26d318018fba7c0fec",
+        "git_blob_sha1": "071747659165e6306971158e04b223ae1351f992",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000086",
+      "slug": "wriothesley",
+      "name": "莱欧斯利",
+      "element": "冰",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "枫丹",
+      "affiliation": "梅洛彼得堡",
+      "birthday": "11月23日",
+      "constellation": "守狱犬座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/wriothesley.json",
+        "sha256": "936bb3f081f965e346ed716e6be5422f48594d825665bedd30047058b86a506b",
+        "git_blob_sha1": "2b3daef634a457df65f37b5e642317cd7f2c8229",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000087",
+      "slug": "neuvillette",
+      "name": "那维莱特",
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "枫丹",
+      "affiliation": "枫丹廷",
+      "birthday": "12月18日",
+      "constellation": "？？？",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/neuvillette.json",
+        "sha256": "39d531f0461ecc6d53ab6c723834caa68e24eeadfc2fb9166839b732aaf39036",
+        "git_blob_sha1": "79c091a13e828e0c974d057efa92f978fedcb5a3",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000088",
+      "slug": "charlotte",
+      "name": "夏洛蒂",
+      "element": "冰",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "枫丹",
+      "affiliation": "蒸汽鸟报社",
+      "birthday": "4月10日",
+      "constellation": "真视镜座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/charlotte.json",
+        "sha256": "5de381cc5cfdf92e9cf9b18c14759dd065b2935a1baefcdfeb1d28a0fd7e5be8",
+        "git_blob_sha1": "1570558f36bcb9665379d893242957d0f88dd9d4",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000089",
+      "slug": "furina",
+      "name": "芙宁娜",
+      "element": "水",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "枫丹",
+      "affiliation": "枫丹廷",
+      "birthday": "10月13日",
+      "constellation": "司颂座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/furina.json",
+        "sha256": "da68f2b4a4239da9aaa0b6908604daaa6007c76c8a5336e72fe3bab1073e46be",
+        "git_blob_sha1": "d32f498d8fe93c7612f8bdf466800edf1bb87b7c",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000090",
+      "slug": "chevreuse",
+      "name": "夏沃蕾",
+      "element": "火",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "枫丹",
+      "affiliation": "特巡队",
+      "birthday": "1月10日",
+      "constellation": "剑铳座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/chevreuse.json",
+        "sha256": "33ac70ddf9181185e696304b6b2b139e7b5c653872eb176d0c94a6a3ef24a4e9",
+        "git_blob_sha1": "97a70f9b5deb0866f82200af20c53f33944f062f",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000091",
+      "slug": "navia",
+      "name": "娜维娅",
+      "element": "岩",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "region": "枫丹",
+      "affiliation": "刺玫会",
+      "birthday": "8月16日",
+      "constellation": "野蔷薇座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/navia.json",
+        "sha256": "7fde364ba556f502fbef605fa5dc415a80db55443caa658fe3c0e32ec310534f",
+        "git_blob_sha1": "564b1630811b56fade6685d78029b2fcb252c173",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000092",
+      "slug": "gaming",
+      "name": "嘉明",
+      "element": "火",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "剑匣镖局",
+      "birthday": "12月22日",
+      "constellation": "醒狮座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/gaming.json",
+        "sha256": "b2560d49d750b2e8efc4e8a22a296bd2f841b5a1990a24290a0c10bd61d0d8ce",
+        "git_blob_sha1": "7047c6a6dfe3394c7fc7899a6de21f3ef20c67da",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000093",
+      "slug": "xianyun",
+      "name": "闲云",
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "璃月",
+      "affiliation": "奥藏山",
+      "birthday": "4月11日",
+      "constellation": "闲鹤座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/xianyun.json",
+        "sha256": "6ac61af40bc7c8f6f1d4c2539344c548d12b8b3f788a8a12ba99a635b8da85d6",
+        "git_blob_sha1": "d7515bdd7b816d2e0bf7776fed55f956ee93fabc",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000094",
+      "slug": "chiori",
+      "name": "千织",
+      "element": "岩",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "稻妻",
+      "affiliation": "枫丹廷",
+      "birthday": "8月17日",
+      "constellation": "丝切铗座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/chiori.json",
+        "sha256": "ac7ebf7599bcd285536b4d7bb559ac7cc75e8da3e03d07bb6e8e56ec12a087b0",
+        "git_blob_sha1": "3f7808b56aa722cafdd895be5537796df72911db",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000095",
+      "slug": "sigewinne",
+      "name": "希格雯",
+      "element": "水",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": "枫丹",
+      "affiliation": "梅洛彼得堡",
+      "birthday": "3月30日",
+      "constellation": "海精座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/sigewinne.json",
+        "sha256": "109da72fd10551f3ef78d86e5255aaf907fce5bb3b278fc017b323be72d5813f",
+        "git_blob_sha1": "cf40c94c5a7d5caca1ea27a8205a1f30f6817490",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000096",
+      "slug": "arlecchino",
+      "name": "阿蕾奇诺",
+      "element": "火",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "至冬",
+      "affiliation": "愚人众",
+      "birthday": "8月22日",
+      "constellation": "净炼火座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/arlecchino.json",
+        "sha256": "cf329193212b2761b0240586cd7dabc61b65cfb12789bb1b6f0b34b3380b6b2b",
+        "git_blob_sha1": "b7cfd235caa034d6317822cbe87add707f6393a5",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000097",
+      "slug": "sethos",
+      "name": "赛索斯",
+      "element": "雷",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "须弥",
+      "affiliation": "缄默之殿",
+      "birthday": "5月31日",
+      "constellation": "圣名环座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/sethos.json",
+        "sha256": "278a612426440dc98c6cbeddcdb0cd67ed73492ec463b72016215687f2b90279",
+        "git_blob_sha1": "19c2843d309ed9a335c160e96e2d69b3238ee455",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000098",
+      "slug": "clorinde",
+      "name": "克洛琳德",
+      "element": "雷",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "枫丹",
+      "affiliation": "审判庭",
+      "birthday": "9月20日",
+      "constellation": "迅捷剑座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/clorinde.json",
+        "sha256": "dbcea89d80baf2b0b466bff3365658ffc5ad75875113bea21583054ea1bbd1a3",
+        "git_blob_sha1": "f796813d19cdf66f0afd745427c0c183f635db2f",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000099",
+      "slug": "emilie",
+      "name": "艾梅莉埃",
+      "element": "草",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "枫丹",
+      "affiliation": "枫丹廷",
+      "birthday": "9月22日",
+      "constellation": "香氛瓶座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/emilie.json",
+        "sha256": "086e8fa0f4771516218db3b56c4bfb34ea57d7cb5094dce537171f80eb4a6eb3",
+        "git_blob_sha1": "c35024d8928fa5227b5a83f7d59b0f70b07f6d13",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000100",
+      "slug": "kachina",
+      "name": "卡齐娜",
+      "element": "岩",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "纳塔",
+      "affiliation": "纳茨卡延",
+      "birthday": "4月22日",
+      "constellation": "鼠兔座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kachina.json",
+        "sha256": "f3da247a07352ae3d9963c19e3de6f65f0c2abbd9af84be4604be290aa79f6ed",
+        "git_blob_sha1": "4e0ccc9885aff6f671ad9367ea9c9af4ba0b0447",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000101",
+      "slug": "kinich",
+      "name": "基尼奇",
+      "element": "草",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "region": "纳塔",
+      "affiliation": "维茨特兰",
+      "birthday": "11月11日",
+      "constellation": "幻瑞兽座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/kinich.json",
+        "sha256": "6f9d22db0666af07865261cb6cae5b83deabc65f8450212b486ac50d7ecb3017",
+        "git_blob_sha1": "00bde1cc50e75ae1b2df30a5b63923a428423b97",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000102",
+      "slug": "mualani",
+      "name": "玛拉妮",
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "纳塔",
+      "affiliation": "梅兹特利",
+      "birthday": "8月3日",
+      "constellation": "浪海豹座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/mualani.json",
+        "sha256": "722d995174fb69fba73de4ae9cbd06e4a773d393448c979fcba6ce543f843b83",
+        "git_blob_sha1": "212f1a52ccac438a01756f7eac9cfdbc2b97b942",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000103",
+      "slug": "xilonen",
+      "name": "希诺宁",
+      "element": "岩",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "纳塔",
+      "affiliation": "纳茨卡延",
+      "birthday": "3月13日",
+      "constellation": "豹猫座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/xilonen.json",
+        "sha256": "b938e0d40668fff7e9432c84c6f6e03831f232ad3985585d50e51c5b72adb594",
+        "git_blob_sha1": "713f2b276147d2b219d005c04a12ea372cd9940e",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000104",
+      "slug": "chasca",
+      "name": "恰斯卡",
+      "element": "风",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": "纳塔",
+      "affiliation": "特拉洛坎",
+      "birthday": "12月10日",
+      "constellation": "神鹫座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/chasca.json",
+        "sha256": "d4a4d07849ea871b7eeb7954eaf1dd0ec12abc647522fb9c5b8a412a40dc265b",
+        "git_blob_sha1": "673f0b74d7f1789b1d3b845edafebdd5fe3f6df1",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000105",
+      "slug": "ororon",
+      "name": "欧洛伦",
+      "element": "雷",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "纳塔",
+      "affiliation": "米克特兰",
+      "birthday": "10月14日",
+      "constellation": "夜蝠座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/ororon.json",
+        "sha256": "1ecc08816bbfb9276dae60decfe88f690611dd3418e59c80eced2077ecb4ead7",
+        "git_blob_sha1": "46694c36d2bd6c25e450c81b934801a87e82f8a8",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000106",
+      "slug": "mavuika",
+      "name": "玛薇卡",
+      "element": "火",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "region": "纳塔",
+      "affiliation": "维茨特兰",
+      "birthday": "8月28日",
+      "constellation": "不败阳焰座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/mavuika.json",
+        "sha256": "a3b81f5ebcc6f104a485551eafde8c16a8d2bd1005ffdb2a756d8841771780e6",
+        "git_blob_sha1": "de18e19a38dc85cec2ff222c178592097d42dad7",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000107",
+      "slug": "citlali",
+      "name": "茜特菈莉",
+      "element": "冰",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "纳塔",
+      "affiliation": "米克特兰",
+      "birthday": "1月20日",
+      "constellation": "石心镜座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/citlali.json",
+        "sha256": "ee69df91d63289d060d659c75ba4c5b6288a29cbf998eacf3284c12624d15d5e",
+        "git_blob_sha1": "105777eef6f3b2c58b62a6bace22fc06c4e27fd7",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000108",
+      "slug": "lanyan",
+      "name": "蓝砚",
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "璃月",
+      "affiliation": "沉玉谷",
+      "birthday": "1月6日",
+      "constellation": "玄燕座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/lanyan.json",
+        "sha256": "e17ac7102e737ff179cb3d0b0f5153d04dffd13abe184fc3bd9aaddaf8f57ead",
+        "git_blob_sha1": "94d422626ecdaaf1bbad2e50f0acf56e264c9ba3",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000109",
+      "slug": "yumemizukimizuki",
+      "name": "梦见月瑞希",
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "稻妻",
+      "affiliation": "稻妻",
+      "birthday": "3月16日",
+      "constellation": "貘枕座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/yumemizukimizuki.json",
+        "sha256": "206827256960d8b016f02684e42844c1a1c7c999b63a3e9995703cffa266e59a",
+        "git_blob_sha1": "d3aaf2644cc5ff44aba49ee4bb30182a729ac793",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000110",
+      "slug": "iansan",
+      "name": "伊安珊",
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "纳塔",
+      "affiliation": "特特奥坎",
+      "birthday": "8月8日",
+      "constellation": "牨龙座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/iansan.json",
+        "sha256": "da0cd1a68d75fc9af568763be7570b3228fd1673923c2d70f15b99b473950302",
+        "git_blob_sha1": "1f935e777111a6a6a1bd5fc7809994b59ff185d2",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000111",
+      "slug": "varesa",
+      "name": "瓦雷莎",
+      "element": "雷",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "纳塔",
+      "affiliation": "特特奥坎",
+      "birthday": "11月15日",
+      "constellation": "斗士假面座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/varesa.json",
+        "sha256": "0a3c0563a33cd51e6e5657cf16498605ed194d751ba6f9458bd01d979c943240",
+        "git_blob_sha1": "2967952e931c89a6f7fcc9c49807b80d8f9ec393",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000112",
+      "slug": "escoffier",
+      "name": "爱可菲",
+      "element": "冰",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "枫丹",
+      "affiliation": "枫丹",
+      "birthday": "6月8日",
+      "constellation": "香糕塔座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/escoffier.json",
+        "sha256": "e986d6faf2a5a4cb5091e3c269c4868e81db6403dde07f2a1671cbccdc17340c",
+        "git_blob_sha1": "af7179a4a15dde927b65ea5f80a612fbce5925d8",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000113",
+      "slug": "ifa",
+      "name": "伊法",
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "纳塔",
+      "affiliation": "特拉洛坎",
+      "birthday": "3月23日",
+      "constellation": "佩链座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/ifa.json",
+        "sha256": "77f2fcdfe6322207bbcce47b5613fbbf5057780cdee7e5ca13ea0ca861176212",
+        "git_blob_sha1": "003bfb3de409d819ba746613d51ca3c991fc5b0c",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000114",
+      "slug": "skirk",
+      "name": "丝柯克",
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": null,
+      "affiliation": "寰宇劫灭",
+      "birthday": "11月5日",
+      "constellation": "磷星座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/skirk.json",
+        "sha256": "12cf63c63d4153f27f342d6fbf68f877c3f0b024b81592906d88a01f6ee59e47",
+        "git_blob_sha1": "714b5351c6cf0763d5eddfb2f98c722c77696793",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000115",
+      "slug": "dahlia",
+      "name": "塔利雅",
+      "element": "水",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "西风教会",
+      "birthday": "5月25日",
+      "constellation": "礼赞歌座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/dahlia.json",
+        "sha256": "d202dc50d954df7b1d81a293aa1a28ba6bd1d8b738018e8e3e1babfca0b8a2a5",
+        "git_blob_sha1": "ed084b17dd7782b0fe0ab92c7b353891ee14a261",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000116",
+      "slug": "ineffa",
+      "name": "伊涅芙",
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "挪德卡莱",
+      "affiliation": "叮铃哐啷蛋卷工坊",
+      "birthday": "4月2日",
+      "constellation": "香荚兰座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/ineffa.json",
+        "sha256": "5a425413bfd887ba8956d1257428e073d561321f0bea0df46de310b6d261063d",
+        "git_blob_sha1": "600a604022b9c7b435c6c2a0ff95b16631922a4a",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000117",
+      "slug": "manekin",
+      "name": "奇偶·男性",
+      "element": "无",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": null,
+      "affiliation": "——",
+      "birthday": null,
+      "constellation": "——",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/manekin.json",
+        "sha256": "c0580ea691561b6a599c8b96c66dd66289c17aa4343221beebbf97161161a1a7",
+        "git_blob_sha1": "bfbe2fcf39b73a41f6eb74d508d32ecdeba0eb33",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000118",
+      "slug": "manekina",
+      "name": "奇偶·女性",
+      "element": "无",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": null,
+      "affiliation": "——",
+      "birthday": null,
+      "constellation": "——",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/manekina.json",
+        "sha256": "9f9d152079e38c9863b5374f7f0e35a7f84d14f745d790b81c349650eef8acd9",
+        "git_blob_sha1": "e1f8f56bab7f820a7b6ecb6d788ce2c764e94ea6",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000119",
+      "slug": "lauma",
+      "name": "菈乌玛",
+      "element": "草",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "挪德卡莱",
+      "affiliation": "霜月之子",
+      "birthday": "3月1日",
+      "constellation": "银鹿座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/lauma.json",
+        "sha256": "0da0cfc340e03220151df14e7ed8d70eb7e2232c4b9fe721655757b6affc8290",
+        "git_blob_sha1": "4436ddd7d653991999bb87d9b3fdf29efaf1b85c",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000120",
+      "slug": "flins",
+      "name": "菲林斯",
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "挪德卡莱",
+      "affiliation": "执灯人",
+      "birthday": "10月31日",
+      "constellation": "夜行灯座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/flins.json",
+        "sha256": "2db0e6774f5302449c1a08aa9347923657a43e335161dc6b2d766d2ffdbc7f31",
+        "git_blob_sha1": "a9ccafc47bce24e228f6389651abb3e6ce8d5356",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000121",
+      "slug": "aino",
+      "name": "爱诺",
+      "element": "水",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "region": "挪德卡莱",
+      "affiliation": "叮铃哐啷蛋卷工坊",
+      "birthday": "9月21日",
+      "constellation": "砰砰盒座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/aino.json",
+        "sha256": "d130ec367f4845e196b8c275bc34f02ed7dbf38278add17344b62c46fca9040d",
+        "git_blob_sha1": "045a764c9cdfbec505f67ff85a7e59f6a6f79a92",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000122",
+      "slug": "nefer",
+      "name": "奈芙尔",
+      "element": "草",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "挪德卡莱",
+      "affiliation": "秘闻馆",
+      "birthday": "5月9日",
+      "constellation": "游棋座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/nefer.json",
+        "sha256": "b9c2d55fe27d46baff6433ce38651548610da362c286d7fc25743335190f619c",
+        "git_blob_sha1": "0f8a5c764632383d0fce396f3f765390e77eaaa4",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000123",
+      "slug": "durin",
+      "name": "杜林",
+      "element": "火",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "魔女会",
+      "birthday": "3月14日",
+      "constellation": "赤龙座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/durin.json",
+        "sha256": "e7ea08bdaa744769490d8956d98df2f93af0f6f0250ae0c3ac76ec9cbb103bbb",
+        "git_blob_sha1": "2d84e567923f387afad0e5381ee8da66d17d3c47",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000124",
+      "slug": "jahoda",
+      "name": "雅珂达",
+      "element": "风",
+      "weapon": "弓",
+      "rarity": 4,
+      "region": "挪德卡莱",
+      "affiliation": "秘闻馆",
+      "birthday": "1月5日",
+      "constellation": "莓果座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/jahoda.json",
+        "sha256": "cb2eed74308c2853d87528d254edf18741f8c0bdd33f952b6035c872891641e6",
+        "git_blob_sha1": "ca95b737b40850b2d4cf46bd348d70195fe0ce5b",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000125",
+      "slug": "columbina",
+      "name": "哥伦比娅",
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": "挪德卡莱",
+      "affiliation": "银月之庭",
+      "birthday": "1月14日",
+      "constellation": "？？？",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/columbina.json",
+        "sha256": "c81d35dcb01d7f01ad5d100965abf01b0865633cba7abd908a93fd49869c3a3c",
+        "git_blob_sha1": "9400307615e07137e6ccdd2dd3669aa896a2ba9c",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000126",
+      "slug": "zibai",
+      "name": "兹白",
+      "element": "岩",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": null,
+      "affiliation": "璃月港",
+      "birthday": "5月15日",
+      "constellation": "白驹座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/zibai.json",
+        "sha256": "bd8b1658b47b7efe992302942ed088bf61068b917af609bd345ad7e341d6ac0f",
+        "git_blob_sha1": "9904181096e229e3009617a2e8dc060f2a84431e",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000127",
+      "slug": "illuga",
+      "name": "叶洛亚",
+      "element": "岩",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": "挪德卡莱",
+      "affiliation": "执灯人",
+      "birthday": "12月23日",
+      "constellation": "金莺座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/illuga.json",
+        "sha256": "e9e13b661f04e029f8e7628627275dbfba9110e156da1c42483b96e85fb70d95",
+        "git_blob_sha1": "2de5daf9054d72224f06665f3fdc753b607a5649",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000128",
+      "slug": "varka",
+      "name": "法尔伽",
+      "element": "风",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "2月17日",
+      "constellation": "天狼座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/varka.json",
+        "sha256": "27de4360954ec82783826f622caaac77d8f30fe45dcb324c8874e9adcc617a7a",
+        "git_blob_sha1": "8f20e9791eabd4f152497fb664979c2b074e3c15",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000129",
+      "slug": "lohen",
+      "name": "洛恩",
+      "element": "冰",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "region": "蒙德",
+      "affiliation": "西风骑士团",
+      "birthday": "4月3日",
+      "constellation": "狡兔座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/lohen.json",
+        "sha256": "e193bc5a7e7f4f3de008e042bf3fff20b4fe4684bc984e5189f18a5e85c4f98a",
+        "git_blob_sha1": "42a569e5b4c1f10e47a046906bc71254f35d91b7",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000130",
+      "slug": "linnea",
+      "name": "莉奈娅",
+      "element": "岩",
+      "weapon": "弓",
+      "rarity": 5,
+      "region": "挪德卡莱",
+      "affiliation": "冒险家协会",
+      "birthday": "5月23日",
+      "constellation": "启喻鸟座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/linnea.json",
+        "sha256": "9ab79a58fa8b7a1c4839c0cd749d3907043a85784336a93e47a46881cb573248",
+        "git_blob_sha1": "e95f31c093e160718b9fc4677b1c3bcf7975d893",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000131",
+      "slug": "nicole",
+      "name": "尼可",
+      "element": "火",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": null,
+      "affiliation": "魔女会",
+      "birthday": "9月29日",
+      "constellation": "金匣座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/nicole.json",
+        "sha256": "1e9e22c78814e825ba3b092ff05c2927688a0f731e3f1525493f6e808999c608",
+        "git_blob_sha1": "8b335ff25c04d47485bfaddf18fe4bc7db17269c",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000132",
+      "slug": "prune",
+      "name": "布伦妮",
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 4,
+      "region": "蒙德",
+      "affiliation": "蒙德城",
+      "birthday": "11月20日",
+      "constellation": "魔塔座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/prune.json",
+        "sha256": "b957f0cb9eee04a079fd32da30cc757991165896f8fd983e3f9889cdeac7daaf",
+        "git_blob_sha1": "ca4634a9af2b826fdbedc4da45ad8bf1c8f6404e",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000133",
+      "slug": "sandrone",
+      "name": "桑多涅",
+      "element": "冰",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "region": null,
+      "affiliation": "愚人众",
+      "birthday": "1月13日",
+      "constellation": "镜中奇械座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/sandrone.json",
+        "sha256": "399709341c83705958e1e21a0d392c592432e73783db177a3e5a4ff5d8bf8c0c",
+        "git_blob_sha1": "1a9c81b2fae1a21b26f01a47d4b91a41ba33a061",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000140",
+      "slug": "vodyanitsa",
+      "name": "沃雅妮莎",
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "region": null,
+      "affiliation": "科洛列夫茨基剧团",
+      "birthday": "3月29日",
+      "constellation": "金鳍座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/vodyanitsa.json",
+        "sha256": "343a7cb8b62a5e3a3700f2cddde405475facaa84a54eae44735ea644b274c2e8",
+        "git_blob_sha1": "c54d219d71e136dd5cc6345766670d0cd086261f",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000143",
+      "slug": "vesna",
+      "name": "薇斯纳",
+      "element": "风",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": null,
+      "affiliation": "冬契军",
+      "birthday": "2月4日",
+      "constellation": "花序座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/vesna.json",
+        "sha256": "dc54badc20793ba7eb271e3fb818b15010e90df51b7afb404278ad7ad7669418",
+        "git_blob_sha1": "e25f5bee820037986d2068731ba6322488955c6d",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000148",
+      "slug": "alyosha",
+      "name": "阿罗夏",
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "region": null,
+      "affiliation": "至冬",
+      "birthday": "2月9日",
+      "constellation": "迅捷犬座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/alyosha.json",
+        "sha256": "cdb0147dbee0866a909c918bd20df3f11dd1b0f1987b64e34b776676fef3a7f9",
+        "git_blob_sha1": "3bc6d49c728cb096184adac65263e9291901217a",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    },
+    {
+      "id": "genshin:10000150",
+      "slug": "odette",
+      "name": "奥黛塔",
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "region": null,
+      "affiliation": "科洛列夫茨基剧团",
+      "birthday": "2月20日",
+      "constellation": "雪鹄座",
+      "provenance": {
+        "url": "https://github.com/theBowja/genshin-db/blob/49a6544a6c6ae36089cb42fa591fc46f01de8bcf/src/data/ChineseSimplified/characters/odette.json",
+        "sha256": "91763f931a30d2caabfb6f7d57c51875eba5c913df152d7c3598fcf364dcd500",
+        "git_blob_sha1": "e7f976ac74a1316fe8f88888ae9d2c1230d582bf",
+        "fields": {
+          "name": "name",
+          "element": "elementText",
+          "weapon": "weaponText",
+          "rarity": "rarity",
+          "region": "region",
+          "affiliation": "affiliation",
+          "birthday": "birthday",
+          "constellation": "constellation"
+        }
+      }
+    }
+  ],
+  "coverage": {
+    "directory": "src/data/ChineseSimplified/characters",
+    "record_count": 124,
+    "inventory_sha256": "4ee272c5d07eda8f9e24e268573f6e73c8292cbfb5ca6c8f52cc7f02fa07e389"
+  }
+}

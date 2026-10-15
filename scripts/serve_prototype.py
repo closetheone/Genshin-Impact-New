@@ -19,7 +19,7 @@ from search_archive import StaleCursor, search_options
 from validate_sample import SampleError, project
 from check_source_admission import load_audit
 from report_source_admission import build_report
-from character_catalog import BATCH as CHARACTER_BATCH, DEFAULT_CATALOG, CatalogUnavailable, import_catalog, read_catalog
+from character_catalog import BATCHES as CHARACTER_BATCHES, DEFAULT_CATALOG, CatalogUnavailable, import_catalog, read_catalog
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -256,7 +256,8 @@ def main():
             import_snapshot(read_synthetic_sample(SAMPLE_PATH), database)
         prepare_indexes(database)
         load_snapshot(database)
-        import_catalog(json.loads(CHARACTER_BATCH.read_text()), database.parent / 'character-catalog.sqlite3')
+        for batch in CHARACTER_BATCHES:
+            import_catalog(json.loads(batch.read_text()), database.parent / 'character-catalog.sqlite3')
         server = ThreadingHTTPServer(("127.0.0.1", args.port), PrototypeHandler)
         server.database = database
         server.cursor_secret = secrets.token_bytes(32)

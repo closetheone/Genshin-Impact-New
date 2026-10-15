@@ -11,9 +11,11 @@ import sqlite3
 from validate_sample import require
 
 ROOT = Path(__file__).resolve().parents[1]
-BATCH = ROOT / 'data/characters/genshin-basics-v1.json'
+LEGACY_BATCH = ROOT / 'data/characters/genshin-basics-v1.json'
+BATCH = ROOT / 'data/characters/genshin-basics-v2.json'
+BATCHES = (LEGACY_BATCH, BATCH)
 DATABASE = ROOT / 'data/local/character-catalog.sqlite3'
-DEFAULT_CATALOG = 'genshin-basics-2026-10-15-v1'
+DEFAULT_CATALOG = 'genshin-basics-2026-10-15-v2'
 REPOSITORY = 'https://github.com/theBowja/genshin-db'
 FIELDS = {'name': 'name', 'element': 'elementText', 'weapon': 'weaponText', 'rarity': 'rarity',
           'region': 'region', 'affiliation': 'affiliation', 'birthday': 'birthday', 'constellation': 'constellation'}
@@ -24,8 +26,10 @@ class CatalogUnavailable(Exception):
 
 
 def validate_catalog(data):
-    require(isinstance(data, dict) and set(data) == {'schema_version', 'dataset_kind', 'catalog_id', 'checked_on', 'source', 'characters'}, 'unexpected catalog fields')
-    require(data['schema_version'] == 'character-catalog-1' and data['dataset_kind'] == 'real_character_facts', 'unsupported character catalog')
+    require(isinstance(data, dict), 'expected catalog object')
+    expanded = data.get('schema_version') == 'character-catalog-2'
+    require(set(data) == {'schema_version', 'dataset_kind', 'catalog_id', 'checked_on', 'source', 'characters'} | ({'coverage'} if expanded else set()), 'unexpected catalog fields')
+    require(data['schema_version'] in ('character-catalog-1', 'character-catalog-2') and data['dataset_kind'] == 'real_character_facts', 'unsupported character catalog')
     require(isinstance(data['catalog_id'], str) and re.fullmatch(r'[a-z0-9-]{1,100}', data['catalog_id']), 'invalid catalog id')
     date.fromisoformat(data['checked_on'])
     source = data['source']
@@ -47,14 +51,24 @@ def validate_catalog(data):
         ids.add(record['id']); slugs.add(record['slug'])
         require(type(record['rarity']) is int and record['rarity'] in (4, 5), 'invalid rarity')
         for field in FIELDS.keys() - {'rarity'}:
+            if expanded and field in ('region', 'affiliation', 'birthday', 'constellation') and record[field] is None:
+                continue
             require(isinstance(record[field], str) and 0 < len(record[field]) <= 80, f'invalid {field}')
-        require(record['element'] in ('风', '岩', '雷', '草', '水', '火', '冰'), 'invalid element')
+        require(record['element'] in ('风', '岩', '雷', '草', '水', '火', '冰') or (expanded and record['element'] == '无'), 'invalid element')
         require(record['weapon'] in ('单手剑', '双手剑', '长柄武器', '法器', '弓'), 'invalid weapon')
         provenance = record['provenance']
-        require(isinstance(provenance, dict) and set(provenance) == {'url', 'sha256', 'fields'}, 'missing field provenance')
+        require(isinstance(provenance, dict) and set(provenance) == {'url', 'sha256', 'fields'} | ({'git_blob_sha1'} if expanded else set()), 'missing field provenance')
         require(provenance['url'] == prefix + f"src/data/ChineseSimplified/characters/{record['slug']}.json", 'source must use the pinned revision')
         require(isinstance(provenance['sha256'], str) and re.fullmatch(r'[0-9a-f]{64}', provenance['sha256']), 'missing source hash')
         require(provenance['fields'] == FIELDS, 'unexpected field mapping')
+        if expanded:
+            require(isinstance(provenance['git_blob_sha1'], str) and re.fullmatch(r'[0-9a-f]{40}', provenance['git_blob_sha1']), 'missing git blob identity')
+    if expanded:
+        coverage = data['coverage']
+        require(isinstance(coverage, dict) and set(coverage) == {'directory', 'record_count', 'inventory_sha256'}, 'missing source coverage')
+        require(coverage['directory'] == 'src/data/ChineseSimplified/characters' and type(coverage['record_count']) is int and coverage['record_count'] == len(records), 'source count mismatch')
+        inventory = ''.join(f"{r['slug']}.json\t{r['provenance']['git_blob_sha1']}\n" for r in sorted(records, key=lambda item: item['slug']))
+        require(coverage['inventory_sha256'] == hashlib.sha256(inventory.encode()).hexdigest(), 'source inventory mismatch')
     return data
 
 
