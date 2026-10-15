@@ -305,6 +305,7 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .character-detail-hero { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: center; margin: 24px 0; }
 .character-portrait.large { height: 250px; border-radius: 6px; }
 .character-detail-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+.character-detail-graph-link { display: inline-block; margin-top: 16px; }
 .character-passages blockquote { margin: 12px 0; padding: 14px 18px; border-left: 3px solid var(--accent); background: var(--panel); }
 .character-passages blockquote p { margin: 0 0 8px; }
 .character-passages footer { color: var(--muted); font-size: 11px; }
