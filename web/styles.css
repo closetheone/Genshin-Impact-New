@@ -215,6 +215,13 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .evidence-quote a:hover { color: var(--green); }
 .evidence-footer { margin-top: 21px; padding-top: 16px; border-top: 1px solid var(--line); }
 .evidence-footer code { overflow-wrap: anywhere; }
+.evidence-source { margin-top: 8px; color: var(--muted); font-size: 11px; }
+.evidence-source summary { cursor: pointer; color: var(--green); }
+.evidence-source summary:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+.evidence-source dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 7px 9px; margin: 12px 0; }
+.evidence-source dt, .evidence-source dd { margin: 0; }
+.evidence-source code { overflow-wrap: anywhere; }
+.evidence-source p { font: 11px/1.7 var(--sans); margin: 8px 0; }
 .evidence-footer .button { width: 100%; }
 .evidence-note { font-size: 9px; color: #9ba38f; line-height: 1.8; margin: 15px 0 0; }
 .graph-footnote { font-size: 10px; color: #929d84; margin: 12px 0 0; }

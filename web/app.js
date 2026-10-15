@@ -479,6 +479,15 @@ async function selectRelation(identifier) {
   }
 }
 
+function sourceDetails(sourceId, view, label) {
+  const source = (view.sources || []).find((candidate) => candidate.id === sourceId);
+  const rightsLabels = { allowed: "允许", denied: "不允许", unknown: "待确认" };
+  const purposes = { display: "网站阅读", export: "素材导出", external_ai: "AI 取材" };
+  return `<details class="evidence-source"><summary>${escapeHtml(label)}</summary>${source
+    ? `<dl><dt>来源 ID</dt><dd><code>${escapeHtml(source.id)}</code></dd><dt>来源定位</dt><dd><code>${escapeHtml(source.locator || "未标注")}</code></dd><dt>资料类型</dt><dd>${source.content_type === "synthetic" ? "原创合成样本" : "未标注"}</dd>${Object.entries(purposes).map(([purpose, name]) => `<dt>${name}</dt><dd>${tag(rightsLabels[source.rights?.[purpose]] || "待确认", source.rights?.[purpose] === "allowed" ? "tag-blue" : "tag-warm")}</dd>`).join("")}</dl><p>以上为来源的用途状态；具体内容还需通过当前范围与完整证据核验，导出或加入素材时会重新检查。</p>`
+    : '<p>当前响应未提供此来源详情，无法确认用途。请重新读取后查看。</p>'}</details>`;
+}
+
 function renderEvidence(relation, view = state.view) {
   const panel = document.querySelector("#evidence-panel");
   if (!relation) {
@@ -496,10 +505,10 @@ function renderEvidence(relation, view = state.view) {
     ${tag(PREDICATES[relation.predicate].label)} ${tag(reviewLabel, reviewStyle)} ${tag(claimLabel)}<p class="relation-description">${escapeHtml(relation.description)}</p><p class="small muted">${escapeHtml(relationScope(relation, view.passages))}</p>
     ${relation.evidence_groups.map((group, index) => `<div class="evidence-group-label">证据组 ${index + 1} · ${group.length > 1 ? `${group.length} 段须联合阅读` : "单段支持"}</div>${group.map((identifier) => {
       const passage = view.passages.find((candidate) => candidate.id === identifier);
-      return `<blockquote class="evidence-quote"><p>${escapeHtml(passage.text)}</p><footer><span>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · ${escapeHtml(scopeLabel(passage))}</span><a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)} · 回到原文 ↗</a><code>${escapeHtml(passage.source_id)} · ${escapeHtml(passage.source_locator)}</code></footer></blockquote>`;
+      return `<blockquote class="evidence-quote"><p>${escapeHtml(passage.text)}</p><footer><span>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · ${escapeHtml(scopeLabel(passage))}</span><a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)} · 回到原文 ↗</a><code>${escapeHtml(passage.source_id)} · ${escapeHtml(passage.source_locator)}</code>${sourceDetails(passage.source_id, view, "查看对白来源与用途")}</footer></blockquote>`;
     }).join("")}`).join("")}
     <button class="button button-soft" id="add-relation-material">关系与证据加入素材 ＋</button><a class="text-button" href="${snapshotLink(`#/about?reference=${encodeURIComponent(relation.id)}&kind=relationship`)}">纠正这条关系</a>
-    <div class="evidence-note">组内段落须共同成立；不同完整证据组可独立支持同一断言。样本断言不等于原神设定。</div><div class="evidence-footer"><code>关系 ID：${escapeHtml(relation.id)}<br>关系断言来源：${escapeHtml(relation.source_id || "来源 ID 未标注")}<br>关系来源定位：${escapeHtml(relationSourceLocator)}<br>快照：${escapeHtml(view.snapshot_id)}</code></div>`;
+    <div class="evidence-note">组内段落须共同成立；不同完整证据组可独立支持同一断言。样本断言不等于原神设定。</div><div class="evidence-footer"><code>关系 ID：${escapeHtml(relation.id)}<br>关系断言来源：${escapeHtml(relation.source_id || "来源 ID 未标注")}<br>关系来源定位：${escapeHtml(relationSourceLocator)}<br>快照：${escapeHtml(view.snapshot_id)}</code>${sourceDetails(relation.source_id, view, "查看关系来源与用途")}</div>`;
   document.querySelector("#add-relation-material").addEventListener("click", (event) => materialUI.add("relationship", relation.id, event.currentTarget));
 }
 
