@@ -222,6 +222,10 @@ mark { background: #e9dfb8; color: #394e35; border-radius: 2px; padding: 1px 2px
 .evidence-source dt, .evidence-source dd { margin: 0; }
 .evidence-source code { overflow-wrap: anywhere; }
 .evidence-source p { font: 11px/1.7 var(--sans); margin: 8px 0; }
+.relationship-usage { margin: 16px 0; padding: 12px; border: 1px solid var(--line); border-radius: 5px; font-size: 12px; }
+.relationship-usage > div { margin-top: 10px; }
+.relationship-usage .tag { margin-left: 5px; }
+.relationship-usage p { font-size: 11px; color: var(--muted); margin: 6px 0 0; }
 .evidence-footer .button { width: 100%; }
 .evidence-note { font-size: 9px; color: #9ba38f; line-height: 1.8; margin: 15px 0 0; }
 .graph-footnote { font-size: 10px; color: #929d84; margin: 12px 0 0; }

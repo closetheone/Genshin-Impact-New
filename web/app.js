@@ -1,5 +1,5 @@
 import { createMaterialUI, postJson } from "/materials.mjs";
-import { SCOPES, PREDICATES, orderPassages, characterLabels, safeLayout, scopeLabel, relationScope } from "/model.mjs";
+import { SCOPES, PREDICATES, orderPassages, characterLabels, safeLayout, scopeLabel, relationScope, relationshipUsage } from "/model.mjs";
 
 const main = document.querySelector("#main");
 const scopeSelect = document.querySelector("#scope-select");
@@ -501,12 +501,22 @@ function renderEvidence(relation, view = state.view) {
   const reviewLabel = relation.review_status === "approved" ? "已审核" : relation.review_status === "pending" ? "待复核" : "审核状态未标注";
   const reviewStyle = relation.review_status === "approved" ? "tag-blue" : "tag-warm";
   const claimLabel = relation.claim_kind === "explicit" ? "明确断言" : relation.claim_kind === "inferred" ? "推断关系" : "断言类型未标注";
+  const usageMarkup = [["素材导出", ["export"]], ["AI 素材导出", ["export", "external_ai"]]].map(([label, purposes]) => {
+    const usage = relationshipUsage(view, relation, purposes);
+    const status = usage.status === "allowed" ? "来源条件满足" : usage.status === "denied" ? "当前不可用" : "待核验";
+    const reason = usage.status === "allowed" ? `${usage.availableGroups} / ${usage.totalGroups} 组完整证据满足用途条件。`
+      : usage.base === "denied" ? "关系本身或双方人物的来源不允许此用途。"
+      : usage.status === "unknown" ? "来源用途或关联资料不完整，暂无法确认。"
+      : "每组证据均含此用途受限的对白或关联资料，没有完整可用组。";
+    return `<div><strong>${label}</strong>${tag(status, usage.status === "allowed" ? "tag-blue" : "tag-warm")}<p>${reason}</p></div>`;
+  }).join("");
   panel.innerHTML = `<div class="eyebrow">FOLLOW THE EVIDENCE</div><h2>关系与原文证据</h2><div class="relation-people">${person(relation.from_id)}<span class="relation-arrow">${relation.direction === "directed" ? "→" : "—"}</span>${person(relation.to_id)}</div>
     ${tag(PREDICATES[relation.predicate].label)} ${tag(reviewLabel, reviewStyle)} ${tag(claimLabel)}<p class="relation-description">${escapeHtml(relation.description)}</p><p class="small muted">${escapeHtml(relationScope(relation, view.passages))}</p>
     ${relation.evidence_groups.map((group, index) => `<div class="evidence-group-label">证据组 ${index + 1} · ${group.length > 1 ? `${group.length} 段须联合阅读` : "单段支持"}</div>${group.map((identifier) => {
       const passage = view.passages.find((candidate) => candidate.id === identifier);
       return `<blockquote class="evidence-quote"><p>${escapeHtml(passage.text)}</p><footer><span>${escapeHtml(labels.get(passage.speaker_id) || passage.speaker_id || "叙述")} · ${escapeHtml(scopeLabel(passage))}</span><a class="text-button" href="${readLink(identifier)}">${escapeHtml(identifier)} · 回到原文 ↗</a><code>${escapeHtml(passage.source_id)} · ${escapeHtml(passage.source_locator)}</code>${sourceDetails(passage.source_id, view, "查看对白来源与用途")}</footer></blockquote>`;
     }).join("")}`).join("")}
+    <section class="relationship-usage" aria-label="关系用途预检"><strong>关系用途预检</strong>${usageMarkup}<p>仅检查当前可见完整证据及其来源。AI 素材导出须同时满足导出与 AI 取材条件；加入素材和导出时仍会重新核验。</p></section>
     <button class="button button-soft" id="add-relation-material">关系与证据加入素材 ＋</button><a class="text-button" href="${snapshotLink(`#/about?reference=${encodeURIComponent(relation.id)}&kind=relationship`)}">纠正这条关系</a>
     <div class="evidence-note">组内段落须共同成立；不同完整证据组可独立支持同一断言。样本断言不等于原神设定。</div><div class="evidence-footer"><code>关系 ID：${escapeHtml(relation.id)}<br>关系断言来源：${escapeHtml(relation.source_id || "来源 ID 未标注")}<br>关系来源定位：${escapeHtml(relationSourceLocator)}<br>快照：${escapeHtml(view.snapshot_id)}</code>${sourceDetails(relation.source_id, view, "查看关系来源与用途")}</div>`;
   document.querySelector("#add-relation-material").addEventListener("click", (event) => materialUI.add("relationship", relation.id, event.currentTarget));

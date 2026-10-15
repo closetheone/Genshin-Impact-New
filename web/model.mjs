@@ -12,6 +12,31 @@ export const PREDICATES = {
   cooperates_with: { label: "合作", color: "#67998e" },
 };
 
+// Preview only: server-side material validation remains authoritative.
+export function relationshipUsage(view, relation, purposes) {
+  const sources = new Map((view.sources || []).map((item) => [item.id, item]));
+  const characters = new Map(view.characters.map((item) => [item.id, item]));
+  const entries = new Map(view.entries.map((item) => [item.id, item]));
+  const passages = new Map(view.passages.map((item) => [item.id, item]));
+  const combine = (states) => states.includes("denied") ? "denied" : states.includes("unknown") ? "unknown" : "allowed";
+  const recordState = (record) => {
+    const source = sources.get(record?.source_id);
+    return combine(purposes.map((purpose) => {
+      const right = source?.rights?.[purpose];
+      return right === "allowed" || right === "denied" ? right : "unknown";
+    }));
+  };
+  const base = combine([relation, characters.get(relation.from_id), characters.get(relation.to_id)].map(recordState));
+  const groups = relation.evidence_groups.map((group) => combine([base, ...group.map((id) => {
+    const passage = passages.get(id);
+    return combine([recordState(passage), recordState(entries.get(passage?.entry_id)),
+      passage && passage.speaker_id === null ? "allowed" : recordState(characters.get(passage?.speaker_id))]);
+  }), ...(group.length ? [] : ["unknown"])]));
+  const availableGroups = groups.filter((status) => status === "allowed").length;
+  return { status: availableGroups ? "allowed" : groups.includes("unknown") || !groups.length ? "unknown" : "denied",
+    availableGroups, totalGroups: groups.length, base };
+}
+
 export function orderPassages(passages) {
   const byId = new Map(passages.map((passage) => [passage.id, passage]));
   const ranks = new Map(passages.map((passage, index) => [passage.id, index]));
