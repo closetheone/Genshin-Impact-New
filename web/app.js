@@ -31,6 +31,7 @@ const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/gu, (characte
 const readLink = (identifier) => snapshotLink(`#/read?passage=${encodeURIComponent(identifier)}`);
 const graphLink = (identifier) => snapshotLink(`#/graph?center=${encodeURIComponent(identifier)}&hops=${state.hops}&predicate=${encodeURIComponent(state.predicate)}&condition=${encodeURIComponent(state.condition)}`);
 const tag = (label, extra = "") => `<span class="tag ${extra}">${escapeHtml(label)}</span>`;
+const validPurposes = new Set(["display", "export", "external_ai"]);
 
 function notify(message) {
   const toast = document.querySelector("#toast");
@@ -50,7 +51,15 @@ function snapshotLink(address) {
   const [path, query = ""] = address.split("?");
   const parameters = new URLSearchParams(query);
   parameters.set("snapshot", state.view.snapshot_id);
+  parameters.set("scope", scopeSelect.value);
+  parameters.set("purpose", purposeSelect.value);
   return `${path}?${parameters}`;
+}
+
+function restoreBoundary() {
+  const params = route().params;
+  if (Object.hasOwn(SCOPES, params.get("scope"))) scopeSelect.value = params.get("scope");
+  if (validPurposes.has(params.get("purpose"))) purposeSelect.value = params.get("purpose");
 }
 
 function replacePage(markup) {
@@ -88,6 +97,7 @@ function fetchGraph(purpose, signal, snapshot = route().params.get("snapshot"), 
 async function loadView(cursor = null) {
   requestController?.abort();
   evidenceVersion += 1;
+  restoreBoundary();
   if (route().page === "graph") restoreGraphQuery();
   requestController = new AbortController();
   const version = ++requestVersion;
@@ -771,7 +781,7 @@ function changeBoundary() {
   if (route().page === "graph") {
     state.graphPage = 1;
     history.replaceState(null, "", graphAddress());
-  }
+  } else history.replaceState(null, "", snapshotLink(location.hash || "#/search"));
   loadView();
 }
 scopeSelect.addEventListener("change", changeBoundary);
