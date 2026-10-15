@@ -31,6 +31,7 @@ const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/gu, (characte
 const readLink = (identifier) => snapshotLink(`#/read?passage=${encodeURIComponent(identifier)}`);
 const characterDetailLink = (identifier) => snapshotLink(`#/character?id=${encodeURIComponent(identifier)}`);
 const graphLink = (identifier) => snapshotLink(`#/graph?center=${encodeURIComponent(identifier)}&hops=${state.hops}&predicate=${encodeURIComponent(state.predicate)}&condition=${encodeURIComponent(state.condition)}`);
+const graphRelationLink = (identifier, relation) => snapshotLink(`#/graph?center=${encodeURIComponent(identifier)}&hops=${state.hops}&predicate=${encodeURIComponent(state.predicate)}&condition=${encodeURIComponent(state.condition)}&relation=${encodeURIComponent(relation)}`);
 const tag = (label, extra = "") => `<span class="tag ${extra}">${escapeHtml(label)}</span>`;
 const validPurposes = new Set(["display", "export", "external_ai"]);
 
@@ -316,11 +317,10 @@ function renderCharacterDetail() {
   const scopeSummary = ["opening", "east", "west", "later"].filter((scope) => (view.scope_ids || []).includes(scope)).map((scope) => scopeNames[scope]).join(" / ");
   const relationMarkup = relationships.length
     ? relationships.map((relation) => {
-      const counterpart = relation.from_id === character.id ? relation.to_id : relation.from_id;
       const reviewLabel = relation.review_status === "approved" ? "已审核" : "待复核";
       const evidenceCount = (relation.evidence_groups || []).length;
       const relationScopeText = relation.branch_id ? `${scopeNames[relation.branch_id] || relation.branch_id}分支` : (relation.required_scope_ids || []).map((scope) => scopeNames[scope] || scope).join(" / ");
-      return `<article class="character-relation"><div class="character-relation-top"><strong>${escapeHtml(predicateNames[relation.predicate] || relation.predicate)}</strong><span class="tag ${relation.review_status === "approved" ? "tag-blue" : "tag-warm"}">${reviewLabel}</span></div><p>${escapeHtml(relation.description || "关系描述待补充。")}</p><div class="character-relation-meta"><code>${escapeHtml(relation.id)}</code><span>范围：${escapeHtml(relationScopeText || "未标注")}</span><span>${evidenceCount} 组可见证据</span><a class="text-button" href="${graphLink(counterpart)}">查看关系图 ↗</a></div></article>`;
+      return `<article class="character-relation"><div class="character-relation-top"><strong>${escapeHtml(predicateNames[relation.predicate] || relation.predicate)}</strong><span class="tag ${relation.review_status === "approved" ? "tag-blue" : "tag-warm"}">${reviewLabel}</span></div><p>${escapeHtml(relation.description || "关系描述待补充。")}</p><div class="character-relation-meta"><code>${escapeHtml(relation.id)}</code><span>范围：${escapeHtml(relationScopeText || "未标注")}</span><span>${evidenceCount} 组可见证据</span><a class="text-button" href="${graphRelationLink(character.id, relation.id)}">查看关系图 ↗</a></div></article>`;
     }).join("")
     : '<div class="empty-state">当前范围没有已审核关系。</div>';
   const entryMarkup = entries.length
