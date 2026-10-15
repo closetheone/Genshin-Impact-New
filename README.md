@@ -94,6 +94,7 @@ python3 scripts/manage_feedback.py --resolve <反馈编号>
 
 | 文档 | 职责 |
 | --- | --- |
+| [技术栈说明](TECH_STACK.md) | 当前前端、后端、数据库、搜索、图片与 AI 接口的实际技术选择和运行命令 |
 | [PRD](PRD.md) | 产品范围、十一项核心功能、数据约束与公开 V1 验收 |
 | [下一步执行清单](NEXT_STEPS.md) | 当前状态、T01 至 T09 顺序、最近工作包和完成条件 |
 | [资料来源与接入台账](DATA_SOURCES.md) | BWIKI、观测枢、空荧酒馆的入口、核对记录、具体使用范围与样本状态 |
