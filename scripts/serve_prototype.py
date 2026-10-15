@@ -21,6 +21,7 @@ from check_source_admission import load_audit
 from report_source_admission import build_report
 from character_catalog import BATCHES as CHARACTER_BATCHES, DEFAULT_CATALOG, CatalogUnavailable, import_catalog, read_catalog
 from character_references import official_links
+from character_art import IMAGE_PATHS, official_art
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,7 +49,8 @@ class PrototypeHandler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Referrer-Policy", "no-referrer")
-        self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'")
+        image_sources = ' '.join(IMAGE_PATHS)
+        self.send_header("Content-Security-Policy", f"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: {image_sources}; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'")
         self.end_headers()
         if self.command != "HEAD":
             self.wfile.write(body)
@@ -76,7 +78,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
                     raise SampleError('invalid character catalog parameters')
                 result = read_catalog(self.server.database.parent / 'character-catalog.sqlite3',
                                       arguments.get('catalog', [DEFAULT_CATALOG])[0], arguments.get('character', [None])[0])
-                self.respond(200, {**result, 'official_links': official_links(result)})
+                self.respond(200, {**result, 'official_links': official_links(result), 'official_art': official_art(result)})
             except CatalogUnavailable as error:
                 self.respond(404, {'error': str(error)})
             except SampleError:

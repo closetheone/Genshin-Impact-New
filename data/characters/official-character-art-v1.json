@@ -1,0 +1,850 @@
+{
+  "schema_version": "official-character-art-1",
+  "art_id": "genshin-official-art-2026-10-15-v1",
+  "reference_id": "genshin-official-links-2026-10-15-v1",
+  "checked_on": "2026-10-15",
+  "display_mode": "remote_reference",
+  "copyright": "© miHoYo",
+  "records": [
+    {
+      "character_id": "genshin:10000003",
+      "name": "琴",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=0",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/b51565c6f1298e534e90b6e63332e9c1_6618231443033589469.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20220127/2022012718344593599.png"
+    },
+    {
+      "character_id": "genshin:10000021",
+      "name": "安柏",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=1",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/6f0ef40157e95b0d59455c12f4d3f270_3262958961633311108.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20220127/2022012718350213870.png"
+    },
+    {
+      "character_id": "genshin:10000006",
+      "name": "丽莎",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=2",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/43922f5162840c215638affedad0459a_154157936806604489.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200306/2020030617000181697.png"
+    },
+    {
+      "character_id": "genshin:10000015",
+      "name": "凯亚",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=3",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/cbce61ef1ee5586c4e77b2070348685f_2873159962263599144.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200306/2020030617001674227.png"
+    },
+    {
+      "character_id": "genshin:10000014",
+      "name": "芭芭拉",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=4",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/6c009f0631eb71e697c2da76b608a51e_1586187959203635452.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200306/2020030617005720579.png"
+    },
+    {
+      "character_id": "genshin:10000016",
+      "name": "迪卢克",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=5",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/f5ae62eff2cf426e98626c882dd0cf0d_3491810425996357724.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200306/2020030617015669833.png"
+    },
+    {
+      "character_id": "genshin:10000020",
+      "name": "雷泽",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=6",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/a1594317bbd0cefeb7da501f9879375b_6718910479380394402.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200306/2020030617025961375.png"
+    },
+    {
+      "character_id": "genshin:10000022",
+      "name": "温迪",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=7",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/965e940e6caafe8fbd4bf0e17653000b_7797376782783229067.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200306/2020030617031747812.png"
+    },
+    {
+      "character_id": "genshin:10000029",
+      "name": "可莉",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=8",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/16cff1c00f651f98427fc3fbab7fc855_1013342926215826750.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200306/2020030617033181769.png"
+    },
+    {
+      "character_id": "genshin:10000032",
+      "name": "班尼特",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=9",
+      "portrait_url": "https://uploadstatic.mihoyo.com/contentweb/20200312/2020031219451784892.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200312/2020031219222320482.png"
+    },
+    {
+      "character_id": "genshin:10000034",
+      "name": "诺艾尔",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=10",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/c8a5da498d29faa1c8f2e2bfb60efbd5_7098200614657426672.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200315/2020031516092797889.png"
+    },
+    {
+      "character_id": "genshin:10000031",
+      "name": "菲谢尔",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=11",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/96297a7f2679bf0dce4fb9d11120b882_7601596078607350699.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200330/2020033019074664412.png"
+    },
+    {
+      "character_id": "genshin:10000043",
+      "name": "砂糖",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=12",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/448bc697f852e5726717fa2be839eedc_208974302606516196.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200724/2020072414340926231.png"
+    },
+    {
+      "character_id": "genshin:10000041",
+      "name": "莫娜",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=13",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/9e4203089ad086d328973adf3f6e8c7b_8128590565927659744.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20220127/2022012718352334387.png"
+    },
+    {
+      "character_id": "genshin:10000039",
+      "name": "迪奥娜",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=14",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/fb11c57bf9789d760d70d35ce634ebe1_992068999869731972.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20201106/2020110614164694989.png"
+    },
+    {
+      "character_id": "genshin:10000038",
+      "name": "阿贝多",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=15",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/f95b03a7d7370aa4f5de3ac9a5f161bc_96708841112282504.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20201216/2020121617552012082.png"
+    },
+    {
+      "character_id": "genshin:10000045",
+      "name": "罗莎莉亚",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=16",
+      "portrait_url": "https://uploadstatic.mihoyo.com/contentweb/20220127/2022012718284773624.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20220127/2022012718290075546.png"
+    },
+    {
+      "character_id": "genshin:10000051",
+      "name": "优菈",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=17",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/4c4b8babc68ffedce9bd5766b60e1ae5_8781849729625946129.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210508/2021050817091079399.png"
+    },
+    {
+      "character_id": "genshin:10000062",
+      "name": "埃洛伊",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=18",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/9344fdabebf5e14d8ecaf34253d838c0_3043327248296318859.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210825/2021082511163174110.png"
+    },
+    {
+      "character_id": "genshin:10000080",
+      "name": "米卡",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=19",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/02/06/df329c62acad08953832134777166e57_5667154156652123154.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/02/06/d1bd63a9d2f41a7bfa927811e219493d_6450551595359459959.png"
+    },
+    {
+      "character_id": "genshin:10000115",
+      "name": "塔利雅",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=20",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/156957/d9ecf0d560054797228916f39fadfc4b_2570041507993282327.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/156957/4a49ee18bfac5eb9523e76fe77ae91c2_802481060601011231.png"
+    },
+    {
+      "character_id": "genshin:10000123",
+      "name": "杜林",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=21",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/161117/831c1a5b2ef1413727e73d85ea8ed168_5228733944206787826.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/161117/12bd5d770accc4cdef5230ae9230e284_8173333462424624414.png"
+    },
+    {
+      "character_id": "genshin:10000128",
+      "name": "法尔伽",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=22",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/162783/e358fe1414e93c2dcbd159760af618cf_1507030070102654193.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/162783/422d8dc0745db889efabea29390fd3d8_2380182087633455267.png"
+    },
+    {
+      "character_id": "genshin:10000131",
+      "name": "尼可",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=23",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/163962/4c388560d434e03bd8336e64d46005f0_9181305934055256496.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/163962/c2d4665dcd3021aaa9ba71e40afa8395_4080425519533462063.png"
+    },
+    {
+      "character_id": "genshin:10000132",
+      "name": "布伦妮",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=24",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/163963/117a89a1e5a6e0aca57ffa55223809f1_5790729716618710903.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/163963/7c9a1413c308d090e82c8e786f2206f9_8915345222954852239.png"
+    },
+    {
+      "character_id": "genshin:10000129",
+      "name": "洛恩",
+      "source_url": "https://ys.mihoyo.com/main/character/mondstadt?char=25",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/163966/a9d03a52062dd1884ad24e179c2e8d88_2316556107612368178.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/163966/2c0c3a653bd4f8042f02e41a589f5711_635146643431880028.png"
+    },
+    {
+      "character_id": "genshin:10000026",
+      "name": "魈",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=0",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/930f3ce55517e3c711a962c82e4639c0_8788966481995409698.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200306/2020030617035787693.png"
+    },
+    {
+      "character_id": "genshin:10000024",
+      "name": "北斗",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=1",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/01d9b164e0de2611c84ccdec5b84ced8_4841535305526345122.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200306/2020030617043374251.png"
+    },
+    {
+      "character_id": "genshin:10000027",
+      "name": "凝光",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=2",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/d35a0a1d13f821fd55a6951210c672ac_8868204139408761896.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200306/2020030617042023125.png"
+    },
+    {
+      "character_id": "genshin:10000023",
+      "name": "香菱",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=3",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/1169862f9fa35734b06ce09c96dad9ae_616082062681680005.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200316/2020031618192613355.png"
+    },
+    {
+      "character_id": "genshin:10000025",
+      "name": "行秋",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=4",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/4569d28adb1d8fa4394b8d02886abe7a_112403989477759098.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200324/2020032419030350146.png"
+    },
+    {
+      "character_id": "genshin:10000036",
+      "name": "重云",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=5",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/d0accc6031019427d20d2f009169d7cd_47479893540421370.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200602/2020060218324180299.png"
+    },
+    {
+      "character_id": "genshin:10000042",
+      "name": "刻晴",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=6",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/d063646e97392638e07da24ce6b8c3cb_3567507076955258130.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200828/2020082814015644368.png"
+    },
+    {
+      "character_id": "genshin:10000035",
+      "name": "七七",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=7",
+      "portrait_url": "https://uploadstatic.mihoyo.com/contentweb/20200828/2020082814270362598.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20200828/2020082814265912018.png"
+    },
+    {
+      "character_id": "genshin:10000030",
+      "name": "钟离",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=8",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/e699d7e2413ed5dfb384ee48c2b872d3_5181262111088024686.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20201120/2020112010371210769.png"
+    },
+    {
+      "character_id": "genshin:10000044",
+      "name": "辛焱",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=9",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/3deca8e73a03e779087b74ebeac883cb_3347806888199291177.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20201125/2020112515344362241.png"
+    },
+    {
+      "character_id": "genshin:10000037",
+      "name": "甘雨",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=10",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/1ae0d0aaad9ee9b55652ea7ec67f0465_624394286022075834.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210105/2021010518424084444.png"
+    },
+    {
+      "character_id": "genshin:10000046",
+      "name": "胡桃",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=11",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/300df2aed5060579f08d7db601d8710d_118206614584398576.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210222/2021022210584218038.png"
+    },
+    {
+      "character_id": "genshin:10000048",
+      "name": "烟绯",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=12",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/494f7aa4668cb7fe2d6d0463e7cc835f_3323890008016600534.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210420/2021042014093440786.png"
+    },
+    {
+      "character_id": "genshin:10000063",
+      "name": "申鹤",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=13",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/cb95a5b5d57165a4970d801c5dcf0435_8788044469681939890.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20211221/2021122118121612158.png"
+    },
+    {
+      "character_id": "genshin:10000064",
+      "name": "云堇",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=14",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/974d7a34d3cc71f74ac98e50d4b935fc_4724518145818884545.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20211221/2021122117591771295.png"
+    },
+    {
+      "character_id": "genshin:10000060",
+      "name": "夜兰",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=15",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/073932dc472fa00623cefb70a18df516_4957558339748297584.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/05/18/76cfc9a21e196fd316070196c1396950_2919759828280177295.png"
+    },
+    {
+      "character_id": "genshin:10000077",
+      "name": "瑶瑶",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=16",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/01/13/52985680295fe1bf3b9eebbbace892f6_6333578342761288152.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/01/13/676ae3ebfbb61c724eae558e88cc731d_2601869312625208755.png"
+    },
+    {
+      "character_id": "genshin:10000082",
+      "name": "白术",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=17",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/03/22/7e0096b8907484d2c530a57a0d0bda80_5668751415157436691.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/03/15/91d73bb4468762e12179ee84cebed661_3161005390131117182.png"
+    },
+    {
+      "character_id": "genshin:10000093",
+      "name": "闲云",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=18",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/119432/d90148725e88befcb5ab715daff4fb78_4730047044715339397.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/119432/796395c5d6e8db88d96d841f3688e5d1_4724765006036447968.png"
+    },
+    {
+      "character_id": "genshin:10000092",
+      "name": "嘉明",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=19",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/119433/c649538cd00d8802daf3051a4f7d8cc3_5876167266101039777.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/119433/55246234a19233fcb97b0188aae1ae87_2452464298189101184.png"
+    },
+    {
+      "character_id": "genshin:10000108",
+      "name": "蓝砚",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=20",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/127666/735ef5e574015e24007c466ae9ada7b4_5255747087009988189.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/127666/b426464fc7f1b760b37946dca23f85f9_7613123317131424662.png"
+    },
+    {
+      "character_id": "genshin:10000126",
+      "name": "兹白",
+      "source_url": "https://ys.mihoyo.com/main/character/liyue?char=21",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/162515/104b2662894a7f22dd07d769907e0c21_7526493392825874944.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/162515/a35765dea0bcf932774c269352bb2ec8_5168948168741627454.png"
+    },
+    {
+      "character_id": "genshin:10000002",
+      "name": "神里绫华",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=0",
+      "portrait_url": "https://uploadstatic.mihoyo.com/contentweb/20210720/2021072011090118454.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210720/2021072011085576262.png"
+    },
+    {
+      "character_id": "genshin:10000047",
+      "name": "枫原万叶",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=1",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/44e2d916d9c13bca863d56423004fd98_5259521148631074871.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210617/2021061716564818668.png"
+    },
+    {
+      "character_id": "genshin:10000049",
+      "name": "宵宫",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=2",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/593e6a6d5d8836ca2ab5c27a98593e58_7195951238560837785.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210802/2021080210195390130.png"
+    },
+    {
+      "character_id": "genshin:10000053",
+      "name": "早柚",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=3",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/982542a6c0e2dfb628a4f087fa6bde5d_8132053644924400342.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210802/2021080211352035312.png"
+    },
+    {
+      "character_id": "genshin:10000052",
+      "name": "雷电将军",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=4",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/fdcbc9ef8859b7077d92ae38d925e15e_7767077963502328666.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210817/2021081714114216212.png"
+    },
+    {
+      "character_id": "genshin:10000056",
+      "name": "九条裟罗",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=5",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/f05d8a7e32075403340d0d2ea8e590ff_8488445000735534159.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210817/2021081714514765929.png"
+    },
+    {
+      "character_id": "genshin:10000054",
+      "name": "珊瑚宫心海",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=6",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/8ca5953fb331d71bc880496f5e8b7745_6228630778438562406.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20210914/2021091414024724995.png"
+    },
+    {
+      "character_id": "genshin:10000050",
+      "name": "托马",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=7",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/9d753f7cee1ed5c645340d6396c50c46_5605034033797455797.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20211021/2021102110372681510.png"
+    },
+    {
+      "character_id": "genshin:10000057",
+      "name": "荒泷一斗",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=8",
+      "portrait_url": "https://uploadstatic.mihoyo.com/contentweb/20211130/2021113011275854973.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20211130/2021113011275394620.png"
+    },
+    {
+      "character_id": "genshin:10000055",
+      "name": "五郎",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=9",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/33b7b5d2536416116765a3f55e47f51a_5502758593514559481.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20211130/2021113011485830826.png"
+    },
+    {
+      "character_id": "genshin:10000058",
+      "name": "八重神子",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=10",
+      "portrait_url": "https://uploadstatic.mihoyo.com/contentweb/20220208/2022020814003845991.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20220208/2022020813481182336.png"
+    },
+    {
+      "character_id": "genshin:10000066",
+      "name": "神里绫人",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=11",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/037d6fa79d3066c5bc8711187ad2f673_9069084469193280544.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/03/14/6713b70c875d723eb22c9effda407377_2979852309102536594.png"
+    },
+    {
+      "character_id": "genshin:10000065",
+      "name": "久岐忍",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=12",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/ef220a612a40dc5d4d7c9136345f4967_1333316509826617245.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/06/15/d9e1610f9201fd4d5e8ca93c21380485_2031480174215672233.png"
+    },
+    {
+      "character_id": "genshin:10000059",
+      "name": "鹿野院平藏",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=13",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/07/c20ab407d9316480290f7c690836f35c_3319365553784768994.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/07/07/8cb39b11a39045288b7ef800b9c8a085_4905643200701802462.png"
+    },
+    {
+      "character_id": "genshin:10000061",
+      "name": "绮良良",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=14",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/05/17/58ed3bce339f53a535cec2e64898fb77_3217290123071211657.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/05/11/968ccf69c47165ea873b948f3b03d06c_6946501208081322342.png"
+    },
+    {
+      "character_id": "genshin:10000109",
+      "name": "梦见月瑞希",
+      "source_url": "https://ys.mihoyo.com/main/character/inazuma?char=15",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/129667/c2cf4a117398e656a2556274be0fc7c0_8848675056761899792.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/129667/f2d25033c05685ef81ead5d61f8f3748_5477665563261234894.png"
+    },
+    {
+      "character_id": "genshin:10000069",
+      "name": "提纳里",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=0",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/08/19/a15445b2b2e4443398eabf3b479f49e7_8073097535789989508.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/08/15/1f88bdae2e99307e68a0bbfedf6cc74f_2882938237707913291.png"
+    },
+    {
+      "character_id": "genshin:10000067",
+      "name": "柯莱",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=1",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/08/19/2c752da0a5921583011a4ec36f83703c_8500020629476268998.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/08/15/3677cbc063b7ab3887ceb7f9a77287ac_1039229097287658400.png"
+    },
+    {
+      "character_id": "genshin:10000068",
+      "name": "多莉",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=2",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/08/29/9b5c8d26504c19154056175bbb7e287a_7101312865137287700.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/08/29/b8a367991017a9f3c6bb445c5c8b68e6_1191967378101363412.png"
+    },
+    {
+      "character_id": "genshin:10000071",
+      "name": "赛诺",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=3",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/09/21/c4f05fb0c04afac045171c27c7d03cdc_7123941963780824423.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/09/21/377cfb0cf754a873c864e92208e540f0_2617971490404602601.png"
+    },
+    {
+      "character_id": "genshin:10000072",
+      "name": "坎蒂丝",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=4",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/09/22/d0226e61c64dbd14f3041775ceebb59a_6490657115701128356.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/09/22/4199ac7c190fe49d64215345c1c04f30_767621913108456368.png"
+    },
+    {
+      "character_id": "genshin:10000070",
+      "name": "妮露",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=5",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/09/27/d978cf1ce85e372971bdcf6add639e8f_5385395843160526652.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/09/27/a5f2a564298709911b3ceef0289d183c_1572553848866085675.png"
+    },
+    {
+      "character_id": "genshin:10000073",
+      "name": "纳西妲",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=6",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/10/24/fe684624008db25ac4b44ea4704f9ba0_4542359697614905341.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/10/20/62cb7fb1815d9d05d3ece2e0d8e85c7d_8731082942818264376.png"
+    },
+    {
+      "character_id": "genshin:10000074",
+      "name": "莱依拉",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=7",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/10/24/4322a175c30a3480092513ad73a8509a_5159775277770512203.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/10/20/f5b95c8f39180f0bf83303c6316439c4_2737625808068154153.png"
+    },
+    {
+      "character_id": "genshin:10000075",
+      "name": "流浪者",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=8",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/11/28/d44dde6ef8b8b1963b06a94d3ea0186b_4486359852459677077.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/11/29/e6f9e89c89330b23573400fff27905c0_3365269422927792583.png"
+    },
+    {
+      "character_id": "genshin:10000076",
+      "name": "珐露珊",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=9",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/12/02/820230e5076f0cba1837d7bca81d8483_7171781835957330126.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2022/12/02/5efdda38074033b2a60003917c44a407_2254575992495654598.png"
+    },
+    {
+      "character_id": "genshin:10000078",
+      "name": "艾尔海森",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=10",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/01/10/1f3bc8199884ff93a04e713809e4aef3_66257121119188218.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/01/10/bfd6f03d6e5057f0ea946bd5c8490f88_864998469933466014.png"
+    },
+    {
+      "character_id": "genshin:10000079",
+      "name": "迪希雅",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=11",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/02/03/28d4e40c6f27105a444d7477229f8ced_6061104866077771332.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/02/03/2926f9b9e00ac8443a660bab7333e996_1234439353888963053.png"
+    },
+    {
+      "character_id": "genshin:10000081",
+      "name": "卡维",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=12",
+      "portrait_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/03/15/4f486ee9943936bb8d8a8ebc9c9df9b2_964302051434856950.png",
+      "thumbnail_url": "https://webstatic.mihoyo.com/upload/contentweb/2023/03/15/db3834416088a151c71b3bbce8f8ed60_4163662997412179228.png"
+    },
+    {
+      "character_id": "genshin:10000097",
+      "name": "赛索斯",
+      "source_url": "https://ys.mihoyo.com/main/character/sumeru?char=13",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/123895/319ed1f88483c45871108260fc92586b_2936492095306230809.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/123895/be909232b7ab3924affe5524b58bfa68_5389910610082045425.png"
+    },
+    {
+      "character_id": "genshin:10000084",
+      "name": "林尼",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=0",
+      "portrait_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/aed7f3d44289e8f796c19fc4cd13ad9b_5443840253658661899.png",
+      "thumbnail_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/7b47aa8ac8e2a35ae5e7d37d264dcb93_8832500935181332478.png"
+    },
+    {
+      "character_id": "genshin:10000083",
+      "name": "琳妮特",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=1",
+      "portrait_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/631514b481df43070c5d0f06a5d07a61_6900237162378067835.png",
+      "thumbnail_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/c2759cdfc8206689f137d38ca5c6fe98_1943079451542028396.png"
+    },
+    {
+      "character_id": "genshin:10000085",
+      "name": "菲米尼",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=2",
+      "portrait_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/124e201e2f47a554b1e443712e389e87_4927669741100437047.png",
+      "thumbnail_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/5d33262b4a7de7b0be0ac08b859a8442_2143832214208786446.png"
+    },
+    {
+      "character_id": "genshin:10000087",
+      "name": "那维莱特",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=3",
+      "portrait_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/43a4c54c7bf0689f5bd3d7b23798f9e9_6680261336665197454.png",
+      "thumbnail_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/9ee54053e4b710d163fd828c7d60c7e8_8925976294680302563.png"
+    },
+    {
+      "character_id": "genshin:10000086",
+      "name": "莱欧斯利",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=4",
+      "portrait_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/dc378808e6f7d2109a95186b0f312773_3179733661324062252.png",
+      "thumbnail_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/c096289444775cca45d9a582c2251751_2269727048272096048.png"
+    },
+    {
+      "character_id": "genshin:10000088",
+      "name": "夏洛蒂",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=5",
+      "portrait_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/f4c603b5b2e3dbb901922ad592d00abb_6514793666944083356.png",
+      "thumbnail_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/72bd4cb919b45738bf71817d2670ed34_5842617070511413222.png"
+    },
+    {
+      "character_id": "genshin:10000089",
+      "name": "芙宁娜",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=6",
+      "portrait_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/e8d153da1a2dca7a07fd76397cd60612_7641410511196198159.png",
+      "thumbnail_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/6b3e34fb09616b569998330b968cd2a0_7412056999317051015.png"
+    },
+    {
+      "character_id": "genshin:10000091",
+      "name": "娜维娅",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=7",
+      "portrait_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/c765b3ba5e3b25ce6e8afd3e758251a8_741046217554426529.png",
+      "thumbnail_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/9050fcca1dec27019d07fa0b6e963167_5969912828240491970.png"
+    },
+    {
+      "character_id": "genshin:10000090",
+      "name": "夏沃蕾",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=8",
+      "portrait_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/88545e86d7e4c748c1590e86721a6867_2799991321298937795.png",
+      "thumbnail_url": "https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/64fe10ded54cecbe6255163a11727f4c_8737437011054981966.png"
+    },
+    {
+      "character_id": "genshin:10000094",
+      "name": "千织",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=9",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/122706/3bc6e3dcbc632fa1e792dc682b7df781_5779770001800928719.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/122706/82831308dc78c0f0b07d3fc63b3b7458_2925875741205054732.png"
+    },
+    {
+      "character_id": "genshin:10000098",
+      "name": "克洛琳德",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=10",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/123893/c3f7661378c0cfa11ab2cc2a9bd09c5e_4714225803080593226.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/123893/0bd854ede1c0879aacb3514d8a045c93_6247000454784019266.png"
+    },
+    {
+      "character_id": "genshin:10000095",
+      "name": "希格雯",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=11",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/123896/22609467819303b436883092635ae97a_4011523226064594332.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/123896/c70a894a0ffe472765493fdef81583a9_8791418509207304542.png"
+    },
+    {
+      "character_id": "genshin:10000099",
+      "name": "艾梅莉埃",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=12",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/124975/fb657c32a71d5b2aa6ae71a11e28e2a9_1657294667572455873.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/124975/cfefe228a0419b0b3a24663c5536024c_1043244422480491576.png"
+    },
+    {
+      "character_id": "genshin:10000112",
+      "name": "爱可菲",
+      "source_url": "https://ys.mihoyo.com/main/character/fontaine?char=13",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/155766/bba9c2465080286db1fc992f0fbfda2b_6260375170414596172.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/155766/16418e9de1cb6681723c6002234bc27f_7701212555215823781.png"
+    },
+    {
+      "character_id": "genshin:10000102",
+      "name": "玛拉妮",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=0",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/125367/15252d1fb7f5cb3b5f6441f507abfefd_6969627761777064385.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/125367/61b24fd8f87c161b924e42a1c02655bf_6784098904729395654.png"
+    },
+    {
+      "character_id": "genshin:10000100",
+      "name": "卡齐娜",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=1",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/125372/16e50c02258c1f884935108cff029bc7_8179186009630155109.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/125372/dcb5792bc05e58821d605507ff0b8db0_7294348797889643745.png"
+    },
+    {
+      "character_id": "genshin:10000101",
+      "name": "基尼奇",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=2",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/125706/e0cfc13a904c1fc542924ae1e4d61da5_8583956813350043278.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/125706/05a63a2a78f89f0c033bbd77e6dfa54b_2985143624371104657.png"
+    },
+    {
+      "character_id": "genshin:10000103",
+      "name": "希诺宁",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=3",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/126200/0dca02ec950a9713e811f2aee6169ba6_4674205181278794291.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/126200/de28e561e90adfefc7dc0b07363e9b84_5399504452962509974.png"
+    },
+    {
+      "character_id": "genshin:10000104",
+      "name": "恰斯卡",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=4",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/126888/1a1017906928ccf282455abd007ab356_8943004632492912906.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/126888/4074c30639ab8bd3c3e949038c55c889_7985757713221276229.png"
+    },
+    {
+      "character_id": "genshin:10000105",
+      "name": "欧洛伦",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=5",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/126889/2dd7d68db79087901b025ba886084afb_8236965637367894776.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/126889/2a247e0e85ce8d3b8090183b9f75cb5e_8153831234503981247.png"
+    },
+    {
+      "character_id": "genshin:10000107",
+      "name": "茜特菈莉",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=6",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/127616/fe1da72a75427bb2fcc15c9d25ab1a55_5884844607579486920.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/127616/e0ea0a8d21fbbc785914e4d2c69c15f2_4804360565785840410.png"
+    },
+    {
+      "character_id": "genshin:10000106",
+      "name": "玛薇卡",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=7",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/127622/e03b719f827eba22de2b3e4de1778f19_443214802071996334.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/127622/147a22ef8d2be797225611dd75f89544_3524164967491316719.png"
+    },
+    {
+      "character_id": "genshin:10000111",
+      "name": "瓦雷莎",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=8",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/155075/377c16222797014f7d48b2fb5edb2790_315719046884779963.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/155075/d4e4a6c1fe878143009605262fe0c098_5615065300555858529.png"
+    },
+    {
+      "character_id": "genshin:10000110",
+      "name": "伊安珊",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=9",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/155127/337620686b2578c8cd3a8f6ea3096cd8_1695641350158569553.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/155127/c0b6c5da8b76973b5af32019b32d3294_2984355906515357653.png"
+    },
+    {
+      "character_id": "genshin:10000113",
+      "name": "伊法",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=10",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/155783/5548bb08b7ec6b6e71fe4c07c40b733b_5411209311888159021.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/155783/29699b14bbfaeacb283ac09444ac5d32_2018882069360857026.png"
+    },
+    {
+      "character_id": "genshin:10000114",
+      "name": "丝柯克",
+      "source_url": "https://ys.mihoyo.com/main/character/natlan?char=11",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/156926/1e3d927b04cf859f9b16b5c754a9836c_8757491835016287290.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/156926/bbd771829b4de9a04c07234c53dd46ce_6000805505770513362.png"
+    },
+    {
+      "character_id": "genshin:10000033",
+      "name": "达达利亚",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=0",
+      "portrait_url": "https://uploadstatic.mihoyo.com/contentweb/20201103/2020110317320323980.png",
+      "thumbnail_url": "https://uploadstatic.mihoyo.com/contentweb/20201103/2020110314190784136.png"
+    },
+    {
+      "character_id": "genshin:10000096",
+      "name": "阿蕾奇诺",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=1",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/123214/cc9c3a4b128dd04cab9f1e64835ddf76_1757860140687980229.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/123214/002a7e54d3b70ac98b5aef6d9be471f7_1553980919875153435.png"
+    },
+    {
+      "character_id": "genshin:10000116",
+      "name": "伊涅芙",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=2",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/157824/0939d9b343340db5f0d2c3cf4e18e83b_531980484149140309.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/157824/bcbd2761b4a6d3cef8030190c8f223f1_4271792812021254758.png"
+    },
+    {
+      "character_id": "genshin:10000119",
+      "name": "菈乌玛",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=3",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/159322/16068549dffb811a7b3e1787c220c945_6864954280188492103.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/159322/dcee48c7948ddc590bf928bd76c0af0e_8177994517604796342.png"
+    },
+    {
+      "character_id": "genshin:10000120",
+      "name": "菲林斯",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=4",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/159856/df998d945d99d423b3b5139e1dfdcfc3_5743294209352973794.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/159856/78026b4939a74349cfec212c99c38b7a_998176157385692587.png"
+    },
+    {
+      "character_id": "genshin:10000121",
+      "name": "爱诺",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=5",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/159985/4451e31063007d81075e8743f873337a_7341622504943727164.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/159985/6fd3066d0123d76a9d25bca8cc9264c2_2815137925317185870.png"
+    },
+    {
+      "character_id": "genshin:10000122",
+      "name": "奈芙尔",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=6",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/160313/0589bed6d500d6cde7352e13dd76b3d0_3980115945063692077.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/160313/c1ded96f90f71c66f5c5a8eab3df0efe_8021809664668784195.png"
+    },
+    {
+      "character_id": "genshin:10000124",
+      "name": "雅珂达",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=7",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/161254/98f86bec14f9991f9ff38a0b0cedf7dc_2324228554603189896.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/161254/297e76a4007915f7b45b86a8282e9fe0_8565573165485339803.png"
+    },
+    {
+      "character_id": "genshin:10000125",
+      "name": "哥伦比娅",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=8",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/162064/57aec6a3774c7fcbf9bd70abeed9be84_7992530274035884759.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/162064/4e8138f314c65807b63808848bcfe6f7_6847272269006518173.png"
+    },
+    {
+      "character_id": "genshin:10000127",
+      "name": "叶洛亚",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=9",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/163024/d816927010b7a2df49a0457a71eb5648_1489552602081563051.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/163024/e3115d7070b944ac8770383f18d0a3f6_3508434476340664465.png"
+    },
+    {
+      "character_id": "genshin:10000130",
+      "name": "莉奈娅",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=10",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/163332/b67c74b1a8ae2d3b32c9e88db45dda51_2223834080370186531.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/163332/7bd12ca1ea7e74f8592e41f9b60059b2_1693676926526794197.png"
+    },
+    {
+      "character_id": "genshin:10000133",
+      "name": "桑多涅",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=11",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/164627/b7ac8ad4f04ac902fe72d21fea626b85_2668765828903523300.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/164627/765eb21a90ca3d608d437e03810bbd8a_8447687443987477821.png"
+    },
+    {
+      "character_id": "genshin:10000150",
+      "name": "奥黛塔",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=12",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/165468/8099301bba7d1f37bb688c848618f7d8_8301959849043085885.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/165468/64cc802a006f1989a184ece6001b3809_5857048476168018888.png"
+    },
+    {
+      "character_id": "genshin:10000148",
+      "name": "阿罗夏",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=13",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/165469/06362b46d6f5c71ebdfd9e149513e36d_6758318097808464004.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/165469/5f8d8ba1068e3eb3a875464875b45c0d_4727096501856370212.png"
+    },
+    {
+      "character_id": "genshin:10000143",
+      "name": "薇斯纳",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=14",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/166127/824c6e070360387631f3a980a96301c8_1784647817542208913.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/166127/651402e92b7a6ed9b84b4e37551726d2_807052621220072001.png"
+    },
+    {
+      "character_id": "genshin:10000140",
+      "name": "沃雅妮莎",
+      "source_url": "https://ys.mihoyo.com/main/character/snezhnaya?char=15",
+      "portrait_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/166128/1e013b010045e5cb9734b700cba8ddcc_9115949318988262212.png",
+      "thumbnail_url": "https://fastcdn.mihoyo.com/content-v2/hk4e/166128/102590e4ea6a7f92d2217855416eec11_4730636873982290167.png"
+    }
+  ]
+}

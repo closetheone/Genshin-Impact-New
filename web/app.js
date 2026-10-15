@@ -175,7 +175,7 @@ function updateNavigation() {
   document.querySelector(".global-controls").hidden = real;
   document.querySelector("#open-active").hidden = real;
   document.querySelector(".prototype-notice").innerHTML = real
-    ? '<span aria-hidden="true">◇</span><strong>真实角色基础资料</strong><span>本站展示社区来源的基础资料；已匹配的官网入口可查看立绘与简介。完整故事与真实关系尚未收录。</span>'
+    ? '<span aria-hidden="true">◇</span><strong>真实角色资料</strong><span>基础资料来自社区整理，图片由官网在线提供。完整故事与真实关系尚未收录。</span>'
     : '<span aria-hidden="true">◇</span><strong>原创样本演示</strong><span>当前剧情页面中的人物、对白与关系为虚构测试内容，不是原神剧情。</span>';
   document.querySelector("#page-name").textContent = pageNames[current.page] || "未找到页面";
   document.title = `${pageNames[current.page] || "未找到页面"} · 原神文本档案${real ? "" : " · 原创样本"}`;

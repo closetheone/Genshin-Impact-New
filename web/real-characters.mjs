@@ -7,6 +7,42 @@ const officialReference = (data, character) => data.official_links?.status === "
   ? data.official_links.records.find((record) => record.character_id === character.id && record.name === character.name) : null;
 const officialButton = (record, compact = false) => `<a class="${compact ? "text-button" : "button button-primary"}" href="${escape(record.url)}" target="_blank" rel="noopener noreferrer">${compact ? "官网立绘与简介" : `前往官网查看${escape(record.name)}`} ↗</a>`;
 
+export function portraitHTML(data, character, large = false) {
+  const record = data.official_art?.status === "available"
+    ? data.official_art.records.find((r) => r.character_id === character.id && r.name === character.name) : null;
+  const classes = `character-portrait real-portrait${large ? " large" : ""}`;
+  if (!record) return `<div class="${classes}" data-element="${escape(character.element)}"><span>${escape(character.name.slice(0, 1))}</span><small>${data.official_art?.status === "available" ? "暂无匹配图片 · 文字占位" : "图片资料暂不可用 · 文字占位"}</small></div>`;
+  return `<div class="${classes} official-portrait" data-element="${escape(character.element)}" data-portrait-state="loading" aria-busy="true">
+    <img src="${escape(large ? record.portrait_url : record.thumbnail_url)}" alt="${escape(character.name)} · 官网${large ? "立绘" : "头像"}" loading="${large ? "eager" : "lazy"}" decoding="async" referrerpolicy="no-referrer">
+    <div class="portrait-placeholder"><span aria-hidden="true">${escape(character.name.slice(0, 1))}</span><small data-portrait-status>图片加载中…</small>${large ? '<button class="button" data-portrait-retry hidden>重新加载图片</button>' : ""}</div>
+    <small class="portrait-credit">官网图片 · ${escape(data.official_art.copyright)}${large ? ` · <a href="${escape(record.source_url)}" target="_blank" rel="noopener noreferrer">来源 ↗</a> · <a href="${escape(record.portrait_url)}" target="_blank" rel="noopener noreferrer">查看大图 ↗</a>` : ""}</small>
+  </div>`;
+}
+
+export function bindPortraits(root = document) {
+  for (const frame of root.querySelectorAll('[data-portrait-state]')) {
+    const img = frame.querySelector('img');
+    const status = frame.querySelector('[data-portrait-status]');
+    const retry = frame.querySelector('[data-portrait-retry]');
+    const update = (state) => {
+      frame.dataset.portraitState = state;
+      frame.setAttribute('aria-busy', String(state === 'loading'));
+      status.textContent = state === 'error' ? '图片暂不可用，可通过官网入口查看' : '图片加载中…';
+      if (retry) retry.hidden = state !== 'error';
+    };
+    img.addEventListener('load', () => update('loaded'));
+    img.addEventListener('error', () => update('error'));
+    retry?.addEventListener('click', () => {
+      update('loading');
+      const url = img.getAttribute('src');
+      img.removeAttribute('src');
+      img.setAttribute('src', url);
+    });
+    // Cached images can finish before these handlers are attached.
+    if (img.complete) update(img.naturalWidth > 0 ? 'loaded' : 'error');
+  }
+}
+
 function officialPanel(data, character) {
   const record = officialReference(data, character);
   return `<section class="official-character-panel" aria-label="官方角色展示"><h2>官方角色展示</h2>${record
@@ -53,11 +89,12 @@ export function renderRealCharacters(data, detail, replacePage, params = new URL
     const character = data.character;
     history.replaceState(null, "", catalogAddress(catalog, character.id, selection));
     replacePage(`<section class="character-detail-page real-character-page"><a class="text-button" href="${catalogAddress(catalog, null, selection)}">← 返回真实角色目录</a> · <a class="text-button" href="#/real-characters">打开最新目录 →</a>
-      <div class="character-detail-hero"><div class="character-portrait large real-portrait" data-element="${escape(character.element)}"><span>${escape(character.name.slice(0, 1))}</span><small>文字占位 · 非角色立绘</small></div><div><div class="eyebrow">GENSHIN IMPACT · CHARACTER PROFILE</div><h1>${escape(character.name)}</h1><p>${escape(valueLabel(character.region))} · ${escape(valueLabel(character.affiliation))}</p><span class="tag tag-blue">角色基础资料 · 社区来源</span>${facts(character)}</div></div>
+      <div class="character-detail-hero real-character-hero">${portraitHTML(data, character, true)}<div><div class="eyebrow">GENSHIN IMPACT · CHARACTER PROFILE</div><h1>${escape(character.name)}</h1><p>${escape(valueLabel(character.region))} · ${escape(valueLabel(character.affiliation))}</p><span class="tag tag-blue">角色基础资料 · 社区来源</span>${facts(character)}</div></div>
       ${officialPanel(data, character)}
       <h2>角色故事</h2><p>游戏内完整角色故事与对白尚未收录，官网简介不等于完整角色故事。当前没有已核验的人物关系记录。</p>
       <h2>资料出处</h2>${source}<p class="small muted">${coverage} 未提供的字段不做推测补齐；“无”元素按来源保留，不展开成多个角色。</p><p><a class="button button-soft" href="${escape(character.provenance.url)}" target="_blank" rel="noopener noreferrer">查看此角色的来源记录 ↗</a> <a class="text-button" href="${escape(data.source.license_url)}" target="_blank" rel="noopener noreferrer">仓库许可说明 ↗</a></p>
       <details class="real-provenance"><summary>字段定位与核对记录</summary><dl>${Object.entries(character.provenance.fields).map(([field, original]) => `<dt>${escape(fields[field] || "角色名")}</dt><dd><code>/${escape(original)}</code></dd>`).join("")}</dl><p>来源文件 SHA-256：<code>${escape(character.provenance.sha256)}</code></p></details><p class="small muted">${escape(data.source.scope)}</p></section>`);
+    bindPortraits();
     return;
   }
   const elements = [...new Set(data.characters.map((c) => c.element))];
@@ -68,7 +105,7 @@ export function renderRealCharacters(data, detail, replacePage, params = new URL
   replacePage(`<section class="characters-page real-character-page"><div class="page-title-row"><div><div class="eyebrow">GENSHIN IMPACT · CHARACTER DIRECTORY</div><h1>原神角色资料目录</h1><p>${coverage}</p></div><span id="real-character-count" class="tag tag-blue" role="status"></span></div>
     <div class="character-toolbar"><label>查找角色<input id="real-character-query" maxlength="160" placeholder="角色名、武器或地区" value="${escape(selection.query)}"></label><label>元素<select id="real-character-element" aria-label="元素"><option value="all">全部元素</option>${options(elements, selection.element, elementLabel)}</select></label><label>地区<select id="real-character-region" aria-label="地区"><option value="all">全部地区</option>${options(regions, selection.region)}<option value="missing" ${selection.region === "missing" ? "selected" : ""}>来源未提供</option></select></label><button id="real-character-reset" class="button">重置筛选</button></div>
     <div id="real-character-grid" class="character-grid"></div><div class="pagination" aria-label="角色目录分页"><button id="real-character-previous" class="button">上一页</button><span id="real-character-page"></span><button id="real-character-next" class="button">下一页</button></div>
-    <div class="callout">${data.official_links?.status === "available" ? `已匹配 ${data.official_links.records.length} 个官网角色展示入口，可在官网查看立绘与简介。` : "官网展示入口暂不可用。"}本站尚未收录立绘和完整角色故事。剧情检索和关系图仍使用原创样本。</div>${source}<a class="text-button" href="#/real-characters">打开最新目录 →</a> · <a class="text-button" href="#/characters">查看原创样本目录 →</a></section>`);
+    <div class="callout">${data.official_art?.status === "available" ? `已匹配 ${data.official_art.records.length} 组官网图片，图片由官方站点在线提供。` : "图片资料暂不可用。"}完整角色故事尚未收录，官方简介可通过官网入口查看。剧情检索和关系图仍使用原创样本。</div>${source}<a class="text-button" href="#/real-characters">打开最新目录 →</a> · <a class="text-button" href="#/characters">查看原创样本目录 →</a></section>`);
   function draw() {
     const result = catalogPage(data.characters, selection);
     selection.page = result.page;
@@ -76,11 +113,12 @@ export function renderRealCharacters(data, detail, replacePage, params = new URL
     document.querySelector("#real-character-count").textContent = `${result.total} / ${data.characters.length} 条角色记录`;
     document.querySelector("#real-character-grid").innerHTML = result.records.map((character) => {
       const official = officialReference(data, character);
-      return `<article class="character-card"><a href="${catalogAddress(catalog, character.id, selection)}" aria-label="查看${escape(character.name)}详情"><div class="character-portrait real-portrait" data-element="${escape(character.element)}"><span>${escape(character.name.slice(0, 1))}</span><small>文字占位 · 非角色立绘</small></div></a><div class="character-card-body"><div class="eyebrow">${escape(valueLabel(character.region))} · ${character.rarity} 星</div><h2><a href="${catalogAddress(catalog, character.id, selection)}">${escape(character.name)}</a></h2>${facts(character, ["element", "weapon"])}<div class="real-character-actions"><a class="text-button" href="${catalogAddress(catalog, character.id, selection)}">基本资料与出处 →</a>${official ? officialButton(official, true) : `<span class="small muted">${data.official_links?.status === "available" ? "官网入口未匹配" : "官网入口暂不可用"}</span>`}</div></div></article>`;
+      return `<article class="character-card"><a href="${catalogAddress(catalog, character.id, selection)}" aria-label="查看${escape(character.name)}详情">${portraitHTML(data, character)}</a><div class="character-card-body"><div class="eyebrow">${escape(valueLabel(character.region))} · ${character.rarity} 星</div><h2><a href="${catalogAddress(catalog, character.id, selection)}">${escape(character.name)}</a></h2>${facts(character, ["element", "weapon"])}<div class="real-character-actions"><a class="text-button" href="${catalogAddress(catalog, character.id, selection)}">基本资料与出处 →</a>${official ? officialButton(official, true) : `<span class="small muted">${data.official_links?.status === "available" ? "官网入口未匹配" : "官网入口暂不可用"}</span>`}</div></div></article>`;
     }).join("") || '<div class="empty-state">没有符合筛选条件的角色。</div>';
     document.querySelector("#real-character-page").textContent = `第 ${result.page} / ${result.pages} 页 · 每页最多 24 条`;
     document.querySelector("#real-character-previous").disabled = result.page === 1;
     document.querySelector("#real-character-next").disabled = result.page === result.pages;
+    bindPortraits(document.querySelector('#real-character-grid'));
   }
   const input = document.querySelector("#real-character-query");
   const search = () => { selection.query = input.value; selection.page = 1; draw(); };

@@ -129,6 +129,9 @@ class CharacterCatalogTests(unittest.TestCase):
             self.assertEqual(status, 200)
             self.assertEqual(data['character']['name'], '琴')
             self.assertEqual([r['name'] for r in data['official_links']['records']], ['琴'])
+            self.assertEqual([r['name'] for r in data['official_art']['records']], ['琴'])
+            self.assertEqual(len(get('')[1]['official_art']['records']), 120)
+            self.assertEqual(get('character=genshin%3A10000005')[1]['official_art']['records'], [])
             self.assertEqual(len(get('')[1]['official_links']['records']), 120)
             self.assertEqual(get('character=genshin%3A10000005')[1]['official_links']['records'], [])
             self.assertEqual(len(get('')[1]['characters']), 124)
@@ -139,5 +142,10 @@ class CharacterCatalogTests(unittest.TestCase):
                 self.assertEqual(get(query)[0], 400)
             with urlopen(base + '/real-characters.mjs') as response:
                 self.assertIn('javascript', response.headers['Content-Type'])
+                csp = response.headers['Content-Security-Policy']
+                self.assertIn('https://uploadstatic.mihoyo.com', csp)
+                self.assertNotIn('https:', csp.split('img-src')[0])
+                self.assertIn("connect-src 'self'", csp)
+                self.assertNotIn('*', csp)
         finally:
             server.shutdown(); server.server_close(); thread.join()
