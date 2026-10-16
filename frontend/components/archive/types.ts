@@ -109,7 +109,7 @@ export type RelationshipView = Omit<GraphView, "query" | "truncated" | "limits" 
 
 export type MaterialSelection = { version: 1; snapshot: string | null; topic: string; passage_ids: string[]; relationships: Array<{ id: string; evidence_ids: string[] }> };
 export type MaterialResult = { valid: boolean; snapshot_id: string; count: number; limit: number; selection: MaterialSelection; errors: Array<{ kind: string; id: string; code: string }>; preview: { passages: Passage[]; relationships: Relationship[] }; markdown: string | null; package: Record<string, unknown> | null };
-export type StatusView = { dataset_kind: "synthetic"; notice: string; snapshot_id: string; scope_ids: string[]; purpose: Purpose; source_admission?: { ready: boolean; sources: Array<{ source_id: string; page_count: number; requested_uses: string[]; ready: boolean; missing_requirements: string[]; unapproved_uses: string[]; next_actions: string[] }> }; storage: string };
+export type StatusView = { dataset_kind: "synthetic"; notice: string; snapshot_id: string; scope_ids: string[]; purpose: Purpose; source_admission?: { ready: boolean; sources: Array<{ source_id: string; page_count: number; requested_uses: string[]; ready: boolean; missing_requirements: string[]; unapproved_uses: string[]; next_actions: string[] }> }; real_data_readiness?: { ready: boolean; blockers: string[]; next_steps: string[]; source_text_read: boolean; authorized_batch?: unknown }; storage: string };
 
 export function normalizeScope(scope: string | null | undefined) {
   return scope && (scope === "all" || ALL_SCOPES.includes(scope as Scope)) ? scope : "all";

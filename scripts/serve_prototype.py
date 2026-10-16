@@ -19,6 +19,7 @@ from search_archive import StaleCursor, search_options
 from validate_sample import SampleError, project
 from check_source_admission import load_audit
 from report_source_admission import build_report
+from check_release_readiness import build_readiness
 from character_catalog import BATCHES as CHARACTER_BATCHES, DEFAULT_CATALOG, CatalogUnavailable, import_catalog, read_catalog
 from character_references import official_links
 from character_art import IMAGE_PATHS, official_art
@@ -142,6 +143,9 @@ class PrototypeHandler(BaseHTTPRequestHandler):
                     elif parsed.path == '/api/status':
                         view = dict(archive.meta)
                         view["source_admission"] = build_report(
+                            load_audit(ROOT / "data/source-audit.json")
+                        )
+                        view["real_data_readiness"] = build_readiness(
                             load_audit(ROOT / "data/source-audit.json")
                         )
                     elif parsed.path == '/api/read':
