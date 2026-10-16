@@ -9,25 +9,28 @@ import { characterCompleteness, DEFAULT_CATALOG, findOfficialLink, type Catalog,
 const PAGE_SIZE = 24;
 
 function readSelection() {
-  if (typeof window === "undefined") return { query: "", element: "all", region: "all", sort: "default" as const, page: 1, catalog: DEFAULT_CATALOG };
+  if (typeof window === "undefined") return { query: "", element: "all", region: "all", completeness: "all" as const, sort: "default" as const, page: 1, catalog: DEFAULT_CATALOG };
   const params = new URLSearchParams(window.location.search);
   const page = Number(params.get("page"));
   const sortParam = params.get("sort");
+  const completenessParam = params.get("completeness");
   return {
     query: (params.get("q") || "").slice(0, 160),
     element: params.get("element") || "all",
     region: params.get("region") || "all",
+    completeness: completenessParam === "complete" || completenessParam === "incomplete" ? completenessParam : "all",
     sort: sortParam === "name" || sortParam === "rarity" ? sortParam : "default",
     page: Number.isSafeInteger(page) && page > 0 ? page : 1,
     catalog: params.get("catalog") || DEFAULT_CATALOG,
   };
 }
 
-function updateUrl(selection: { query: string; element: string; region: string; sort: string; page: number; catalog: string }) {
+function updateUrl(selection: { query: string; element: string; region: string; completeness: string; sort: string; page: number; catalog: string }) {
   const params = new URLSearchParams({ catalog: selection.catalog });
   if (selection.query) params.set("q", selection.query);
   if (selection.element !== "all") params.set("element", selection.element);
   if (selection.region !== "all") params.set("region", selection.region);
+  if (selection.completeness !== "all") params.set("completeness", selection.completeness);
   if (selection.sort !== "default") params.set("sort", selection.sort);
   if (selection.page > 1) params.set("page", String(selection.page));
   window.history.replaceState(null, "", `${window.location.pathname}?${params}`);
@@ -66,7 +69,11 @@ export function CharacterCatalogPage() {
   const elements = useMemo(() => [...new Set(catalog?.characters.map((character) => character.element) || [])], [catalog]);
   const regions = useMemo(() => [...new Set(catalog?.characters.map((character) => character.region).filter((region): region is string => Boolean(region)) || [])], [catalog]);
   const filtered = useMemo(() => {
-    const records = catalog?.characters.filter((character) => matches(character, selection.query, selection.element, selection.region)) || [];
+    const records = catalog?.characters.filter((character) => {
+      if (!matches(character, selection.query, selection.element, selection.region)) return false;
+      const complete = characterCompleteness(character).missing.length === 0;
+      return selection.completeness === "all" || (selection.completeness === "complete" ? complete : !complete);
+    }) || [];
     return records.sort((left, right) => {
       if (selection.sort === "name") return left.name.localeCompare(right.name, "zh-CN");
       if (selection.sort === "rarity") return right.rarity - left.rarity || left.name.localeCompare(right.name, "zh-CN");
@@ -95,12 +102,13 @@ export function CharacterCatalogPage() {
       </header>
 
       <section className="mb-8 rounded-2xl border border-line bg-panel p-4 shadow-sm sm:p-5" aria-label="角色筛选">
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_160px_160px_160px_auto]">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_150px_160px_160px_auto]">
           <label className="text-sm font-medium text-ink">查找角色<input value={selection.query} onChange={(event) => changeSelection({ query: event.target.value.slice(0, 160) })} placeholder="角色名、武器、地区或组织" className="mt-1.5 h-11 w-full rounded-lg border border-line bg-paper px-3 outline-none transition focus:border-green focus:ring-2 focus:ring-green/20" /></label>
           <label className="text-sm font-medium text-ink">元素<select value={selection.element} onChange={(event) => changeSelection({ element: event.target.value })} className="mt-1.5 h-11 w-full rounded-lg border border-line bg-paper px-3 outline-none focus:border-green"><option value="all">全部元素</option>{elements.map((element) => <option key={element} value={element}>{element === "无" ? "无固定元素" : element}</option>)}</select></label>
           <label className="text-sm font-medium text-ink">地区<select value={selection.region} onChange={(event) => changeSelection({ region: event.target.value })} className="mt-1.5 h-11 w-full rounded-lg border border-line bg-paper px-3 outline-none focus:border-green"><option value="all">全部地区</option>{regions.map((region) => <option key={region} value={region}>{region}</option>)}<option value="missing">来源未提供</option></select></label>
+          <label className="text-sm font-medium text-ink">字段完整度<select value={selection.completeness} onChange={(event) => changeSelection({ completeness: event.target.value })} className="mt-1.5 h-11 w-full rounded-lg border border-line bg-paper px-3 outline-none focus:border-green"><option value="all">全部资料</option><option value="complete">字段齐全</option><option value="incomplete">有字段缺失</option></select></label>
           <label className="text-sm font-medium text-ink">排序<select value={selection.sort} onChange={(event) => changeSelection({ sort: event.target.value })} className="mt-1.5 h-11 w-full rounded-lg border border-line bg-paper px-3 outline-none focus:border-green"><option value="default">默认顺序</option><option value="name">名称</option><option value="rarity">稀有度</option></select></label>
-          <Button variant="outline" className="self-end" onClick={() => changeSelection({ query: "", element: "all", region: "all", sort: "default" })}>重置筛选</Button>
+          <Button variant="outline" className="self-end" onClick={() => changeSelection({ query: "", element: "all", region: "all", completeness: "all", sort: "default" })}>重置筛选</Button>
         </div>
       </section>
 
@@ -115,6 +123,7 @@ export function CharacterCatalogPage() {
             if (selection.query) returnParams.set("q", selection.query);
             if (selection.element !== "all") returnParams.set("element", selection.element);
             if (selection.region !== "all") returnParams.set("region", selection.region);
+            if (selection.completeness !== "all") returnParams.set("completeness", selection.completeness);
             if (selection.sort !== "default") returnParams.set("sort", selection.sort);
             if (page > 1) returnParams.set("page", String(page));
             const detailHref = `/characters/${encodeURIComponent(character.id)}?catalog=${encodeURIComponent(catalog.catalog_id)}&from=${encodeURIComponent(returnParams.toString())}`;
