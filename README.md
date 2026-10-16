@@ -16,7 +16,15 @@
 
 ## 当前状态
 
-前端迁移目标已确定为 **Next.js + TypeScript + shadcn/ui + Tailwind CSS**，保留 Python 业务逻辑与 SQLite；选型和建议配套见 [技术栈说明](TECH_STACK.md)。目前尚未迁移页面，下述启动方式仍对应现有原生前端原型。
+前端已迁移到 **Next.js + TypeScript + shadcn/ui 风格组件 + Tailwind CSS**，保留 Python 业务逻辑与 SQLite；职责和选型见 [技术栈说明](TECH_STACK.md)。旧的 `web/` 原生前端继续保留，Next.js 是当前主要开发入口。
+
+快速启动 Next.js 页面和 Python API：
+
+```bash
+./scripts/dev_next.sh
+```
+
+默认打开 `http://127.0.0.1:3000/characters`。脚本会启动 `http://127.0.0.1:4175` 的 Python API；也可以按 [Next.js 前端说明](frontend/README.md) 分开启动。Next.js 负责页面与轻量代理，Python 继续负责数据管线、准入校验、SQLite 和查询业务。
 
 2026-10-15 真实角色基础资料已扩充至 genshin-db 固定来源中的 124 条中文记录，旧的四角色批次仍保留。社区收录范围不等于官方当前已实装名单。首页与“真实角色”导航提供分页目录、姓名检索、元素 / 地区筛选、详情和固定版本出处；资料来自 genshin-db 的已核对基础字段，署名与 MIT 许可保留。120 名角色可直接显示官网头像与立绘，图片由浏览器在线读取；完整故事和真实关系尚未收录。基础资料运行时读取独立的本地 SQLite 角色资料库，详见 [真实角色接入记录](docs/real-character-intake.md)。
 
