@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f7f6f0;
+  --panel: #fffefa;
+  --ink: #263d36;
+  --muted: #778079;
+  --line: #e4e6dc;
+  --green: #28594d;
+  --gold: #a8894e;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-green: var(--green);
+  --color-gold: var(--gold);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); }
+a { color: inherit; text-decoration: none; }
