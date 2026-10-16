@@ -57,8 +57,20 @@ export type Catalog = {
 
 export const DEFAULT_CATALOG = "genshin-basics-2026-10-15-v2";
 
+const completenessFields: Array<[keyof Character, string]> = [
+  ["name", "名称"], ["element", "元素"], ["weapon", "武器"], ["rarity", "稀有度"],
+  ["region", "地区"], ["affiliation", "所属组织"], ["birthday", "生日"], ["constellation", "命之座"],
+];
+
 export function valueLabel(value: string | number | null | undefined) {
   return value === null || value === undefined || value === "" ? "来源未提供" : String(value);
+}
+
+export function characterCompleteness(character: Character) {
+  const missing = completenessFields
+    .filter(([field]) => character[field] === null || character[field] === undefined || character[field] === "")
+    .map(([, label]) => label);
+  return { available: completenessFields.length - missing.length, total: completenessFields.length, missing };
 }
 
 export function findArt(catalog: Catalog, character: Character) {

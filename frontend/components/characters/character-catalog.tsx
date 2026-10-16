@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CharacterPortrait } from "./portrait";
-import { DEFAULT_CATALOG, findOfficialLink, type Catalog, type Character, valueLabel } from "./types";
+import { characterCompleteness, DEFAULT_CATALOG, findOfficialLink, type Catalog, type Character, valueLabel } from "./types";
 
 const PAGE_SIZE = 24;
 
@@ -110,6 +110,7 @@ export function CharacterCatalogPage() {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {records.map((character) => {
             const official = findOfficialLink(catalog, character);
+            const completeness = characterCompleteness(character);
             const returnParams = new URLSearchParams({ catalog: catalog.catalog_id });
             if (selection.query) returnParams.set("q", selection.query);
             if (selection.element !== "all") returnParams.set("element", selection.element);
@@ -119,7 +120,7 @@ export function CharacterCatalogPage() {
             const detailHref = `/characters/${encodeURIComponent(character.id)}?catalog=${encodeURIComponent(catalog.catalog_id)}&from=${encodeURIComponent(returnParams.toString())}`;
             return <article key={character.id} className="group overflow-hidden rounded-2xl border border-line bg-panel shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
               <Link href={detailHref} aria-label={`查看${character.name}详情`}><CharacterPortrait catalog={catalog} character={character} /></Link>
-              <div className="p-4"><div className="flex items-center justify-between gap-2 text-xs text-muted"><span>{valueLabel(character.region)}</span><span>{character.rarity} 星</span></div><h2 className="mt-1 font-serif text-2xl"><Link href={detailHref}>{character.name}</Link></h2><p className="mt-2 text-sm text-muted">{character.element} · {character.weapon}</p><div className="mt-4 flex flex-wrap items-center gap-3 text-xs"><Link className="font-medium text-green hover:underline" href={detailHref}>基本资料与出处 →</Link>{official ? <a className="text-muted hover:text-green hover:underline" href={official.url} target="_blank" rel="noreferrer">官网简介 ↗</a> : <span className="text-muted">官网入口未匹配</span>}</div></div>
+              <div className="p-4"><div className="flex items-center justify-between gap-2 text-xs text-muted"><span>{valueLabel(character.region)}</span><span>{character.rarity} 星</span></div><h2 className="mt-1 font-serif text-2xl"><Link href={detailHref}>{character.name}</Link></h2><p className="mt-2 text-sm text-muted">{character.element} · {character.weapon}</p><p className="mt-3 text-xs text-muted" title={completeness.missing.length ? `缺少：${completeness.missing.join("、")}` : "8 个基础字段均有来源值"}>基础字段 {completeness.available}/{completeness.total}{completeness.missing.length ? ` · 缺少 ${completeness.missing.join("、")}` : " · 已齐全"}</p><div className="mt-4 flex flex-wrap items-center gap-3 text-xs"><Link className="font-medium text-green hover:underline" href={detailHref}>基本资料与出处 →</Link>{official ? <a className="text-muted hover:text-green hover:underline" href={official.url} target="_blank" rel="noreferrer">官网简介 ↗</a> : <span className="text-muted">官网入口未匹配</span>}</div></div>
             </article>;
           })}
         </div>
