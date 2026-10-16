@@ -12,6 +12,8 @@
 
 默认地址为 `http://127.0.0.1:3000`，可用 `API_PORT=4176 NEXT_PORT=3001 ./scripts/dev_next.sh` 覆盖端口。脚本会把 `API_PORT` 传给 Next.js 代理；按 Ctrl+C 会同时停止两个开发服务。
 
+若分开启动且 Python API 不在默认地址，可复制 `.env.example` 为 `.env.local` 并设置 `PYTHON_API_URL`。统一脚本会优先使用它自己的 `API_PORT`，并在端口已占用时直接给出明确错误。
+
 也可以分开启动：
 
 先在项目根目录启动 Python API：
