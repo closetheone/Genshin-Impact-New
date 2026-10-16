@@ -69,6 +69,7 @@ def build_report(data, requested_by_source=None, source_filter=None):
         sources.append({
             "source_id": source_id,
             "page_count": len(pages),
+            "page_ids": [page["id"] for page in pages],
             "requested_uses": requested,
             "ready": ready,
             "missing_requirements": sorted(set(missing)),

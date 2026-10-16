@@ -20,6 +20,7 @@ from validate_sample import SampleError, project
 from check_source_admission import load_audit
 from report_source_admission import build_report
 from check_release_readiness import build_readiness
+from create_authorized_batch import build_template
 from character_catalog import BATCHES as CHARACTER_BATCHES, DEFAULT_CATALOG, CatalogUnavailable, import_catalog, read_catalog
 from character_references import official_links
 from character_art import IMAGE_PATHS, official_art
@@ -72,6 +73,23 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             self.respond(414, {"error": "请求过长。"})
             return
         parsed = urlsplit(self.path)
+        if parsed.path == '/api/authorized-batch-template':
+            try:
+                arguments = parse_qs(parsed.query, keep_blank_values=True, max_num_fields=16)
+                source_values = arguments.get('source_id', [])
+                page_ids = arguments.get('page_id', [])
+                uses = arguments.get('require') or None
+                if set(arguments) - {'source_id', 'page_id', 'require'} or len(source_values) != 1 or not source_values[0] or len(source_values[0]) > 160:
+                    raise SampleError('invalid authorized batch template parameters')
+                if not page_ids or any(not value or len(value) > 160 for value in page_ids):
+                    raise SampleError('at least one page_id is required')
+                if uses and any(len(value) > 40 for value in uses):
+                    raise SampleError('invalid requested use')
+                template = build_template(load_audit(ROOT / 'data/source-audit.json'), source_values[0], page_ids, uses)
+                self.respond(200, template)
+            except (SampleError, ValueError, TypeError, KeyError, OSError, json.JSONDecodeError) as error:
+                self.respond(400, {'error': str(error) if isinstance(error, ValueError) else '授权批次模板参数不符合契约。'})
+            return
         if parsed.path == '/api/character-catalog':
             try:
                 arguments = parse_qs(parsed.query, keep_blank_values=True, max_num_fields=4)
