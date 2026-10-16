@@ -73,6 +73,40 @@ export type ReaderView = {
   pagination: Pagination;
 };
 
+export type Relationship = {
+  id: string;
+  from_id: string;
+  to_id: string;
+  predicate: "mentor_of" | "parent_of" | "opposes" | "cooperates_with" | string;
+  direction: "directed" | "symmetric";
+  branch_id: string | null;
+  description: string;
+  claim_kind: string;
+  review_status: string;
+  evidence_groups: string[][];
+  required_scope_ids: string[];
+  snapshot_id: string;
+  source_id: string;
+};
+
+export type GraphView = {
+  dataset_kind: "synthetic";
+  notice: string;
+  snapshot_id: string;
+  scope_ids: string[];
+  purpose: Purpose;
+  characters: ArchiveCharacter[];
+  entries: ArchiveEntry[];
+  relationships: Relationship[];
+  passages: Passage[];
+  query: { center: string; hops: number; predicate: string; condition: string; page: number };
+  truncated: boolean;
+  limits: { nodes: number; relationships: number };
+  pagination: { page: number; pages: number; total_nodes: number; total_relationships: number; next_cursor: string | null; previous_cursor: string | null };
+};
+
+export type RelationshipView = Omit<GraphView, "query" | "truncated" | "limits" | "pagination"> & { relationships: [Relationship] | Relationship[]; sources: Array<{ id: string; locator: string; content_type: string; rights: Record<string, string>; snapshot_id: string }> };
+
 export function normalizeScope(scope: string | null | undefined) {
   return scope && (scope === "all" || ALL_SCOPES.includes(scope as Scope)) ? scope : "all";
 }
@@ -95,4 +129,17 @@ export function speakerName(characters: ArchiveCharacter[], speakerId: string | 
 export function scopeLabel(passage: Passage) {
   if (passage.branch_id) return `分支：${passage.branch_id}`;
   return passage.required_scope_ids.includes("opening") ? "开篇公共" : passage.required_scope_ids.join("、");
+}
+
+export const predicateLabels: Record<string, string> = {
+  mentor_of: "师徒",
+  parent_of: "亲属",
+  opposes: "对立",
+  cooperates_with: "合作",
+};
+
+export function relationScope(relation: Relationship) {
+  if (relation.branch_id === "east") return "东路分支";
+  if (relation.branch_id === "west") return "西路分支";
+  return relation.required_scope_ids.includes("later") ? "后续阶段" : "开篇公共";
 }
