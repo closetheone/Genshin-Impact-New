@@ -24,5 +24,11 @@ for _ in {1..30}; do
   sleep 0.2
 done
 
+if ! curl --silent --fail "http://127.0.0.1:${API_PORT}/api/status?snapshot=fixture-2026-10-10-v1&scope=opening&purpose=display" >/dev/null; then
+  echo "Python API did not become ready on 127.0.0.1:${API_PORT}." >&2
+  exit 1
+fi
+
 cd "$ROOT_DIR/frontend"
+export PYTHON_API_URL="http://127.0.0.1:${API_PORT}"
 exec npm run dev -- --hostname 127.0.0.1 --port "$NEXT_PORT"

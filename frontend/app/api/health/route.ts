@@ -1,10 +1,10 @@
-const BACKEND = "http://127.0.0.1:4175";
+import { backendHeaders, backendUrl } from "@/lib/backend";
 
 export async function GET() {
   const request = new URLSearchParams({ snapshot: "fixture-2026-10-10-v1", scope: "opening", purpose: "display" });
   try {
-    const response = await fetch(`${BACKEND}/api/status?${request}`, {
-      headers: new Headers({ Host: "127.0.0.1:4175", Origin: BACKEND }),
+    const response = await fetch(`${backendUrl}/api/status?${request}`, {
+      headers: backendHeaders(),
       cache: "no-store",
     });
     if (!response.ok) {

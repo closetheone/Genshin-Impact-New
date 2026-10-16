@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [{
       source: "/api/:path*",
-      destination: "http://127.0.0.1:4175/api/:path*",
+      destination: `${process.env.PYTHON_API_URL || "http://127.0.0.1:4175"}/api/:path*`,
     }];
   },
 };

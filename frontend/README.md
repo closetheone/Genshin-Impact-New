@@ -10,7 +10,7 @@
 ./scripts/dev_next.sh
 ```
 
-默认地址为 `http://127.0.0.1:3000`，可用 `API_PORT=4176 NEXT_PORT=3001 ./scripts/dev_next.sh` 覆盖端口。按 Ctrl+C 会同时停止两个开发服务。
+默认地址为 `http://127.0.0.1:3000`，可用 `API_PORT=4176 NEXT_PORT=3001 ./scripts/dev_next.sh` 覆盖端口。脚本会把 `API_PORT` 传给 Next.js 代理；按 Ctrl+C 会同时停止两个开发服务。
 
 也可以分开启动：
 
