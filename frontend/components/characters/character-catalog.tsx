@@ -80,6 +80,11 @@ export function CharacterCatalogPage() {
       return 0;
     });
   }, [catalog, selection]);
+  const completenessStats = useMemo(() => {
+    const records = catalog?.characters || [];
+    const complete = records.filter((character) => characterCompleteness(character).missing.length === 0).length;
+    return { complete, incomplete: records.length - complete };
+  }, [catalog]);
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const page = Math.min(selection.page, pages);
   const records = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -98,7 +103,7 @@ export function CharacterCatalogPage() {
           <h1 className="mt-3 font-serif text-4xl tracking-tight text-ink sm:text-5xl">原神角色资料目录</h1>
           <p className="mt-3 max-w-2xl leading-7 text-muted">固定来源目录中的角色基础资料。官网立绘和简介入口独立标注，未收录的故事字段不会由页面推测补齐。</p>
         </div>
-        <span className="rounded-full bg-green/10 px-3 py-1.5 text-sm text-green" role="status">{catalog ? `${filtered.length} / ${catalog.characters.length} 条记录` : "读取中"}</span>
+        <div className="flex flex-col items-end gap-1"><span className="rounded-full bg-green/10 px-3 py-1.5 text-sm text-green" role="status">{catalog ? `${filtered.length} / ${catalog.characters.length} 条记录` : "读取中"}</span>{catalog ? <span className="text-xs text-muted">字段齐全 {completenessStats.complete} · 有缺失 {completenessStats.incomplete}</span> : null}</div>
       </header>
 
       <section className="mb-8 rounded-2xl border border-line bg-panel p-4 shadow-sm sm:p-5" aria-label="角色筛选">
