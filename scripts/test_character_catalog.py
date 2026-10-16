@@ -124,6 +124,11 @@ class CharacterCatalogTests(unittest.TestCase):
             except HTTPError as error: response = error
             with response:
                 return response.status, json.load(response)
+        def get_path(path, query):
+            try: response = urlopen(base + path + '?' + query)
+            except HTTPError as error: response = error
+            with response:
+                return response.status, json.load(response)
         try:
             status, data = get(urlencode({'catalog': DEFAULT_CATALOG, 'character': 'genshin:10000003'}))
             self.assertEqual(status, 200)
@@ -140,6 +145,25 @@ class CharacterCatalogTests(unittest.TestCase):
                 self.assertEqual(get(query)[0], 404)
             for query in ('character=', 'purpose=export', 'scope=all', 'catalog=a&catalog=b'):
                 self.assertEqual(get(query)[0], 400)
+            status, template = get_path('/api/authorized-batch-template', urlencode({
+                'source_id': 'bwiki_genshin',
+                'page_id': 'audit:bwiki-task',
+                'require': ['collect', 'store', 'display'],
+            }, doseq=True))
+            self.assertEqual(status, 200)
+            self.assertEqual(template['schema_version'], 'authorized-batch-0.1')
+            self.assertTrue(template['metadata_only'])
+            self.assertFalse(template['source_text_read'])
+            self.assertEqual(template['records'], [])
+            self.assertEqual(template['page_ids'], ['audit:bwiki-task'])
+            self.assertNotIn('text', template)
+            self.assertNotIn('body', template)
+            status, error = get_path('/api/authorized-batch-template', urlencode({
+                'source_id': 'bwiki_genshin',
+                'page_id': 'audit:obc-guide',
+            }))
+            self.assertEqual(status, 400)
+            self.assertIn('do not belong', error['error'])
             with urlopen(base + '/real-characters.mjs') as response:
                 self.assertIn('javascript', response.headers['Content-Type'])
                 csp = response.headers['Content-Security-Policy']
