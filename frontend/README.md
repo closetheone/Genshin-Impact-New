@@ -39,6 +39,7 @@ npm run dev
 - `/graph`：原创样本人物关系列表、中心人物/层级/类型/分支筛选和证据核验面板。
 - `/materials`：浏览器本地素材清单、服务端重新核验和 Markdown/JSON 导出。
 - `/about`：收录边界、来源准入状态和本机纠错反馈。
+- `/api/health`：检查 Next.js Route Handler 与 Python API 是否连通，并返回当前快照和真实数据门禁状态。
 
 页面继续通过 Next.js rewrite 访问现有 Python API，不复制数据库，也不把官网简介当作完整角色故事。官网图片仅使用已核对的远程引用；图片加载失败时会回退到文字占位。
 
@@ -51,3 +52,5 @@ npm run lint
 npx tsc --noEmit
 npm run build
 ```
+
+启动后可用 `curl http://127.0.0.1:3000/api/health` 检查两层服务；`ok: true` 只表示页面与 Python API 连通，不表示真实来源已经获准或真实剧情已经接入。
