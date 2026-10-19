@@ -101,7 +101,7 @@ export function CharacterCatalogPage() {
         <div>
           <Link href="/" className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">Genshin Impact · archive</Link>
           <h1 className="mt-3 font-serif text-4xl tracking-tight text-ink sm:text-5xl">原神角色资料目录</h1>
-          <p className="mt-3 max-w-2xl leading-7 text-muted">固定来源目录中的角色基础资料。官网立绘和简介入口独立标注，未收录的故事字段不会由页面推测补齐。</p>
+          <p className="mt-3 max-w-2xl leading-7 text-muted">固定来源目录中的角色基础资料。已收录角色可在详情页查看故事章节；缺失章节不会由页面推测补齐。</p>
         </div>
         <div className="flex flex-col items-end gap-1"><span className="rounded-full bg-green/10 px-3 py-1.5 text-sm text-green" role="status">{catalog ? `${filtered.length} / ${catalog.characters.length} 条记录` : "读取中"}</span>{catalog ? <span className="text-xs text-muted">字段齐全 {completenessStats.complete} · 有缺失 {completenessStats.incomplete}</span> : null}</div>
       </header>

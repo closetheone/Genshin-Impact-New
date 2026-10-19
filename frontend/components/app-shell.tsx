@@ -85,7 +85,7 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
       <div className="border-b border-gold/20 bg-gold/10 px-5 py-2.5 text-xs leading-5 text-ink sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-2 gap-y-1">
           <span className="font-semibold text-gold">数据边界</span>
-          <span>角色目录是社区基础资料；文本、原文和关系图当前是原创合成样本；完整真实剧情尚未接入。</span>
+          <span>角色目录与部分角色故事来自固定社区数据整理；文本检索和关系图仍是原创合成样本。</span>
           <Link className="font-medium text-green underline-offset-2 hover:underline" href={`/real-characters?catalog=${REAL_CATALOG}`}>
             查看真实角色入口
           </Link>
