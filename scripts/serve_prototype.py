@@ -24,6 +24,7 @@ from create_authorized_batch import build_template
 from character_catalog import BATCHES as CHARACTER_BATCHES, DEFAULT_CATALOG, CatalogUnavailable, import_catalog, read_catalog
 from character_references import official_links
 from character_art import IMAGE_PATHS, official_art
+from character_stories import character_stories
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -97,7 +98,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
                     raise SampleError('invalid character catalog parameters')
                 result = read_catalog(self.server.database.parent / 'character-catalog.sqlite3',
                                       arguments.get('catalog', [DEFAULT_CATALOG])[0], arguments.get('character', [None])[0])
-                self.respond(200, {**result, 'official_links': official_links(result), 'official_art': official_art(result)})
+                self.respond(200, {**result, 'official_links': official_links(result), 'official_art': official_art(result), 'stories': character_stories(result)})
             except CatalogUnavailable as error:
                 self.respond(404, {'error': str(error)})
             except SampleError:

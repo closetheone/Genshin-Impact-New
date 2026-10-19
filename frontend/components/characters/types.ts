@@ -31,6 +31,19 @@ export type OfficialLink = {
   url: string;
 };
 
+export type StoryChapter = {
+  chapter: number;
+  title: string;
+  body: string;
+  unlock_level: number | null;
+};
+
+export type CharacterStory = {
+  character_id: string;
+  name: string;
+  chapters: StoryChapter[];
+};
+
 export type Catalog = {
   catalog_id: string;
   checked_on: string;
@@ -52,6 +65,14 @@ export type Catalog = {
   official_links?: {
     status: string;
     records: OfficialLink[];
+  };
+  stories?: {
+    status: string;
+    story_id?: string;
+    checked_on?: string;
+    source?: { name: string; repository: string; revision: string; files: Record<string, string>; scope: string; license_note: string };
+    coverage?: { record_count: number; characters_with_story: number; chapter_count: number };
+    records: CharacterStory[];
   };
 };
 
@@ -81,6 +102,12 @@ export function findArt(catalog: Catalog, character: Character) {
 
 export function findOfficialLink(catalog: Catalog, character: Character) {
   return catalog.official_links?.records.find(
+    (record) => record.character_id === character.id && record.name === character.name,
+  );
+}
+
+export function findStory(catalog: Catalog, character: Character) {
+  return catalog.stories?.records.find(
     (record) => record.character_id === character.id && record.name === character.name,
   );
 }
